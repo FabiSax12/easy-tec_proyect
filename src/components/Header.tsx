@@ -1,20 +1,17 @@
+"use client"
 import { NextPage } from 'next'
 import Image from 'next/image'
+import useUserInfo from '@/store/user';
 import UserUI from '@/ui/nextui/User'
 import { Badge } from '@nextui-org/badge';
 import { Button } from '@nextui-org/button';
 import { FaRegBell, FaGear } from "react-icons/fa6";
 
-const user = {
-  name: "Fabián Vargas",
-  carrier: "Ingenierían en Computación",
-  avatarImageURL: "https://i.pravatar.cc/150?u=a04258114e29026702d",
-  notifications: 2
-}
-
 interface Props {}
 
 const Header: NextPage<Props> = ({}) => {
+  const user = useUserInfo((state) => state)
+
   return (
     <header className="w-full h-14 px-32 flex items-center justify-between mb-4 sticky top-0 left-0 z-50 bg-white backdrop-blur-sm backdrop-saturate-100  text-black">
       <span className="w-max flex items-center gap-4 ">
