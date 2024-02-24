@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Easy TEC
+## Introducción
+Este proyecto nace con la idea de crear un planificador con todo lo necesario para un estudiante del TEC
 
-## Getting Started
+La idea me llegó porque en mi primer semestre decidí organizarme de la mejor manera y en todos los aspectos. Esto me llevo a
+descentralizar mucho la información ya que ninguna app o método me satisfacía al 100%, llegé a tener
+- Calendario de Google
+- Calendario de Samsung
+- Calendario con horario de clases
+- Calendario de tutorías
+- Calendario de horas de consulta
+- App de recordatorios
+- Notion
+- TEC Digital
+- Trello
+- Otros.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Ya que en mis capacidades está y mi carrera es computación, hoy 18 de febrero del 2024 me propongo el reto de centralizar todas estas
+funcionalidades en una aplicación web y compartirla para que todos puedan mejorar su organizazión estudiantil y mejorar sus notas
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Funcionalidades de la web
+- Creación de usuario
+- Inicio de sesión
+- Editar usuario
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Funcionalidades para el usuario
+- División por semestres
+  - Vista por materias y vista global
+  - Calendario
+    - Horario
+    - Consulta
+    - Tutorías
+  - Evaluaciones
+  - To Do list tipo trello
+- Subir archivos para compartir con los demás
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+---
 
-## Learn More
+## Herramientas
+### Cliente
+- NextJS
+- TypeScript
 
-To learn more about Next.js, take a look at the following resources:
+### Backend
+- NodeJS
+- Express
+- REST Api
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Base de datos
+- PostgreSQL
+- ORM
+  - Prisma o Sequilize
+- Server Actions (NextJS)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### Testing
+- React Testing Library
+- Jest
 
-## Deploy on Vercel
+### Librerías
+- Front
+  - React
+  - React Icons
+  - Tailwind
+- Trello
+  - React DnD
+- Calendario 
+  - FullCalendar.js o react-big-calendar.
+- Sesión
+  - JSON Web Tokens (JWT)
+  - Bcrypt
+- State management
+  - Zustand
+- Linting
+  - Eslint
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### Hosting
+- Vercel
