@@ -1,8 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { NextPage } from 'next';
 import useUserInfo from "@/store/user";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react";
 import { formatDate } from '@/utils/FormatDate';
+import { Select } from './Select';
+import NumberInput from './NumberInput';
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react";
+
+const data = [{label: "Semestre", value: "S"}, {label: "Verano", value: "V"}]
 
 interface Props {
   isOpen: boolean;
@@ -10,24 +14,42 @@ interface Props {
 }
 
 const ModalSemestre: NextPage<Props> = ({ isOpen, onOpenChange }) => {
-  const [title, setTitle] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [modality, setModality] = useState("");
+  const [title, setTitle] = useState("");
+  const [id, setId] = useState(0);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(()=>{
+    if (modality === "") {
+      setTitle("")
+      setId(0)
+    }
+    else if(modality === "S") {
+      setTitle("Semestre")
+      setId(1)
+    }
+    else if(modality === "V") {
+      setTitle("Verano")
+      setId(2024)
+    }
+  }, [modality])
 
   const addSemester = useUserInfo((state) => state.addSemester);
 
   const onAccept = async () => {
     setLoading(true);
     const semestreData = {
-      title,
+      title: `${title} ${id}`,
+      id: `${modality} - ${id}`,
       startDate: formatDate(startDate),
       endDate: formatDate(endDate),
     };
     try {
       setTimeout(() => {}, 2000)
       addSemester(semestreData);
-      setTitle("");
+      setModality("");
       setStartDate("");
       setEndDate("");
       onOpenChange();
@@ -71,14 +93,36 @@ const ModalSemestre: NextPage<Props> = ({ isOpen, onOpenChange }) => {
           <>
             <ModalHeader className="flex flex-col gap-1">Añadir nuevo semestre</ModalHeader>
             <ModalBody>
-              <Input
-                autoFocus
-                label="Título"
-                placeholder="Nombre del semestre"
-                variant="bordered"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
+              <div className="flex gap-6">
+                <Select
+                  className="flex-[3]"
+                  options={data}
+                  autoFocus
+                  label="Título"
+                  placeholder="Modalidad"
+                  variant="bordered"
+                  value={title}
+                  onChange={(e) => setModality(e.target.value)}
+                />
+                {
+                  modality !== "" ? (
+                    <NumberInput
+                      label={modality === "S" ? "Semestre" : "Año"}
+                      className="flex-[1] w-full"
+                      value={id}
+                      setValue={setId}
+                      min={1}
+                    />
+                  ) : (
+                    <NumberInput
+                      className="flex-[1] w-full"
+                      value={0}
+                      setValue={setId}
+                      disabled
+                    />
+                  )
+                }
+              </div>
               <Input
                 label="Fecha de inicio"
                 placeholder="Fecha Inicial"
