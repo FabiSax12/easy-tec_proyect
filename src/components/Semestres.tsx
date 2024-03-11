@@ -21,7 +21,12 @@ const Semestres: NextPage<Props> = ({className}) => {
       </header>
       <div className='grid grid-cols-2 gap-2 w-max'>
         {semestres.map((semestre, idx) => (
-          <SemestreButton key={idx} title={semestre.title} startDate={semestre.startDate} endDate={semestre.endDate}/>
+          <SemestreButton 
+            key={semestre.id} 
+            id={semestre.id} 
+            title={semestre.title}
+            startDate={semestre.startDate} 
+            endDate={semestre.endDate}/>
         ))}
         
         <AddSemesterButton onPress={onOpen}/>

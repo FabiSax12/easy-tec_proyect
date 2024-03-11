@@ -253,6 +253,7 @@ const CoursesMainTable: React.FC<Props> = ({ filter }: Props) => {
     <Table
       aria-label="Example table with custom cells, pagination and sorting"
       isHeaderSticky
+      showSelectionCheckboxes={false}
       bottomContent={bottomContent}
       bottomContentPlacement="outside"
       classNames={{
