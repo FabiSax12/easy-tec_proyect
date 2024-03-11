@@ -27,14 +27,19 @@ funcionalidades en una aplicación web y compartirla para que todos puedan mejor
 
 ## Funcionalidades para el usuario
 - División por semestres
-  - Vista por materias y vista global
-  - Calendario
-    - Horario
-    - Consulta
-    - Tutorías
-  - Evaluaciones
-  - To Do list tipo trello
+- Vista por materias y vista global
+- Calendario
+  - Horario
+  - Consulta
+  - Tutorías
+- Evaluaciones
+- To Do list tipo trello
 - Subir archivos para compartir con los demás
+- Guías métodos de estudio
+  - Pomodoro
+  - Active recall
+  - Spaced Repetition
+  - Etc...
 
 ---
 
