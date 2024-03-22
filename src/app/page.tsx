@@ -1,18 +1,17 @@
 import Calendar from "@/components/Calendar";
-import Courses from "@/components/Courses";
 import SectionCard from "@/components/SectionCard";
 import Semestres from "@/components/Semestres";
+import CoursesMainTable from "@/ui/nextui/Table/CoursesMainTable";
 
 export default function Home() {
   return (
-    <main className="grid grid-cols-5">
-      <SectionCard className="col-start-1 col-span-2 justify-self-center">
+    <main className="home-main_grid gap-10">
+      <SectionCard title="Semestres" className="h-min">
         <Semestres/>
       </SectionCard>
-      <SectionCard className="col-start-3 col-span-3 ">
-        <Courses />
+      <SectionCard title="Cursos">
+        <CoursesMainTable />
       </SectionCard>
-      {/* <Calendar /> */}
     </main>
   );
 }

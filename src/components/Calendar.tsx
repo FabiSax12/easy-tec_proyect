@@ -19,22 +19,22 @@ interface Props {}
 const Calendar: NextPage<Props> = ({}) => {
   return (
     <FullCalendar
-        themeSystem=''
-        plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
-        headerToolbar={{
-          left: "prev,next today",
-          center: "title",
-          right: "resourceTimelineWook, dayGridMonth, timeGridWeek"
-        }}
-        events={{}}
-        selectable={true}
-        editable={true}
-        droppable={true}
-        selectMirror={true}
-        // dateClick={{}}
-        // drop={}
-        // eventClick={}
-      />
+      themeSystem=''
+      plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
+      headerToolbar={{
+        left: "prev,next today",
+        center: "title",
+        right: "resourceTimelineWook, dayGridMonth, timeGridWeek"
+      }}
+      events={{}}
+      selectable={true}
+      editable={true}
+      droppable={true}
+      selectMirror={true}
+      // dateClick={{}}
+      // drop={}
+      // eventClick={}
+    />
   )
 }
 
