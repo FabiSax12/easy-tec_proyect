@@ -1,3 +1,5 @@
+import SectionCard from '@/components/SectionCard'
+import CoursesMainTable from '@/ui/nextui/Table/CoursesMainTable'
 import { NextPage } from 'next'
 
 interface Props {
@@ -5,9 +7,9 @@ interface Props {
 }
 
 const SemestreDashboard: NextPage<Props> = ({params}) => {
-  return <div>
-    {params.id}
-  </div>
+  return (
+    <SectionCard><CoursesMainTable filter={{semester: params.id}}/></SectionCard>
+  )
 }
 
 export default SemestreDashboard

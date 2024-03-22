@@ -2,7 +2,7 @@ import CoursesMainTable from '@/ui/nextui/Table/CoursesMainTable'
 import { NextPage } from 'next'
 
 interface Props {
-  className: string
+  className?: string
 }
 
 const Courses: NextPage<Props> = ({className}) => {

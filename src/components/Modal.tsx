@@ -42,7 +42,7 @@ const ModalSemestre: NextPage<Props> = ({ isOpen, onOpenChange }) => {
     setLoading(true);
     const semestreData = {
       title: `${title} ${id}`,
-      id: `${modality} - ${id}`,
+      id: `${modality}-${id}`,
       startDate: formatDate(startDate),
       endDate: formatDate(endDate),
     };

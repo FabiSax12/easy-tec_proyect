@@ -40,7 +40,7 @@ funcionalidades en una aplicación web y compartirla para que todos puedan mejor
   - Active recall
   - Spaced Repetition
   - Etc...
-
+- Board o zona para promocionar clases particulares / eventos
 ---
 
 ## Herramientas

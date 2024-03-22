@@ -1,19 +1,19 @@
 import React, { useCallback, useMemo, useState } from "react";
 import {User as Course, Selection, SortDescriptor} from "@nextui-org/react";
-import { columns, courses, statusOptions } from "@/ui/nextui/Table/data";
+import { courses, statusOptions } from "@/ui/nextui/Table/data";
 
 type Course = typeof courses[0];
 
 const INITIAL_VISIBLE_COLUMNS = ["name", "credits", "semester", "state", "actions"];
 
-export const useCourses = ({filter}: {filter?: { semester?: number, state?: string }}) => {
+export const useCourses = ({filter}: {filter?: { semester?: string, state?: string }}) => {
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
   const [visibleColumns, setVisibleColumns] = useState<Selection>(new Set(INITIAL_VISIBLE_COLUMNS));
   const [statusFilter, setStatusFilter] = useState<Selection>(
     filter?.state ? new Set(filter.state) : "all"
   );
-  const [semesterFilter, setSemesterFilter] = useState<number | "all">(
+  const [semesterFilter, setSemesterFilter] = useState<string | "all">(
     filter?.semester ? filter.semester : "all"
   );
   const [rowsPerPage, setRowsPerPage] = useState(5);

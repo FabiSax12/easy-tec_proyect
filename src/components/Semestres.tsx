@@ -7,7 +7,7 @@ import ModalSemestre from "@/components/Modal"
 import {useDisclosure} from "@nextui-org/react";
 
 interface Props {
-  className: string
+  className?: string
 }
 
 const Semestres: NextPage<Props> = ({className}) => {

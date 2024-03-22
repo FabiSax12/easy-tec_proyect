@@ -21,7 +21,7 @@ const courses = [
     "name": "Introducción a la Ciencia de la Computación",
     "teacher": "Dr. Juan Pérez",
     "credits": 3,
-    "semester": 2,
+    "semester": "S-2",
     "state": "pendiente",
     "avatar": "https://www.ejemplo.com/avatar_curso1.png"
   },
@@ -30,7 +30,7 @@ const courses = [
     "name": "Estructuras de Datos y Algoritmos",
     "teacher": "Prof. Ana Gómez",
     "credits": 4,
-    "semester": 1,
+    "semester": "S-1",
     "state": "cursando",
     "avatar": "https://www.ejemplo.com/avatar_curso2.png"
   },
@@ -39,7 +39,7 @@ const courses = [
     "name": "Fundamentos de Aprendizaje Automático",
     "teacher": "Dr. Carlos Fernández",
     "credits": 5,
-    "semester": 2,
+    "semester": "V-2024",
     "state": "aprobado",
     "avatar": "https://www.ejemplo.com/avatar_curso3.png"
   },
@@ -48,7 +48,7 @@ const courses = [
     "name": "Programación Avanzada",
     "teacher": "Prof. Laura Rodríguez",
     "credits": 4,
-    "semester": 3,
+    "semester": "S-3",
     "state": "pendiente",
     "avatar": "https://www.ejemplo.com/avatar_curso4.png"
   },
@@ -57,7 +57,7 @@ const courses = [
     "name": "Diseño de Software",
     "teacher": "Dr. Pablo Martínez",
     "credits": 4,
-    "semester": 3,
+    "semester": "S-3",
     "state": "cursando",
     "avatar": "https://www.ejemplo.com/avatar_curso5.png"
   },
@@ -66,7 +66,7 @@ const courses = [
     "name": "Bases de Datos Avanzadas",
     "teacher": "Prof. Sofía López",
     "credits": 5,
-    "semester": 4,
+    "semester": "S-4",
     "state": "pendiente",
     "avatar": "https://www.ejemplo.com/avatar_curso6.png"
   },
@@ -75,7 +75,7 @@ const courses = [
     "name": "Redes de Computadoras",
     "teacher": "Dr. Alejandro Sánchez",
     "credits": 4,
-    "semester": 4,
+    "semester": "S-4",
     "state": "aprobado",
     "avatar": "https://www.ejemplo.com/avatar_curso7.png"
   },
@@ -84,7 +84,7 @@ const courses = [
     "name": "Sistemas Operativos",
     "teacher": "Prof. Eduardo Fernández",
     "credits": 4,
-    "semester": 5,
+    "semester": "S-5",
     "state": "cursando",
     "avatar": "https://www.ejemplo.com/avatar_curso8.png"
   },
@@ -93,7 +93,7 @@ const courses = [
     "name": "Inteligencia Artificial",
     "teacher": "Dr. María González",
     "credits": 5,
-    "semester": 5,
+    "semester": "S-5",
     "state": "pendiente",
     "avatar": "https://www.ejemplo.com/avatar_curso9.png"
   },
@@ -102,7 +102,7 @@ const courses = [
     "name": "Seguridad Informática",
     "teacher": "Prof. José Martínez",
     "credits": 4,
-    "semester": 6,
+    "semester": "S-6",
     "state": "cursando",
     "avatar": "https://www.ejemplo.com/avatar_curso10.png"
   },
@@ -111,7 +111,7 @@ const courses = [
     "name": "Desarrollo Web Avanzado",
     "teacher": "Dr. Claudia Ramírez",
     "credits": 4,
-    "semester": 6,
+    "semester": "S-6",
     "state": "aprobado",
     "avatar": "https://www.ejemplo.com/avatar_curso11.png"
   },
@@ -120,7 +120,7 @@ const courses = [
     "name": "Computación Cuántica",
     "teacher": "Prof. Luis Morales",
     "credits": 5,
-    "semester": 7,
+    "semester": "S-7",
     "state": "pendiente",
     "avatar": "https://www.ejemplo.com/avatar_curso12.png"
   },
@@ -129,7 +129,7 @@ const courses = [
     "name": "Desarrollo de Videojuegos",
     "teacher": "Dr. Ricardo Fernández",
     "credits": 4,
-    "semester": 7,
+    "semester": "S-7",
     "state": "cursando",
     "avatar": "https://www.ejemplo.com/avatar_curso13.png"
   },
@@ -138,7 +138,7 @@ const courses = [
     "name": "Procesamiento de Imágenes",
     "teacher": "Prof. Marta Sánchez",
     "credits": 4,
-    "semester": 8,
+    "semester": "S-8",
     "state": "pendiente",
     "avatar": "https://www.ejemplo.com/avatar_curso14.png"
   },
@@ -147,7 +147,7 @@ const courses = [
     "name": "Blockchain y Criptomonedas",
     "teacher": "Dr. Roberto González",
     "credits": 5,
-    "semester": 8,
+    "semester": "S-8",
     "state": "cursando",
     "avatar": "https://www.ejemplo.com/avatar_curso15.png"
   }

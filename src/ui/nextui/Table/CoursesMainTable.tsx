@@ -21,7 +21,7 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
 type Course = typeof courses[0];
 
 interface Props {
-  filter?: { semester?: number; state?: string };
+  filter?: { semester?: string; state?: string };
 }
 
 const CoursesMainTable: React.FC<Props> = ({ filter }: Props) => {
@@ -195,7 +195,7 @@ const CoursesMainTable: React.FC<Props> = ({ filter }: Props) => {
           </div>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-default-400 text-small">Total de cursos: {courses.length}</span>
+          <span className="text-default-400 text-small">Total de cursos: {filteredItems.length}</span>
           <label className="flex items-center text-default-400 text-small">
             Filas por página:
             <select
@@ -278,7 +278,7 @@ const CoursesMainTable: React.FC<Props> = ({ filter }: Props) => {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody emptyContent={"No users found"} items={sortedItems}>
+      <TableBody emptyContent={`No se encontraron cursos`} items={sortedItems}>
         {(item) => (
           <TableRow key={item.id}>
             {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
