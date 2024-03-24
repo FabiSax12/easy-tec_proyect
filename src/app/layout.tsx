@@ -19,12 +19,7 @@ export default function RootLayout({
   return (
     <html lang="es" className="bg-light">
       <body className={`${inter.className} h-screen`}>
-        <Providers>
-          <Header />
-          <main className="h-full px-32 py-4">
-            {children}
-          </main>
-        </Providers>
+        {children}
       </body>
     </html>
   );
