@@ -1,4 +1,5 @@
 import {create} from "zustand"
+import {persist} from "zustand/middleware"
 
 interface Semestre {
   title: string;
@@ -7,29 +8,58 @@ interface Semestre {
   endDate: string;
 }
 
-interface User {
+interface NewUser {
+  id: number;
+  email: string;
   name: string;
-  carrier: string;
-  avatarImageURL: string;
+  lastname: string;
+}
+
+interface User extends NewUser {
+  carrier: string | null;
+  avatarImageURL: string | null;
   notifications: number;
   semestres: Semestre[];
   addSemester: (semestre: Semestre) => void;
+  setUser: (newUser: NewUser) => void
+  signOut: () => void
 }
 
-const useUserInfo = create<User>((set, get) => ({
-  name: "Fabián Vargas",
-  carrier: "Ingeniería en Computación",
-  avatarImageURL: "https://i.pravatar.cc/150?u=a04258114e29026702d",
-  notifications: 2,
-  semestres: [
-    { title: "Semestre 1", id: "S-1", startDate: "05 Feb 2024", endDate: "31 May 2024" },
-    { title: "Semestre 2", id: "S-2", startDate: "05 Feb 2024", endDate: "31 May 2024" },
-  ],
+const useUserInfo = create(
+  persist<User>((set, get) => ({
+    id: 0,
+    email: "",
+    name: "",
+    lastname: "",
+    carrier: null,
+    avatarImageURL: null,
+    notifications: 0,
+    semestres: [],
 
-  addSemester: (semestre) =>
-    set((state) => ({
+    addSemester: (semestre) => set((state) => ({
       semestres: [...state.semestres, semestre],
     })),
-}));
+
+    setUser: (newUser) => set((state) => ({
+      ...state,
+      id: newUser.id,
+      email: newUser.email,
+      name: newUser.name,
+      lastname: newUser.lastname
+    })),
+
+    signOut: () => set((state) => ({
+      ...state,
+      id: 0,
+      email: "",
+      name: "",
+      lastname: "",
+      carrier: null,
+      avatarImageURL: null,
+      notifications: 0,
+      semestres: [],
+    }))
+  }), {name: "user"})
+);
 
 export default useUserInfo

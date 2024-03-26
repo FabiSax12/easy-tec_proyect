@@ -1,4 +1,3 @@
-"use client"
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin, {Draggable, DropArg} from "@fullcalendar/interaction"

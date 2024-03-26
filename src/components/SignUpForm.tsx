@@ -37,7 +37,7 @@ const SignUpForm: NextPage<Props> = ({data, handleInputChange, setSelected, setE
     }
   }
   
-  return <form className="flex flex-col gap-4 h-[300px]">
+  return <form className="flex flex-col gap-4 h-[300px]" onSubmit={onSignUp}>
     <Input
       isRequired
       label="Correo"
@@ -48,6 +48,7 @@ const SignUpForm: NextPage<Props> = ({data, handleInputChange, setSelected, setE
     />
     <Input
       isRequired
+      minLength={3}
       label="Nombre"
       placeholder="Tu nombre"
       value={data.name}
@@ -55,6 +56,7 @@ const SignUpForm: NextPage<Props> = ({data, handleInputChange, setSelected, setE
     />
     <Input
       isRequired
+      minLength={3}
       label="Apellido"
       placeholder="Tu apellido"
       value={data.lastname}
@@ -62,6 +64,7 @@ const SignUpForm: NextPage<Props> = ({data, handleInputChange, setSelected, setE
     />
     <Input
       isRequired
+      minLength={8}
       label="Password"
       placeholder="********"
       type="password"
@@ -69,13 +72,13 @@ const SignUpForm: NextPage<Props> = ({data, handleInputChange, setSelected, setE
       onValueChange={(value) => handleInputChange('password', value)}
     />
     <p className="text-center text-small">
-      Already have an account?{" "}
-      <Link size="sm" onPress={() => setSelected("login")}>
+      ¿Ya tienes una cuenta?{" "}
+      <Link size="sm" className="cursor-pointer" onPress={() => setSelected("login")}>
         Login
       </Link>
     </p>
     <div className="flex gap-2 justify-end">
-      <Button fullWidth color="primary" onPress={onSignUp} isLoading={isLoading}>
+      <Button fullWidth type="submit" color="primary" isLoading={isLoading}>
         Sign up
       </Button>
     </div>

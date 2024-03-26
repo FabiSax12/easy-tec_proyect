@@ -1,4 +1,4 @@
-import { NextPage } from 'next'
+import { NextPage } from "next"
 import { FaPlus } from "react-icons/fa6"
 
 interface Props {

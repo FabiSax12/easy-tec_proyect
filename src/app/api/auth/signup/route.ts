@@ -12,24 +12,26 @@ type Data = {
 export async function POST(req: Request) {
   const data: Data = await req.json()
 
-  const userFound = await db.user.findUnique({
-    where: {
-      email: data.email
-    }
-  })
-
-  if (userFound) {
-    return NextResponse.json({
-      error: "El correo ya está en uso",
-    }, {
-      status: 400
+  if(data.email == "" && data.password == "") {
+    const userFound = await db.user.findUnique({
+      where: {
+        email: data.email
+      }
     })
+  
+    if (userFound) {
+      return NextResponse.json({
+        error: "El correo ya está en uso",
+      }, {
+        status: 400
+      })
+    }
+  
+    data.password = await bcrypt.hash(data.password, 10)
+    const createdUser = await db.user.create({data})
+  
+    const {password, createdAt, updatedAt, ...dataToReturn} = createdUser
+  
+    return NextResponse.json({...dataToReturn})
   }
-
-  data.password = await bcrypt.hash(data.password, 10)
-  const createdUser = await db.user.create({data})
-
-  const {password, createdAt, updatedAt, ...dataToReturn} = createdUser
-
-  return NextResponse.json({...dataToReturn})
 }

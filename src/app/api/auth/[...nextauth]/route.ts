@@ -2,6 +2,7 @@ import NextAuth, { AuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import db from "@/libs/db"
 import bcrypt from "bcrypt"
+import useUserInfo from "@/store/user"
 
 const authOptions: AuthOptions = {
   providers: [
@@ -27,7 +28,8 @@ const authOptions: AuthOptions = {
           return {
             id: userFound.id.toString(),
             email: userFound.email,
-            name: userFound.name
+            name: userFound.name,
+            lastname: userFound.lastname,
           }
         }
         return null
@@ -39,6 +41,6 @@ const authOptions: AuthOptions = {
   }
 }
 
-const handler = NextAuth(authOptions)
+const handler = NextAuth(authOptions);
 
 export {handler as GET, handler as POST}

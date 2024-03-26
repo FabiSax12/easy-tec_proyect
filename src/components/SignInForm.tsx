@@ -30,7 +30,7 @@ const SignInForm: NextPage<Props> = ({data, handleInputChange, setSelected, setE
     })
 
     setIsLoading(false)
-
+    console.log(res)
     res?.error ? setError(res.error) : router.push("/")
   }
   
@@ -52,8 +52,8 @@ const SignInForm: NextPage<Props> = ({data, handleInputChange, setSelected, setE
       onValueChange={(value) => handleInputChange('password', value)}
     />
     <p className="text-center text-small">
-      Need to create an account?{" "}
-      <Link size="sm" onPress={() => setSelected("sign-up")}>
+      ¿No tienes una cuenta?{" "}
+      <Link size="sm" className="cursor-pointer" onPress={() => setSelected("sign-up")}>
         Sign up
       </Link>
     </p>
