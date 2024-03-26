@@ -1,16 +1,16 @@
-import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid'
+import FullCalendar from "@fullcalendar/react"
+import dayGridPlugin from "@fullcalendar/daygrid"
 import interactionPlugin, {Draggable, DropArg} from "@fullcalendar/interaction"
 import timeGridPlugin from "@fullcalendar/timegrid"
-import { NextPage } from 'next'
+import { NextPage } from "next"
 
 interface eventInfo {
-  timeText: String
-  event: {title: String}
+  timeText: string
+  event: {title: string}
 }
 
 const events = [
-  { title: 'Meeting', start: new Date().getDate() }
+  { title: "Meeting", start: new Date().getDate() }
 ]
 
 interface Props {}

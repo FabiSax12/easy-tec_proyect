@@ -1,4 +1,5 @@
-import { NextPage } from 'next'
+import { NextPage } from "next"
+import { ChangeEvent } from "react"
 
 interface Props {
   className?: string
@@ -12,7 +13,7 @@ interface Props {
 }
 
 const NumberInput: NextPage<Props> = (props) => {
-  const validateValue = (e: any) => {
+  const validateValue = (e: ChangeEvent<HTMLInputElement>) => {
     const new_value = Number(e.target.value)
     if (new_value >= 1) {
       props.setValue(new_value)

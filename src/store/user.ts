@@ -60,6 +60,6 @@ const useUserInfo = create(
       semestres: [],
     }))
   }), {name: "user"})
-);
+)
 
 export default useUserInfo

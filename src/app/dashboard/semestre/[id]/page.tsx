@@ -1,6 +1,6 @@
-import SectionCard from '@/components/SectionCard'
-import CoursesMainTable from '@/ui/nextui/Table/CoursesMainTable'
-import { NextPage } from 'next'
+import SectionCard from "@/components/SectionCard"
+import CoursesMainTable from "@/ui/nextui/Table/CoursesMainTable"
+import { NextPage } from "next"
 
 interface Props {
   params: {id: string}

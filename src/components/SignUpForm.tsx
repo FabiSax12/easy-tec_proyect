@@ -1,6 +1,6 @@
-import { Dispatch, SetStateAction, useState } from 'react';
-import { NextPage } from 'next'
-import { Button, Input, Link } from '@nextui-org/react'
+import { Dispatch, SetStateAction, useState } from "react"
+import { NextPage } from "next"
+import { Button, Input, Link } from "@nextui-org/react"
 
 interface Props {
   data: {
@@ -44,7 +44,7 @@ const SignUpForm: NextPage<Props> = ({data, handleInputChange, setSelected, setE
       placeholder="usuario@estudiantec.cr"
       type="email"
       value={data.email}
-      onValueChange={(value) => handleInputChange('email', value)}
+      onValueChange={(value: string) => handleInputChange("email", value)}
     />
     <Input
       isRequired
@@ -52,7 +52,7 @@ const SignUpForm: NextPage<Props> = ({data, handleInputChange, setSelected, setE
       label="Nombre"
       placeholder="Tu nombre"
       value={data.name}
-      onValueChange={(value) => handleInputChange('name', value)}
+      onValueChange={(value: string) => handleInputChange("name", value)}
     />
     <Input
       isRequired
@@ -60,7 +60,7 @@ const SignUpForm: NextPage<Props> = ({data, handleInputChange, setSelected, setE
       label="Apellido"
       placeholder="Tu apellido"
       value={data.lastname}
-      onValueChange={(value) => handleInputChange('lastname', value)}
+      onValueChange={(value: string) => handleInputChange("lastname", value)}
     />
     <Input
       isRequired
@@ -69,11 +69,11 @@ const SignUpForm: NextPage<Props> = ({data, handleInputChange, setSelected, setE
       placeholder="********"
       type="password"
       value={data.password}
-      onValueChange={(value) => handleInputChange('password', value)}
+      onValueChange={(value: string) => handleInputChange("password", value)}
     />
     <p className="text-center text-small">
       ¿Ya tienes una cuenta?{" "}
-      <Link size="sm" className="cursor-pointer" onPress={() => setSelected("login")}>
+      <Link className="cursor-pointer" onPress={() => setSelected("login")}>
         Login
       </Link>
     </p>

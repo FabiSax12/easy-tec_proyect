@@ -1,22 +1,22 @@
 "use client"
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react"
 import {
   Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
   Input, Button, DropdownTrigger, Dropdown, DropdownMenu, DropdownItem,
   Chip, User as Course, Pagination, ChipProps
-} from "@nextui-org/react";
-import { FaPlus, FaChevronDown } from "react-icons/fa6";
-import { HiDotsVertical } from "react-icons/hi";
-import { LuSearch } from "react-icons/lu";
-import { columns, courses, statusOptions } from "@/ui/nextui/Table/data";
-import { capitalize } from "@/utils/Capitalize";
-import { useCourses } from "./useCoursesTable";
+} from "@nextui-org/react"
+import { FaPlus, FaChevronDown } from "react-icons/fa6"
+import { HiDotsVertical } from "react-icons/hi"
+import { LuSearch } from "react-icons/lu"
+import { columns, courses, statusOptions } from "@/ui/nextui/Table/data"
+import { capitalize } from "@/utils/Capitalize"
+import { useCourses } from "./useCoursesTable"
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
   aprobado: "success",
   pendiente: "default",
   cursando: "primary",
-};
+}
 
 type Course = typeof courses[0];
 
@@ -32,23 +32,23 @@ const CoursesMainTable: React.FC<Props> = ({ filter }: Props) => {
     onRowsPerPageChange, onSearchChange, pages
   } = useCourses({filter})
 
-  const hasSearchFilter = Boolean(filterValue);
+  const hasSearchFilter = Boolean(filterValue)
 
   const headerColumns = useMemo(() => {
-    if (visibleColumns === "all") return columns;
+    if (visibleColumns === "all") return columns
 
     return columns.filter((column) =>
       Array.from(visibleColumns).includes(column.uid)
-    );
-  }, [visibleColumns]);
+    )
+  }, [visibleColumns])
 
   const filteredItems = useMemo(() => {
-    let filteredCourses = [...courses];
+    let filteredCourses = [...courses]
 
     if (hasSearchFilter) {
       filteredCourses = filteredCourses.filter((course) =>
         course.name.toLowerCase().includes(filterValue.toLowerCase())
-      );
+      )
     }
     if (
       statusFilter !== "all" &&
@@ -56,82 +56,82 @@ const CoursesMainTable: React.FC<Props> = ({ filter }: Props) => {
     ) {
       filteredCourses = filteredCourses.filter((course) =>
         Array.from(statusFilter).includes(course.state)
-      );
+      )
     }
     if (semesterFilter !== "all") {
       filteredCourses = filteredCourses.filter(
         (course) => semesterFilter == course.semester
-      );
+      )
     }
 
-    return filteredCourses;
-  }, [courses, filterValue, statusFilter, semesterFilter]);
+    return filteredCourses
+  }, [courses, filterValue, statusFilter, semesterFilter])
 
   const sortedItems = useMemo(() => {
     return [...items].sort((a: Course, b: Course) => {
-      const first = a[sortDescriptor.column as keyof Course] as number;
-      const second = b[sortDescriptor.column as keyof Course] as number;
-      const cmp = first < second ? -1 : first > second ? 1 : 0;
+      const first = a[sortDescriptor.column as keyof Course] as number
+      const second = b[sortDescriptor.column as keyof Course] as number
+      const cmp = first < second ? -1 : first > second ? 1 : 0
 
-      return sortDescriptor.direction === "descending" ? -cmp : cmp;
-    });
-  }, [sortDescriptor, items]);
+      return sortDescriptor.direction === "descending" ? -cmp : cmp
+    })
+  }, [sortDescriptor, items])
 
   const renderCell = useCallback(
     (course: Course, columnKey: React.Key) => {
-      const cellValue = course[columnKey as keyof Course];
+      const cellValue = course[columnKey as keyof Course]
 
       switch (columnKey) {
-        case "name":
-          return (
-            <Course
-              // avatarProps={{radius: "lg", src: course.avatar}}
-              description={course.teacher}
-              name={cellValue}
-            >
-              {course.teacher}
-            </Course>
-          );
-        case "state":
-          return (
-            <Chip
-              className="capitalize"
-              color={statusColorMap[course.state]}
-              size="sm"
-              variant="flat"
-            >
-              {cellValue}
-            </Chip>
-          );
-        case "actions":
-          return (
-            <div className="relative flex justify-end items-center gap-2">
-              <Dropdown>
-                <DropdownTrigger>
-                  <Button isIconOnly size="sm" variant="light">
-                    <HiDotsVertical className="text-default-300" />
-                  </Button>
-                </DropdownTrigger>
-                <DropdownMenu>
-                  <DropdownItem color="primary" variant="light">
+      case "name":
+        return (
+          <Course
+            // avatarProps={{radius: "lg", src: course.avatar}}
+            description={course.teacher}
+            name={cellValue}
+          >
+            {course.teacher}
+          </Course>
+        )
+      case "state":
+        return (
+          <Chip
+            className="capitalize"
+            color={statusColorMap[course.state]}
+            size="sm"
+            variant="flat"
+          >
+            {cellValue}
+          </Chip>
+        )
+      case "actions":
+        return (
+          <div className="relative flex justify-end items-center gap-2">
+            <Dropdown>
+              <DropdownTrigger>
+                <Button isIconOnly size="sm" variant="light">
+                  <HiDotsVertical className="text-default-300" />
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu>
+                <DropdownItem color="primary" variant="light">
                     Abrir
-                  </DropdownItem>
-                  <DropdownItem color="success" variant="light">
+                </DropdownItem>
+                <DropdownItem color="success" variant="light">
                     Editar
-                  </DropdownItem>
-                  <DropdownItem className="text-danger" color="danger" variant="solid">
+                </DropdownItem>
+                <DropdownItem className="text-danger" color="danger" variant="solid">
                     Eliminar
-                  </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-            </div>
-          );
-        default:
-          return cellValue;
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </div>
+        )
+      default:
+        return cellValue
       }
     },
     []
-  );
+  )
 
   const topContent = useMemo(() => {
     return (
@@ -209,7 +209,7 @@ const CoursesMainTable: React.FC<Props> = ({ filter }: Props) => {
           </label>
         </div>
       </div>
-    );
+    )
   }, [
     filterValue,
     statusFilter,
@@ -218,7 +218,7 @@ const CoursesMainTable: React.FC<Props> = ({ filter }: Props) => {
     onRowsPerPageChange,
     courses.length,
     hasSearchFilter,
-  ]);
+  ])
 
   const bottomContent = useMemo(() => {
     return (
@@ -246,8 +246,8 @@ const CoursesMainTable: React.FC<Props> = ({ filter }: Props) => {
           </Button>
         </div>
       </div>
-    );
-  }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
+    )
+  }, [selectedKeys, items.length, page, pages, hasSearchFilter])
 
   return (
     <Table
@@ -278,7 +278,7 @@ const CoursesMainTable: React.FC<Props> = ({ filter }: Props) => {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody emptyContent={`No se encontraron cursos`} items={sortedItems}>
+      <TableBody emptyContent={"No se encontraron cursos"} items={sortedItems}>
         {(item) => (
           <TableRow key={item.id}>
             {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
@@ -286,8 +286,8 @@ const CoursesMainTable: React.FC<Props> = ({ filter }: Props) => {
         )}
       </TableBody>
     </Table>
-  );
-};
+  )
+}
 
-export default CoursesMainTable;
+export default CoursesMainTable
 

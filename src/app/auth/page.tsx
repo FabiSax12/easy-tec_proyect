@@ -1,10 +1,10 @@
 "use client"
-import { useEffect, useState } from 'react'
-import { NextPage } from 'next'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { Tabs, Tab, Card, CardBody } from '@nextui-org/react'
-import SignUpForm from '@/components/SignUpForm'
-import SignInForm from '@/components/SignInForm'
+import { useEffect, useState } from "react"
+import { NextPage } from "next"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { Tabs, Tab, Card, CardBody } from "@nextui-org/react"
+import SignUpForm from "@/components/SignUpForm"
+import SignInForm from "@/components/SignInForm"
 
 interface Props {}
 
@@ -16,29 +16,29 @@ const Page: NextPage<Props> = () => {
 
   // State
   const [selected, setSelected] = useState<string | number>(searchParams.get("authMode") ?? "login")
-  const [error, setError] = useState('')
+  const [error, setError] = useState("")
   const [data, setData] = useState({
-    email: '',
-    name: '',
-    lastname: '',
-    password: '',
+    email: "",
+    name: "",
+    lastname: "",
+    password: "",
   })
   
   // Functions
-  const replaceSearchParams = (param: 'login' | 'sign-up') => {
+  const replaceSearchParams = (param: "login" | "sign-up") => {
     const newParams = new URLSearchParams(searchParams)
-    newParams.set('authMode', param)
-    router.push(`${pathname.split('?')[0]}?${newParams}`)
+    newParams.set("authMode", param)
+    router.push(`${pathname.split("?")[0]}?${newParams}`)
   }
 
-  const handleSelectionChange = (selection: any) => {
+  const handleSelectionChange = (selection: "login" | "sign-up") => {
     setSelected(selection)
     replaceSearchParams(selection)
     setData({
-      email: '',
-      name: '',
-      lastname: '',
-      password: '',
+      email: "",
+      name: "",
+      lastname: "",
+      password: "",
     })
   }
 
@@ -50,8 +50,8 @@ const Page: NextPage<Props> = () => {
   }
 
   useEffect(() => {
-    if (selected !== 'login' && selected !== 'sign-up') {
-      replaceSearchParams('login');
+    if (selected !== "login" && selected !== "sign-up") {
+      replaceSearchParams("login")
     }
   }, [selected])
 

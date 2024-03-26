@@ -1,16 +1,16 @@
 "use client"
-import { NextPage } from 'next'
-import Image from 'next/image'
-import Link from 'next/link';
-import useUserInfo from '@/store/user';
-import UserUI from '@/ui/nextui/User'
-import { Badge } from '@nextui-org/badge';
-import { FaRegBell, FaGear } from "react-icons/fa6";
-import { Button } from '@nextui-org/react';
+import { NextPage } from "next"
+import Image from "next/image"
+import Link from "next/link"
+import useUserInfo from "@/store/user"
+import UserUI from "@/ui/nextui/User"
+import { Badge } from "@nextui-org/badge"
+import { FaRegBell, FaGear } from "react-icons/fa6"
+import { Button } from "@nextui-org/react"
 
 interface Props {}
 
-const Header: NextPage<Props> = ({}) => {
+const Header: NextPage<Props> = () => {
   const user = useUserInfo((state) => state)
 
   return (

@@ -1,8 +1,8 @@
-import { Dispatch, SetStateAction, useState } from 'react';
-import { NextPage } from 'next'
-import { useRouter } from 'next/navigation';
-import { signIn } from 'next-auth/react';
-import { Button, Input, Link } from '@nextui-org/react'
+import { ChangeEvent, Dispatch, SetStateAction, useState } from "react"
+import { NextPage } from "next"
+import { useRouter } from "next/navigation"
+import { signIn } from "next-auth/react"
+import { Button, Input, Link } from "@nextui-org/react"
 
 interface Props {
   data: {
@@ -41,7 +41,7 @@ const SignInForm: NextPage<Props> = ({data, handleInputChange, setSelected, setE
       placeholder="Ingrese su correo" 
       type="email"
       value={data.email}
-      onValueChange={(value) => handleInputChange('email', value)}
+      onValueChange={(value: string) => handleInputChange("email", value)}
     />
     <Input
       isRequired
@@ -49,11 +49,11 @@ const SignInForm: NextPage<Props> = ({data, handleInputChange, setSelected, setE
       placeholder="********"
       type="password"
       value={data.password}
-      onValueChange={(value) => handleInputChange('password', value)}
+      onValueChange={(value: string) => handleInputChange("password", value)}
     />
     <p className="text-center text-small">
       ¿No tienes una cuenta?{" "}
-      <Link size="sm" className="cursor-pointer" onPress={() => setSelected("sign-up")}>
+      <Link className="cursor-pointer" onPress={() => setSelected("sign-up")}>
         Sign up
       </Link>
     </p>

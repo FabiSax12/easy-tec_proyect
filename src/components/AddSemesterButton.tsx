@@ -1,11 +1,10 @@
-import { NextPage } from "next"
 import { FaPlus } from "react-icons/fa6"
 
 interface Props {
   onPress: () => void
 }
 
-const AddSemesterButton: NextPage<Props> = ({onPress}) => {
+const AddSemesterButton = ({onPress}: Props) => {
   return (
     <button 
       onClick={onPress} 

@@ -1,7 +1,6 @@
-import Calendar from "@/components/Calendar";
-import SectionCard from "@/components/SectionCard";
-import Semestres from "@/components/Semestres";
-import CoursesMainTable from "@/ui/nextui/Table/CoursesMainTable";
+import SectionCard from "@/components/SectionCard"
+import Semestres from "@/components/Semestres"
+import CoursesMainTable from "@/ui/nextui/Table/CoursesMainTable"
 
 export default function Home() {
   return (
@@ -13,5 +12,5 @@ export default function Home() {
         <CoursesMainTable />
       </SectionCard>
     </main>
-  );
+  )
 }

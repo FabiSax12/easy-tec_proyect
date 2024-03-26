@@ -1,5 +1,5 @@
-import { ReactNode } from 'react'
-import { NextPage } from 'next'
+import { ReactNode } from "react"
+import { NextPage } from "next"
 
 interface Props {
   children: ReactNode

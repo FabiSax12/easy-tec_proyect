@@ -10,9 +10,9 @@ const columns = [
 
 
 const statusOptions = [
-    {name: "Pendiente", uid: "pendiente"},
-    {name: "Cursando", uid: "cursando"},
-    {name: "Aprobado", uid: "aprobado"}
+  {name: "Pendiente", uid: "pendiente"},
+  {name: "Cursando", uid: "cursando"},
+  {name: "Aprobado", uid: "aprobado"}
 ]
 
 const courses = [
@@ -154,4 +154,4 @@ const courses = [
 ]
 
 
-export {columns, courses, statusOptions};
+export {columns, courses, statusOptions}
