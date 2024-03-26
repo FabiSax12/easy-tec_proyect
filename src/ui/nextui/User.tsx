@@ -1,8 +1,8 @@
 import {User} from "@nextui-org/react"
 
 interface Props {
-  name: string
-  lastname: string
+  name: string | undefined
+  lastname: string | undefined
   carrier?: string | null
   avatarImage?: string | null
 }

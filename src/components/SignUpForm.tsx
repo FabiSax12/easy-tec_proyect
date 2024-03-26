@@ -29,7 +29,9 @@ const SignUpForm: NextPage<Props> = ({data, handleInputChange, setSelected, setE
     })
 
     const resJSON = await res.json()
-
+    
+    console.log(resJSON)
+    
     setIsLoading(false)
 
     if (resJSON.error) {

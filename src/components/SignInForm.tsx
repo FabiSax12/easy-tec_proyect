@@ -1,8 +1,9 @@
-import { ChangeEvent, Dispatch, SetStateAction, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { NextPage } from "next"
 import { useRouter } from "next/navigation"
-import { signIn } from "next-auth/react"
+import { signIn, useSession } from "next-auth/react"
 import { Button, Input, Link } from "@nextui-org/react"
+import useUserInfo from "@/store/user"
 
 interface Props {
   data: {
@@ -19,6 +20,18 @@ interface Props {
 const SignInForm: NextPage<Props> = ({data, handleInputChange, setSelected, setError}) => {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const user = useUserInfo((state) => state)
+  const {data: session, status} = useSession()
+
+  useEffect(() => {
+    setError("")
+    if (status === "authenticated") {
+      const {user: {email, id, lastname, name, token}} = session
+      user.setUser({ id: parseInt(id), email, name, lastname })
+      router.push("/principal")
+      setIsLoading(false)
+    }
+  }, [status])
 
   const onSignIn = async () => {
     setError("")
@@ -28,10 +41,11 @@ const SignInForm: NextPage<Props> = ({data, handleInputChange, setSelected, setE
       password: data.password,
       redirect: false
     })
-
-    setIsLoading(false)
-    console.log(res)
-    res?.error ? setError(res.error) : router.push("/")
+    
+    if (res?.error) {
+      setIsLoading(false)
+      setError(res.error)
+    }
   }
   
   return <form className="flex flex-col gap-4">
