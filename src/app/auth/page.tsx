@@ -55,27 +55,29 @@ export default function AuthPage() {
 
   return (
     <div className="flex flex-col gap-2 w-full items-center">
-      <Card className="w-[340px] h-[450px]">
-        <CardBody className="overflow-hidden">
-          <Tabs
-            fullWidth
-            size="md"
-            variant="underlined"
-            selectedKey={selected}
-            onSelectionChange={handleSelectionChange}
-          >
-            <Tab key="login" title="Login">
-              <SignInForm data={data} handleInputChange={handleInputChange} setSelected={setSelected} setError={setError} />
-            </Tab>
-            <Tab key="sign-up" title="Sign up">
-              <SignUpForm data={data} handleInputChange={handleInputChange} setSelected={setSelected} setError={setError} />
-            </Tab>
-          </Tabs>
-        </CardBody>
-      </Card>
-      {error && (
-        <p className="px-6 py-2 rounded-lg text-center text-sm bg-danger-500 text-white">{error}</p>
-      )}
+      <div className="h-[500px] w-[340px]">
+        <Card className="w-full h-full">
+          <CardBody className="overflow-hidden">
+            <Tabs
+              fullWidth
+              size="md"
+              variant="underlined"
+              selectedKey={selected}
+              onSelectionChange={handleSelectionChange}
+            >
+              <Tab key="login" title="Login">
+                <SignInForm data={data} handleInputChange={handleInputChange} setSelected={setSelected} setError={setError} />
+              </Tab>
+              <Tab key="sign-up" title="Sign up">
+                <SignUpForm data={data} handleInputChange={handleInputChange} setSelected={setSelected} setError={setError} />
+              </Tab>
+            </Tabs>
+            {error && (
+              <p className="mx-1 py-2 rounded-lg text-center text-sm bg-danger-500 text-white font-bold">{error}</p>
+            )}
+          </CardBody>
+        </Card>
+      </div>
     </div>
   )
 }
