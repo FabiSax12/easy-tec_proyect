@@ -1,14 +1,13 @@
 "use client"
 import { useEffect, useState } from "react"
-import { NextPage } from "next"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Tabs, Tab, Card, CardBody } from "@nextui-org/react"
 import SignUpForm from "@/components/SignUpForm"
 import SignInForm from "@/components/SignInForm"
 
-interface Props {}
+interface Props { }
 
-const Page: NextPage<Props> = () => {
+export default function AuthPage() {
   // Navigation
   const searchParams = useSearchParams()
   const pathname = usePathname()
@@ -23,7 +22,7 @@ const Page: NextPage<Props> = () => {
     lastname: "",
     password: "",
   })
-  
+
   // Functions
   const replaceSearchParams = (param: "login" | "sign-up") => {
     const newParams = new URLSearchParams(searchParams)
@@ -81,5 +80,3 @@ const Page: NextPage<Props> = () => {
     </div>
   )
 }
-
-export default Page

@@ -1,15 +1,12 @@
 import SectionCard from "@/components/SectionCard"
 import CoursesMainTable from "@/ui/nextui/Table/CoursesMainTable"
-import { NextPage } from "next"
 
 interface Props {
-  params: {id: string}
+  params: { id: string }
 }
 
-const SemestreDashboard: NextPage<Props> = ({params}) => {
+export default function Page({ params }: Props) {
   return (
-    <SectionCard><CoursesMainTable filter={{semester: params.id}}/></SectionCard>
+    <SectionCard><CoursesMainTable filter={{ semester: params.id }} /></SectionCard>
   )
 }
-
-export default SemestreDashboard

@@ -1,11 +1,7 @@
-import { NextPage } from "next"
+interface Props { }
 
-interface Props {}
-
-const ConfigPage: NextPage<Props> = () => {
+export default function ConfigurationPage() {
   return (
-    <div>Config</div>
+    <div> Configuration Page</div >
   )
 }
-
-export default ConfigPage

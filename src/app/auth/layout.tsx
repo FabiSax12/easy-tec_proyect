@@ -1,14 +1,14 @@
-import { ReactNode } from "react"
-import { NextPage } from "next"
+import type { Metadata } from "next"
 
-interface Props {
-  children: ReactNode
+export const metadata: Metadata = {
+  title: "Autenticación",
+  description: "",
 }
 
-const Layout: NextPage<Props> = ({children}) => {
+export default function Layout({ children }: Readonly<{
+  children: React.ReactNode
+}>) {
   return <main className="w-screen h-screen flex flex-col gap-3 justify-evenly items-center">
     {children}
   </main>
 }
-
-export default Layout
