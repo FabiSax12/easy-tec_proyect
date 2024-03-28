@@ -6,7 +6,7 @@ interface Props {
   className?: string
 }
 
-const SectionCard = ({title, children, className}: Props) => {
+export const SectionCard = ({ title, children, className }: Props) => {
   return (
     <section className={`bg-white px-6 py-2 rounded-lg ${className}`}>
       {
@@ -18,5 +18,3 @@ const SectionCard = ({title, children, className}: Props) => {
     </section>
   )
 }
-
-export default SectionCard

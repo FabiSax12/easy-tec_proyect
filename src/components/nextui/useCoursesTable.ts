@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react"
 import {User as Course, Selection, SortDescriptor} from "@nextui-org/react"
-import { courses, statusOptions } from "@/ui/nextui/Table/data"
+import { courses, statusOptions } from "@/components/nextui/data"
 
 type Course = typeof courses[0];
 

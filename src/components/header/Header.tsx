@@ -1,18 +1,15 @@
 "use client"
-import { NextPage } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import { signOut } from "next-auth/react"
 import useUserInfo from "@/store/user"
 import { Badge } from "@nextui-org/badge"
 import { Button } from "@nextui-org/react"
-import UserUI from "@/ui/nextui/User"
+import { UserUI } from "@/components"
 import { FaRegBell, FaGear } from "react-icons/fa6"
 import { MdLogout } from "react-icons/md"
 
-interface Props { }
-
-const Header: NextPage<Props> = () => {
+export const Header = () => {
   const user = useUserInfo((state) => state)
 
   return (
@@ -48,5 +45,3 @@ const Header: NextPage<Props> = () => {
     </header>
   )
 }
-
-export default Header

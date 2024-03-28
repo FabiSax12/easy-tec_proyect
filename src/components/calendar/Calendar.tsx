@@ -1,21 +1,21 @@
+"use client"
 import FullCalendar from "@fullcalendar/react"
 import dayGridPlugin from "@fullcalendar/daygrid"
-import interactionPlugin, {Draggable, DropArg} from "@fullcalendar/interaction"
+import interactionPlugin, { Draggable, DropArg } from "@fullcalendar/interaction"
 import timeGridPlugin from "@fullcalendar/timegrid"
-import { NextPage } from "next"
 
 interface eventInfo {
   timeText: string
-  event: {title: string}
+  event: { title: string }
 }
 
 const events = [
   { title: "Meeting", start: new Date().getDate() }
 ]
 
-interface Props {}
+interface Props { }
 
-const Calendar: NextPage<Props> = ({}) => {
+export const Calendar = () => {
   return (
     <FullCalendar
       themeSystem=''
@@ -30,14 +30,14 @@ const Calendar: NextPage<Props> = ({}) => {
       editable={true}
       droppable={true}
       selectMirror={true}
-      // dateClick={{}}
-      // drop={}
-      // eventClick={}
+    // dateClick={{}}
+    // drop={}
+    // eventClick={}
     />
   )
 }
 
-function renderEventContent(eventInfo: eventInfo) {
+export function renderEventContent(eventInfo: eventInfo) {
   return (
     <>
       <b>{eventInfo.timeText}</b>
@@ -45,5 +45,3 @@ function renderEventContent(eventInfo: eventInfo) {
     </>
   )
 }
-
-export default Calendar

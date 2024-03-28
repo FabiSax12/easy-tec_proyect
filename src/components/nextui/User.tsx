@@ -1,4 +1,4 @@
-import {User} from "@nextui-org/react"
+import { User } from "@nextui-org/react"
 
 interface Props {
   name: string | undefined
@@ -7,7 +7,7 @@ interface Props {
   avatarImage?: string | null
 }
 
-export default function UserUI({name, lastname, carrier, avatarImage}: Props) {
+export const UserUI = ({ name, lastname, carrier, avatarImage }: Props) => {
   return (
     <User
       name={`${name} ${lastname}`}

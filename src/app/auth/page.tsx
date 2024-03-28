@@ -1,9 +1,8 @@
 "use client"
 import { useEffect, useState } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { SignUpForm, SignInForm } from "@/components"
 import { Tabs, Tab, Card, CardBody } from "@nextui-org/react"
-import SignUpForm from "@/components/SignUpForm"
-import SignInForm from "@/components/SignInForm"
 
 interface Props { }
 

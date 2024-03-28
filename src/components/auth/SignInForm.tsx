@@ -1,5 +1,5 @@
+"use client"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import { NextPage } from "next"
 import { useRouter } from "next/navigation"
 import { signIn, useSession } from "next-auth/react"
 import { Button, Input, Link } from "@nextui-org/react"
@@ -17,16 +17,16 @@ interface Props {
   setError: Dispatch<SetStateAction<string>>
 }
 
-const SignInForm: NextPage<Props> = ({data, handleInputChange, setSelected, setError}) => {
+export const SignInForm = ({ data, handleInputChange, setSelected, setError }: Props) => {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const user = useUserInfo((state) => state)
-  const {data: session, status} = useSession()
+  const { data: session, status } = useSession()
 
   useEffect(() => {
     setError("")
     if (status === "authenticated") {
-      const {user: {email, id, lastname, name, token}} = session
+      const { user: { email, id, lastname, name, token } } = session
       user.setUser({ id: parseInt(id), email, name, lastname })
       router.push("/principal")
       setIsLoading(false)
@@ -41,18 +41,18 @@ const SignInForm: NextPage<Props> = ({data, handleInputChange, setSelected, setE
       password: data.password,
       redirect: false
     })
-    
+
     if (res?.error) {
       setIsLoading(false)
       setError(res.error)
     }
   }
-  
+
   return <form className="flex flex-col gap-4">
     <Input
-      isRequired 
-      label="Correo" 
-      placeholder="Ingrese su correo" 
+      isRequired
+      label="Correo"
+      placeholder="Ingrese su correo"
       type="email"
       value={data.email}
       onValueChange={(value: string) => handleInputChange("email", value)}
@@ -78,5 +78,3 @@ const SignInForm: NextPage<Props> = ({data, handleInputChange, setSelected, setE
     </div>
   </form>
 }
-
-export default SignInForm

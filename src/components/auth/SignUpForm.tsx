@@ -1,5 +1,5 @@
+"use client"
 import { Dispatch, SetStateAction, useState } from "react"
-import { NextPage } from "next"
 import { Button, Input, Link } from "@nextui-org/react"
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
   setError: Dispatch<SetStateAction<string>>
 }
 
-const SignUpForm: NextPage<Props> = ({data, handleInputChange, setSelected, setError}) => {
+export const SignUpForm = ({ data, handleInputChange, setSelected, setError }: Props) => {
   const [isLoading, setIsLoading] = useState(false)
 
   const onSignUp = async () => {
@@ -29,16 +29,16 @@ const SignUpForm: NextPage<Props> = ({data, handleInputChange, setSelected, setE
     })
 
     const resJSON = await res.json()
-    
+
     console.log(resJSON)
-    
+
     setIsLoading(false)
 
     if (resJSON.error) {
       setError(resJSON.error)
     }
   }
-  
+
   return <form className="flex flex-col gap-4 h-[300px]" onSubmit={onSignUp}>
     <Input
       isRequired
@@ -86,5 +86,3 @@ const SignUpForm: NextPage<Props> = ({data, handleInputChange, setSelected, setE
     </div>
   </form>
 }
-
-export default SignUpForm

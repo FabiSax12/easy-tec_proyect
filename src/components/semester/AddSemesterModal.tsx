@@ -1,19 +1,18 @@
+"use client"
 import { useState, useEffect, ChangeEvent } from "react"
-import { NextPage } from "next"
+import { Select, NumberInput } from "@/components"
 import useUserInfo from "@/store/user"
 import { formatDate } from "@/utils/FormatDate"
-import { Select } from "./Select"
-import NumberInput from "./NumberInput"
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react"
 
-const data = [{label: "Semestre", value: "S"}, {label: "Verano", value: "V"}]
+const data = [{ label: "Semestre", value: "S" }, { label: "Verano", value: "V" }]
 
 interface Props {
   isOpen: boolean;
   onOpenChange: () => void;
 }
 
-const ModalSemestre: NextPage<Props> = ({ isOpen, onOpenChange }) => {
+export const ModalSemestre = ({ isOpen, onOpenChange }: Props) => {
   const [modality, setModality] = useState("")
   const [title, setTitle] = useState("")
   const [id, setId] = useState(0)
@@ -21,16 +20,16 @@ const ModalSemestre: NextPage<Props> = ({ isOpen, onOpenChange }) => {
   const [endDate, setEndDate] = useState("")
   const [loading, setLoading] = useState(false)
 
-  useEffect(()=>{
+  useEffect(() => {
     if (modality === "") {
       setTitle("")
       setId(0)
     }
-    else if(modality === "S") {
+    else if (modality === "S") {
       setTitle("Semestre")
       setId(1)
     }
-    else if(modality === "V") {
+    else if (modality === "V") {
       setTitle("Verano")
       setId(2024)
     }
@@ -47,7 +46,7 @@ const ModalSemestre: NextPage<Props> = ({ isOpen, onOpenChange }) => {
       endDate: formatDate(endDate),
     }
     try {
-      setTimeout(() => {}, 2000)
+      setTimeout(() => { }, 2000)
       addSemester(semestreData)
       setModality("")
       setStartDate("")
@@ -154,5 +153,3 @@ const ModalSemestre: NextPage<Props> = ({ isOpen, onOpenChange }) => {
     </Modal>
   )
 }
-
-export default ModalSemestre

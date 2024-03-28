@@ -8,7 +8,7 @@ import {
 import { FaPlus, FaChevronDown } from "react-icons/fa6"
 import { HiDotsVertical } from "react-icons/hi"
 import { LuSearch } from "react-icons/lu"
-import { columns, courses, statusOptions } from "@/ui/nextui/Table/data"
+import { columns, courses, statusOptions } from "@/components/nextui/data"
 import { capitalize } from "@/utils/Capitalize"
 import { useCourses } from "./useCoursesTable"
 
@@ -24,13 +24,13 @@ interface Props {
   filter?: { semester?: string; state?: string };
 }
 
-const CoursesMainTable: React.FC<Props> = ({ filter }: Props) => {
+export const CoursesMainTable = ({ filter }: Props) => {
   const {
     filterValue, selectedKeys, visibleColumns, setFilterValue, setSelectedKeys, setVisibleColumns,
     statusFilter, setStatusFilter, semesterFilter, setSemesterFilter, rowsPerPage, setRowsPerPage,
     sortDescriptor, setSortDescriptor, page, setPage, items, onClear, onNextPage, onPreviousPage,
     onRowsPerPageChange, onSearchChange, pages
-  } = useCourses({filter})
+  } = useCourses({ filter })
 
   const hasSearchFilter = Boolean(filterValue)
 
@@ -82,52 +82,52 @@ const CoursesMainTable: React.FC<Props> = ({ filter }: Props) => {
       const cellValue = course[columnKey as keyof Course]
 
       switch (columnKey) {
-      case "name":
-        return (
-          <Course
-            // avatarProps={{radius: "lg", src: course.avatar}}
-            description={course.teacher}
-            name={cellValue}
-          >
-            {course.teacher}
-          </Course>
-        )
-      case "state":
-        return (
-          <Chip
-            className="capitalize"
-            color={statusColorMap[course.state]}
-            size="sm"
-            variant="flat"
-          >
-            {cellValue}
-          </Chip>
-        )
-      case "actions":
-        return (
-          <div className="relative flex justify-end items-center gap-2">
-            <Dropdown>
-              <DropdownTrigger>
-                <Button isIconOnly size="sm" variant="light">
-                  <HiDotsVertical className="text-default-300" />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu>
-                <DropdownItem color="primary" variant="light">
+        case "name":
+          return (
+            <Course
+              // avatarProps={{radius: "lg", src: course.avatar}}
+              description={course.teacher}
+              name={cellValue}
+            >
+              {course.teacher}
+            </Course>
+          )
+        case "state":
+          return (
+            <Chip
+              className="capitalize"
+              color={statusColorMap[course.state]}
+              size="sm"
+              variant="flat"
+            >
+              {cellValue}
+            </Chip>
+          )
+        case "actions":
+          return (
+            <div className="relative flex justify-end items-center gap-2">
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button isIconOnly size="sm" variant="light">
+                    <HiDotsVertical className="text-default-300" />
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu>
+                  <DropdownItem color="primary" variant="light">
                     Abrir
-                </DropdownItem>
-                <DropdownItem color="success" variant="light">
+                  </DropdownItem>
+                  <DropdownItem color="success" variant="light">
                     Editar
-                </DropdownItem>
-                <DropdownItem className="text-danger" color="danger" variant="solid">
+                  </DropdownItem>
+                  <DropdownItem className="text-danger" color="danger" variant="solid">
                     Eliminar
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </div>
-        )
-      default:
-        return cellValue
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </div>
+          )
+        default:
+          return cellValue
       }
     },
     []
@@ -288,6 +288,3 @@ const CoursesMainTable: React.FC<Props> = ({ filter }: Props) => {
     </Table>
   )
 }
-
-export default CoursesMainTable
-
