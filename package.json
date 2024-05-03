@@ -30,6 +30,7 @@
     "zustand": "^4.5.1"
   },
   "devDependencies": {
+    "@auth/prisma-adapter": "^1.5.1",
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^20",
     "@types/react": "^18",
