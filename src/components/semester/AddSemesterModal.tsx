@@ -1,66 +1,65 @@
-import { useState, useEffect } from 'react';
-import { NextPage } from 'next';
-import useUserInfo from "@/store/user";
-import { formatDate } from '@/utils/FormatDate';
-import { Select } from './Select';
-import NumberInput from './NumberInput';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react";
+"use client"
+import { useState, useEffect, ChangeEvent } from "react"
+import { Select, NumberInput } from "@/components"
+import useUserInfo from "@/store/user"
+import { formatDate } from "@/utils/FormatDate"
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react"
 
-const data = [{label: "Semestre", value: "S"}, {label: "Verano", value: "V"}]
+const data = [{ label: "Semestre", value: "S" }, { label: "Verano", value: "V" }]
 
 interface Props {
   isOpen: boolean;
   onOpenChange: () => void;
 }
 
-const ModalSemestre: NextPage<Props> = ({ isOpen, onOpenChange }) => {
-  const [modality, setModality] = useState("");
-  const [title, setTitle] = useState("");
-  const [id, setId] = useState(0);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [loading, setLoading] = useState(false);
+export const ModalSemestre = ({ isOpen, onOpenChange }: Props) => {
+  const [modality, setModality] = useState("")
+  const [title, setTitle] = useState("")
+  const [id, setId] = useState(0)
+  const [startDate, setStartDate] = useState("")
+  const [endDate, setEndDate] = useState("")
+  const [loading, setLoading] = useState(false)
 
-  useEffect(()=>{
+  useEffect(() => {
     if (modality === "") {
       setTitle("")
       setId(0)
     }
-    else if(modality === "S") {
+    else if (modality === "S") {
       setTitle("Semestre")
       setId(1)
     }
-    else if(modality === "V") {
+    else if (modality === "V") {
       setTitle("Verano")
       setId(2024)
     }
   }, [modality])
 
-  const addSemester = useUserInfo((state) => state.addSemester);
+  const addSemester = useUserInfo((state) => state.addSemester)
 
   const onAccept = async () => {
-    setLoading(true);
+    setLoading(true)
     const semestreData = {
       title: `${title} ${id}`,
       id: `${modality}-${id}`,
       startDate: formatDate(startDate),
       endDate: formatDate(endDate),
-    };
-    try {
-      setTimeout(() => {}, 2000)
-      addSemester(semestreData);
-      setModality("");
-      setStartDate("");
-      setEndDate("");
-      onOpenChange();
-    } catch (error) {
-      console.error("Error al añadir semestre:", error);
-    } finally {
-      setLoading(false);
     }
-  };
+    try {
+      setTimeout(() => { }, 2000)
+      addSemester(semestreData)
+      setModality("")
+      setStartDate("")
+      setEndDate("")
+      onOpenChange()
+    } catch (error) {
+      console.error("Error al añadir semestre:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
-  const canAddSemester = title && startDate && endDate;
+  const canAddSemester = title && startDate && endDate
 
   return (
     <Modal
@@ -74,7 +73,7 @@ const ModalSemestre: NextPage<Props> = ({ isOpen, onOpenChange }) => {
             opacity: 1,
             transition: {
               duration: 0.3,
-              ease: 'easeOut',
+              ease: "easeOut",
             },
           },
           exit: {
@@ -82,7 +81,7 @@ const ModalSemestre: NextPage<Props> = ({ isOpen, onOpenChange }) => {
             opacity: 0,
             transition: {
               duration: 0.2,
-              ease: 'easeIn',
+              ease: "easeIn",
             },
           },
         },
@@ -102,7 +101,7 @@ const ModalSemestre: NextPage<Props> = ({ isOpen, onOpenChange }) => {
                   placeholder="Modalidad"
                   variant="bordered"
                   value={title}
-                  onChange={(e) => setModality(e.target.value)}
+                  onChange={(e: ChangeEvent<HTMLSelectElement>) => setModality(e.target.value)}
                 />
                 {
                   modality !== "" ? (
@@ -129,7 +128,7 @@ const ModalSemestre: NextPage<Props> = ({ isOpen, onOpenChange }) => {
                 type="date"
                 variant="bordered"
                 value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setStartDate(e.target.value)}
               />
               <Input
                 label="Fecha de finalización"
@@ -137,7 +136,7 @@ const ModalSemestre: NextPage<Props> = ({ isOpen, onOpenChange }) => {
                 type="date"
                 variant="bordered"
                 value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setEndDate(e.target.value)}
               />
             </ModalBody>
             <ModalFooter>
@@ -145,14 +144,12 @@ const ModalSemestre: NextPage<Props> = ({ isOpen, onOpenChange }) => {
                 Cancelar
               </Button>
               <Button color="primary" onPress={onAccept} isDisabled={!canAddSemester || loading} >
-                {loading ? 'Añadiendo...' : 'Añadir'}
+                {loading ? "Añadiendo..." : "Añadir"}
               </Button>
             </ModalFooter>
           </>
         )}
       </ModalContent>
     </Modal>
-  );
-};
-
-export default ModalSemestre;
+  )
+}

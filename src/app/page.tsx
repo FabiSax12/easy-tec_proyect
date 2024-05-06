@@ -1,17 +1,5 @@
-import Calendar from "@/components/Calendar";
-import SectionCard from "@/components/SectionCard";
-import Semestres from "@/components/Semestres";
-import CoursesMainTable from "@/ui/nextui/Table/CoursesMainTable";
+import { redirect } from "next/navigation"
 
-export default function Home() {
-  return (
-    <main className="home-main_grid gap-10">
-      <SectionCard title="Semestres" className="h-min">
-        <Semestres/>
-      </SectionCard>
-      <SectionCard title="Cursos">
-        <CoursesMainTable />
-      </SectionCard>
-    </main>
-  );
+export default function RootPage() {
+  redirect("/principal")
 }

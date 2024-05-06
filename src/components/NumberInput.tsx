@@ -1,4 +1,4 @@
-import { NextPage } from 'next'
+import { ChangeEvent } from "react"
 
 interface Props {
   className?: string
@@ -11,8 +11,8 @@ interface Props {
   label?: string | number
 }
 
-const NumberInput: NextPage<Props> = (props) => {
-  const validateValue = (e: any) => {
+export const NumberInput = (props: Props) => {
+  const validateValue = (e: ChangeEvent<HTMLInputElement>) => {
     const new_value = Number(e.target.value)
     if (new_value >= 1) {
       props.setValue(new_value)
@@ -26,7 +26,7 @@ const NumberInput: NextPage<Props> = (props) => {
       >
         {props.label}
       </label>
-      
+
       <input
         className="w-full outline-none text-sm h-min"
         type="number"
@@ -39,5 +39,3 @@ const NumberInput: NextPage<Props> = (props) => {
     </div>
   )
 }
-
-export default NumberInput
