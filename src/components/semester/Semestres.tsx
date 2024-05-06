@@ -13,8 +13,8 @@ export const Semestres = ({ className }: Props) => {
 
   return (
     <>
-      <div className='grid grid-cols-2 gap-2 w-max'>
-        {semestres.map((semestre, idx) => (
+      <div className={`${className}`}>
+        {semestres.map((semestre) => (
           <SemestreButton
             key={semestre.id}
             id={semestre.id}
