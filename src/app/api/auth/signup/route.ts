@@ -12,6 +12,14 @@ type Data = {
 export async function POST(req: Request) {
   const data: Data = await req.json()
 
+  if (data.email.split("@")[1] !== "estudiantec.cr") {
+    return NextResponse.json({
+      error: "El correo debe ser de estudiantec.cr",
+    }, {
+      status: 400
+    })
+  }
+
   const userFound = await db.user.findUnique({
     where: {
       email: data.email
