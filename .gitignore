@@ -8,6 +8,7 @@ planner.md
 /.pnp
 .pnp.js
 .yarn/install-state.gz
+/docker
 
 # testing
 /coverage
@@ -30,7 +31,7 @@ yarn-error.log*
 
 # local env files
 .env*.local
-.env*
+.env
 
 # vercel
 .vercel
