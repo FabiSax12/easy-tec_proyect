@@ -11,12 +11,12 @@ interface Props {
 export const SemestreButton = ({ title, id, startDate, endDate }: Props) => {
   return (
     <Link
-      href={`semestre/${id}`}
-      className="min-w-36 px-4 py-2 flex flex-col border-b-2 border-b-default-200"
+      href={`/principal/semestre/${id}`}
+      className="min-w-36 px-4 py-2 flex flex-col border-b-2 border-b-default-200 group"
     >
-      <h3 className="w-full flex items-center justify-between hover:text-primary">
+      <h3 className="w-full flex items-center justify-between group-hover:text-primary transition-colors ease-in">
         {title}
-        <FaArrowUpRightFromSquare className="text-[0.7rem] hover:text-primary" />
+        <FaArrowUpRightFromSquare className="text-[0.7rem]" />
       </h3>
       <p className="text-[0.7rem]">{`${startDate} - ${endDate}`}</p>
 
