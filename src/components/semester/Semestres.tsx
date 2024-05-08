@@ -5,10 +5,6 @@ import { formatDate } from "@/utils"
 import { useDisclosure } from "@nextui-org/react"
 import { SemestreButton, AddSemesterButton, ModalSemestre } from "@/components"
 
-interface Props {
-  className?: string
-}
-
 interface AcademicPeriod {
   id: number
   type: string
@@ -18,7 +14,7 @@ interface AcademicPeriod {
   userId: number
 }
 
-export const Semestres = ({ className }: Props) => {
+export const Semestres = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const id = useUserInfo((user) => user.id)
   const [academicPeriods, setAcademicPeriods] = useState<AcademicPeriod[]>([])
@@ -41,8 +37,7 @@ export const Semestres = ({ className }: Props) => {
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-2 w-max">
-
+      <div>
         {academicPeriods.map((period) => (
           <SemestreButton
             key={period.id}
