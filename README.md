@@ -34,8 +34,9 @@ npm install
 
 3. **Configura el Entorno:**
 Copia el archivo `.env.example` y renómbralo a `.env`. Aquí puedes configurar variables de entorno como la clave secreta, la URL de la base de datos, etc.
+Necesitaras un token secreto para el `NEXTAUTH_SECRET`, puedes ejecutar `openssl rand -base64 32` en tu terminal para obtener un token nuevo.
 
-4. **Levantar base de datos en un contenedor de docker:**
+4. **Levantar la Base de Datos en un Contenedor de Docker:**
 Para facilitar el desarrollo, utilizamos Docker para ejecutar la base de datos en un contenedor. Ejecuta el siguiente comando para construir y levantar el contenedor de la base de datos PostgreSQL:
 
 ```bash
@@ -49,7 +50,10 @@ Una vez que la base de datos esté en funcionamiento, ejecuta el siguiente coman
 npx prisma migrate dev
 ```
 
-6. **Inicia el Servidor de Desarrollo:**
+6. **Activar la Semilla de Datos:**
+Si deseas llenar la base de datos con alguna información de ejemplo para el desarollo, puedes acceder a [http://localhost:3000/api/seed](http://localhost:3000/api/seed). Esto creará algunos usuarios, periodos acádemicos y cursos.
+
+7. **Inicia el Servidor de Desarrollo:**
 Una vez que todas las dependencias estén instaladas y el entorno esté configurado, puedes iniciar el servidor de desarrollo:
 
 ```bash
