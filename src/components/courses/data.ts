@@ -1,18 +1,18 @@
 const columns = [
-  {name: "ID", uid: "id", sortable: true},
-  {name: "NOMBRE", uid: "name", sortable: true},
-  {name: "CRÉDITOS", uid: "credits", sortable: true},
-  {name: "SEMESTRE", uid: "semester", sortable: true},
-  {name: "ESTADO", uid: "state", sortable: true},
-  {name: "ACCIONES", uid: "actions"}
+  { name: "ID", uid: "id", sortable: true },
+  { name: "NOMBRE", uid: "name", sortable: true },
+  { name: "CRÉDITOS", uid: "credits", sortable: true },
+  { name: "PERIODO", uid: "period", sortable: true },
+  { name: "ESTADO", uid: "state", sortable: true },
+  { name: "ACCIONES", uid: "actions" }
   // {name: "INSTRUCTOR", uid: "instructor",sortable: true},
 ]
 
 
 const statusOptions = [
-  {name: "Pendiente", uid: "pendiente"},
-  {name: "Cursando", uid: "cursando"},
-  {name: "Aprobado", uid: "aprobado"}
+  { name: "Pendiente", uid: "pendiente" },
+  { name: "Cursando", uid: "cursando" },
+  { name: "Aprobado", uid: "aprobado" }
 ]
 
 const courses = [
@@ -154,4 +154,4 @@ const courses = [
 ]
 
 
-export {columns, courses, statusOptions}
+export { columns, courses, statusOptions }

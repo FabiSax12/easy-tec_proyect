@@ -1,12 +1,12 @@
+"use client"
 import React, { useCallback, useMemo, useState } from "react"
-import {User as Course, Selection, SortDescriptor} from "@nextui-org/react"
-import { courses, statusOptions } from "@/components/nextui/data"
+import { Selection, SortDescriptor } from "@nextui-org/react"
+import { statusOptions } from "@/components/courses/data"
+import { Course } from "@prisma/client"
 
-type Course = typeof courses[0];
+const INITIAL_VISIBLE_COLUMNS = ["name", "credits", "period", "state", "actions"]
 
-const INITIAL_VISIBLE_COLUMNS = ["name", "credits", "semester", "state", "actions"]
-
-export const useCourses = ({filter}: {filter?: { semester?: string, state?: string }}) => {
+export const useCourses = ({ filter, courses }: { filter?: { period?: string, state?: string }, courses: Course[] }) => {
   const [filterValue, setFilterValue] = useState("")
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]))
   const [visibleColumns, setVisibleColumns] = useState<Selection>(new Set(INITIAL_VISIBLE_COLUMNS))
@@ -14,7 +14,7 @@ export const useCourses = ({filter}: {filter?: { semester?: string, state?: stri
     filter?.state ? new Set(filter.state) : "all"
   )
   const [semesterFilter, setSemesterFilter] = useState<string | "all">(
-    filter?.semester ? filter.semester : "all"
+    filter?.period ? filter.period : "all"
   )
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
@@ -43,7 +43,7 @@ export const useCourses = ({filter}: {filter?: { semester?: string, state?: stri
     }
     if (semesterFilter !== "all") {
       filteredCourses = filteredCourses.filter(
-        (course) => semesterFilter == course.semester
+        (course) => semesterFilter == `${course.academicPeriodId}`
       )
     }
 
