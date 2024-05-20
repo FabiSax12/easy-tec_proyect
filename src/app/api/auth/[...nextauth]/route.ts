@@ -8,21 +8,21 @@ const authOptions: AuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: {label: "Email", type: "text", placeholder: "user@estudiantec.cr"},
-        password: {label: "Contraseña", type: "password"}
+        email: { label: "Email", type: "text", placeholder: "user@estudiantec.cr" },
+        password: { label: "Contraseña", type: "password" }
       },
       async authorize(credentials, req) {
-        if(credentials) {
+        if (credentials) {
           const userFound = await db.user.findUnique({
             where: {
               email: credentials.email
             }
           })
 
-          if(!userFound) return null
+          if (!userFound) return null
 
           const matchedPasswords = await bcrypt.compare(credentials.password, userFound.password)
-          if(!matchedPasswords) return null
+          if (!matchedPasswords) return null
 
           return {
             id: userFound.id.toString(),
@@ -39,16 +39,21 @@ const authOptions: AuthOptions = {
     signIn: "/auth"
   },
   callbacks: {
-    async jwt({ token, user }) {
-      return { ...token, ...user }
-    },
     async session({ session, token }) {
-      session.user = token as any
+      if (token) {
+        session.user.id = token.userId
+      }
       return session
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.userId = user.id
+      }
+      return token
     }
   }
 }
 
 const handler = NextAuth(authOptions)
 
-export {handler as GET, handler as POST}
+export { handler as GET, handler as POST }
