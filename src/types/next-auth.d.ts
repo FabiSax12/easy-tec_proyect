@@ -10,7 +10,7 @@ declare module "next-auth" {
       lastname: string;
       carrier: string | null;
       avatar: string | null;
-    } & DefaultSession["user"];
+    }
   }
 
   interface User {
