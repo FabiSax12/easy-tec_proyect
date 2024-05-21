@@ -1,13 +1,19 @@
+import { Suspense } from "react"
 import { CoursesMainTable, SectionCard, Semestres } from "@/components"
+import { Spinner } from "@/components"
 
-export default function Home() {
+export default async function Home() {
   return (
     <main className="home-main_grid gap-10">
       <SectionCard title="Semestres" className="h-min">
-        <Semestres />
+        <Suspense fallback={<Spinner />}>
+          <Semestres />
+        </Suspense>
       </SectionCard>
       <SectionCard title="Cursos">
-        <CoursesMainTable />
+        <Suspense fallback={<Spinner />}>
+          <CoursesMainTable />
+        </Suspense>
       </SectionCard>
     </main>
   )
