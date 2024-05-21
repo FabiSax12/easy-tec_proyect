@@ -1,9 +1,11 @@
-"use client"
-import { useEffect, useState } from "react"
-import useUserInfo from "@/store/user"
+// "use client"
+// import { useEffect, useState } from "react"
+// import useUserInfo from "@/store/user"
+// import { useDisclosure } from "@nextui-org/react"
 import { formatDate } from "@/utils"
-import { useDisclosure } from "@nextui-org/react"
 import { SemestreButton, AddSemesterButton, ModalSemestre } from "@/components"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions"
 
 interface AcademicPeriod {
   id: number
@@ -14,43 +16,31 @@ interface AcademicPeriod {
   userId: number
 }
 
-export const Semestres = () => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const id = useUserInfo((user) => user.id)
-  const [academicPeriods, setAcademicPeriods] = useState<AcademicPeriod[]>([])
+export const Semestres = async () => {
+  const session = await getServerSession(authOptions)
 
-  useEffect(() => {
-    const fetchAcademicPeriods = async () => {
-      try {
-        const periods = await fetch(`/api/academic-periods/${id}`)
-        const data = await periods.json()
-        console.log(data)
-        setAcademicPeriods(data)
-      } catch (error) {
-        console.error(error)
-      }
-    }
+  const res = await fetch(`http://localhost:3000/api/academic-periods/${session?.user.id}`)
+  const academicPeriods: AcademicPeriod[] = await res.json()
 
-    if (id) fetchAcademicPeriods()
-
-  }, [id])
+  console.log(academicPeriods)
 
   return (
     <>
       <div>
-        {academicPeriods.map((period) => (
-          <SemestreButton
-            key={period.id}
-            id={period.id.toString()}
-            title={`${period.type} ${period.typeId}`}
-            startDate={formatDate(period.startDate.toString())}
-            endDate={formatDate(period.endDate.toString())}
-          />
-        ))}
-
-        <AddSemesterButton onPress={onOpen} />
+        {
+          academicPeriods ? academicPeriods.map((period) => (
+            <SemestreButton
+              key={period.id}
+              id={period.id.toString()}
+              title={`${period.type} ${period.typeId}`}
+              startDate={formatDate(period.startDate.toString())}
+              endDate={formatDate(period.endDate.toString())}
+            />
+          )) : null
+        }
+        {/* <AddSemesterButton onPress={onOpen} /> */}
       </div>
-      <ModalSemestre isOpen={isOpen} onOpenChange={onOpenChange} />
+      {/* <ModalSemestre isOpen={isOpen} onOpenChange={onOpenChange} /> */}
     </>
   )
 }
