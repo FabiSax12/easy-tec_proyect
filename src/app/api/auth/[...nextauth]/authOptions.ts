@@ -29,6 +29,7 @@ export const authOptions: AuthOptions = {
             email: userFound.email,
             name: userFound.name,
             lastname: userFound.lastname,
+            carrier: userFound.carrier,
             avatar: userFound.avatar
           }
         }
@@ -42,14 +43,25 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async session({ session, token }) {
       if (token) {
-        session.user.id = token.id
-        session.user.image = token.avatar
+        session.user = {
+          id: token.id,
+          email: token.email,
+          name: token.name,
+          lastname: token.lastname,
+          carrier: token.carrier,
+          avatar: token.avatar
+        }
       }
       return session
     },
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+        token.lastname = user.lastname;
+        token.carrier = user.carrier;
+        token.avatar = user.avatar;
       }
       return token
     }
