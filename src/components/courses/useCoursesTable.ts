@@ -43,7 +43,7 @@ export const useCourses = ({ filter, courses }: { filter?: { period?: string, st
     }
     if (semesterFilter !== "all") {
       filteredCourses = filteredCourses.filter(
-        (course) => semesterFilter == `${course.academicPeriodId}`
+        (course) => semesterFilter == `${course.period}`
       )
     }
 
