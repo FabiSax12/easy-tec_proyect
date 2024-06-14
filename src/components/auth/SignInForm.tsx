@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation"
 import { signIn, useSession } from "next-auth/react"
 import { SignInInputs } from "@/components"
 import { Button, Link } from "@nextui-org/react"
-import useUserInfo from "@/store/user"
 
 interface Props {
   data: {
@@ -19,7 +18,6 @@ interface Props {
 export const SignInForm = ({ data, handleInputChange, setSelected, setError }: Props) => {
   // Hooks
   const router = useRouter()
-  const user = useUserInfo((state) => state)
   const { data: session, status } = useSession()
 
   // State
@@ -33,8 +31,6 @@ export const SignInForm = ({ data, handleInputChange, setSelected, setError }: P
   // Functions
   const handleAuthenticatedUser = () => {
     if (status === "authenticated") {
-      const { user: { email, id, lastname, name } } = session
-      user.setUser({ id: parseInt(id), email, name, lastname })
       router.push("/principal")
       setIsLoading(false)
     }

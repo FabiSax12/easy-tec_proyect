@@ -1,7 +1,6 @@
 "use client"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { Course } from "@prisma/client"
-import useUserInfo from "@/store/user"
 import {
   columns, statusOptions, useCourses,
   TableActionsMenu, TableBottomContent, TableFilterOption
@@ -12,6 +11,7 @@ import {
 } from "@nextui-org/react"
 import { FaPlus } from "react-icons/fa6"
 import { LuSearch } from "react-icons/lu"
+import { useSession } from "next-auth/react"
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
   aprobado: "success",
@@ -24,7 +24,8 @@ interface Props {
 }
 
 export const CoursesMainTable = ({ filter }: Props) => {
-  const userId = useUserInfo((user) => user.id)
+  const { data } = useSession()
+  const userId = data?.user?.id
   const [courses, setCourses] = useState<Course[]>([])
   const {
     filterValue, selectedKeys, visibleColumns, setSelectedKeys, setVisibleColumns, statusFilter,
