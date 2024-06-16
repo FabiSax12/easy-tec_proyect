@@ -2,15 +2,8 @@ import { getServerSession } from "next-auth"
 import { formatDate } from "@/utils"
 import { SemestreButton, AddSemesterButton } from "@/components"
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions"
+import { AcademicPeriod } from "@/interfaces/api-data/academic-period"
 
-interface AcademicPeriod {
-  id: number
-  type: string
-  typeId: number
-  startDate: Date
-  endDate: Date
-  userId: number
-}
 
 export const Semestres = async () => {
   const session = await getServerSession(authOptions)
