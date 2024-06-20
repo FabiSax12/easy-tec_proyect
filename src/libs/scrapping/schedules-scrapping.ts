@@ -90,13 +90,23 @@ async function getSchedule(campus: string, carrier: string, period: string, cred
       let dataRow: Partial<ScheduleRow> = {}
 
       cells.forEach((cell, index) => {
-        console.log(cell.innerText)
         switch (headers[index]) {
           case "Código": dataRow.code = cell.innerText
             break;
           case "Materia": dataRow.subject = cell.innerText
             break;
-          case "Horario": dataRow.schedule = cell.innerText
+          case "Horario":
+            const schedule = cell.innerText.split(" - ")
+            const day = schedule[0].slice(0, 3)
+            const times = schedule[1].split(":")
+            const hour1 = times[0] + ":" + times[1]
+            const hour2 = times[2] + ":" + times[3]
+
+            dataRow.schedule = {
+              day,
+              start: hour1,
+              end: hour2
+            }
             break;
           case "Aula": dataRow.classroom = cell.innerText
             break;
@@ -121,11 +131,42 @@ async function getSchedule(campus: string, carrier: string, period: string, cred
       return dataRow;
     });
 
-    return data;
+    // Combine rows with the same code
+    const combinedData: Partial<ScheduleRow>[] = [];
+
+    data.forEach(row => {
+      let existingRow = combinedData.find(item => item.code === row.code && item.group === row.group);
+
+      if (existingRow) {
+        existingRow.teachers = existingRow.teachers || [];
+        existingRow.schedules = existingRow.schedules || [];
+        if (row.teacher && !existingRow.teachers.includes(row.teacher)) {
+          existingRow.teachers.push(row.teacher);
+        }
+
+        if (row.schedule && !existingRow.schedules.some(schedule => {
+          return row.schedule?.day === schedule.day && row.schedule.start === schedule.start
+        })) {
+          console.log(existingRow.schedules, row.schedule)
+          existingRow.schedules.push(row.schedule);
+        }
+      } else {
+        const newRow = {
+          ...row,
+          teachers: row.teacher ? [row.teacher] : [],
+          schedules: row.schedule ? [row.schedule] : []
+        };
+        combinedData.push(newRow);
+      }
+    });
+
+    return combinedData;
   });
 
   await browser.close();
   return json
 }
+
+getSchedule("SJ", "AU", "2024_S_2", { email: "f.vargas.1@estudiantec.cr", password: "Fabi12TEC*" })
 
 export { getSchedule }
