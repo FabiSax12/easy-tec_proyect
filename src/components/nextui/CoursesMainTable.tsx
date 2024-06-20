@@ -1,10 +1,8 @@
 "use client"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
+import { useCourses } from "@/hooks/useCoursesTable"
 import { Course } from "@prisma/client"
-import {
-  columns, statusOptions, useCourses,
-  TableActionsMenu, TableBottomContent, TableFilterOption
-} from "@/components"
+import { TableActionsMenu, TableBottomContent, TableFilterOption } from "@/components"
 import {
   Table, TableHeader, TableColumn, TableBody, TableRow,
   TableCell, Input, Button, Chip, ChipProps
@@ -12,6 +10,22 @@ import {
 import { FaPlus } from "react-icons/fa6"
 import { LuSearch } from "react-icons/lu"
 import { useSession } from "next-auth/react"
+
+const columns = [
+  { name: "ID", uid: "id", sortable: true },
+  { name: "NOMBRE", uid: "name", sortable: true },
+  { name: "CRÉDITOS", uid: "credits", sortable: true },
+  { name: "PERIODO", uid: "period", sortable: true },
+  { name: "ESTADO", uid: "state", sortable: true },
+  { name: "ACCIONES", uid: "actions" }
+  // {name: "INSTRUCTOR", uid: "instructor",sortable: true},
+]
+
+const statusOptions = [
+  { name: "Pendiente", uid: "pendiente" },
+  { name: "Cursando", uid: "cursando" },
+  { name: "Aprobado", uid: "aprobado" }
+]
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
   aprobado: "success",

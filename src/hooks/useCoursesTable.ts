@@ -1,8 +1,13 @@
 "use client"
 import React, { useCallback, useMemo, useState } from "react"
 import { Selection, SortDescriptor } from "@nextui-org/react"
-import { statusOptions } from "@/components/courses/data"
 import { Course } from "@prisma/client"
+
+const statusOptions = [
+  { name: "Pendiente", uid: "pendiente" },
+  { name: "Cursando", uid: "cursando" },
+  { name: "Aprobado", uid: "aprobado" }
+]
 
 const INITIAL_VISIBLE_COLUMNS = ["name", "credits", "period", "state", "actions"]
 
