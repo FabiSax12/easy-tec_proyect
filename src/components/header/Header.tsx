@@ -10,10 +10,10 @@ export const Header = async () => {
   const user = session?.user
 
   return (
-    <header className="w-full h-14 px-32 flex items-center justify-between sticky top-0 left-0 z-50 bg-white backdrop-blur-sm backdrop-saturate-100 shadow-md text-black">
+    <header className="w-full h-14 px-4 lg:px-16 flex items-center justify-between sticky top-0 left-0 z-50 bg-white backdrop-blur-sm backdrop-saturate-100 shadow-md text-black">
       <Link href="/principal" className="w-max flex items-center gap-4 select-none">
         <Image src="/logo.png" alt="Planner logo" width={50} height={50} className="w-7" />
-        <h1 className="text-2xl">Easy TEC</h1>
+        <h1 className="text-lg lg:text-2xl">Easy TEC</h1>
       </Link>
 
       <span className="w-max flex items-center gap-4 ">

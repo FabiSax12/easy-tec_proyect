@@ -4,7 +4,7 @@ import { Spinner } from "@/components"
 
 export default async function Home() {
   return (
-    <main className="home-main_grid gap-10">
+    <div className="home-main_grid gap-10">
       <SectionCard title="Semestres" className="h-min">
         <Suspense fallback={<Spinner />}>
           <Semestres />
@@ -15,6 +15,6 @@ export default async function Home() {
           <CoursesMainTable />
         </Suspense>
       </SectionCard>
-    </main>
+    </div>
   )
 }

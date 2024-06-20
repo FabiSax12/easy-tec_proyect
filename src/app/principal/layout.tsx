@@ -7,7 +7,7 @@ export default function RootLayout({
 }>) {
   return <>
     <Header />
-    <main className="h-full px-32 py-4">
+    <main className="h-full p-4 lg:px-16">
       {children}
     </main>
   </>

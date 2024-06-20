@@ -12,7 +12,7 @@ export const Semestres = async () => {
 
   return (
     <>
-      <div>
+      <div className="grid grid-cols-2 lg:block">
         {academicPeriods && academicPeriods.map((period) => (
           <SemestreButton
             key={period.id}
