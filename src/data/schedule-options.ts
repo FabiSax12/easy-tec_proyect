@@ -90,6 +90,10 @@ export const carriersOptions = {
   "Ingeniería Mecatrónica": {
     name: "Ingeniería Mecatrónica",
     code: "EMT"
+  },
+  "Ciencias Naturales Y Exactas": {
+    name: "Ciencias Naturales Y Exactas",
+    code: "ECE"
   }
 }
 
@@ -103,7 +107,8 @@ export const campusOptions = [
       carriersOptions["Ingeniería en Computación"],
       carriersOptions["Ingeniería en Electrónica"],
       carriersOptions["Ingeniería en Producción Industrial"],
-      carriersOptions["Gestión en Sostenibilidad Turística"]
+      carriersOptions["Gestión en Sostenibilidad Turística"],
+      carriersOptions["Ciencias Naturales Y Exactas"]
     ]
   },
   {
