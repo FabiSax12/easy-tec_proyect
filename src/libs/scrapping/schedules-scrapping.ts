@@ -167,6 +167,4 @@ async function getSchedule(campus: string, carrier: string, period: string, cred
   return json
 }
 
-getSchedule("SJ", "AU", "2024_S_2", { email: "f.vargas.1@estudiantec.cr", password: "Fabi12TEC*" })
-
 export { getSchedule }
