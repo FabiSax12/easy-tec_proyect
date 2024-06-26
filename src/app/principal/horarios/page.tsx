@@ -1,10 +1,9 @@
 "use client"
 import { useState } from "react"
 import { useGetSchedules } from "@/hooks/useGetSchedules"
-import { Spinner } from "@/components"
 import { ScheduleRow } from "@/interfaces/api-data/schedule"
-import { SchedulesTable } from "@/components/schedule/SchedulesTable"
-import { SchedulesSelector } from "@/components/schedule/SchedulesSelector"
+import { Spinner } from "@/components/nextui"
+import { SchedulesTable, SchedulesSelector } from "@/components/schedule"
 
 export default function SchedulesPage() {
   const [selectedSubjects, setSelectedSubjects] = useState<ScheduleRow[]>([])

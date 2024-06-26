@@ -1,5 +1,5 @@
-import { Button, Pagination, Selection } from "@nextui-org/react";
-import { Course } from "@prisma/client";
+import { Button, Pagination, Selection } from "@nextui-org/react"
+import { Course } from "@prisma/client"
 
 interface Props {
   selectedKeys: Selection;

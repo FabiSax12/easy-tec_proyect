@@ -1,6 +1,7 @@
 import { Suspense } from "react"
-import { CoursesMainTable, SectionCard, Semestres } from "@/components"
-import { Spinner } from "@/components"
+import { SectionCard } from "@/components"
+import { Semestres } from "@/components/semester"
+import { CoursesMainTable, Spinner } from "@/components/nextui"
 
 export default async function Home() {
   return (

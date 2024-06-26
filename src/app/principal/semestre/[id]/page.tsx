@@ -1,5 +1,6 @@
 import { Suspense } from "react"
-import { CoursesMainTable, SectionCard } from "@/components"
+import { SectionCard } from "@/components"
+import { CoursesMainTable } from "@/components/nextui"
 import { Spinner } from "@nextui-org/react"
 
 interface Props {

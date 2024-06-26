@@ -1,8 +1,8 @@
 "use client"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { Button, Link } from "@nextui-org/react"
-import { SignUpInputs } from "@/components"
-import { InputsData } from "../../interfaces/components/auth"
+import { SignUpInputs } from "@/components/auth"
+import { InputsData } from "@/interfaces/components/auth"
 
 interface Props {
   data: InputsData

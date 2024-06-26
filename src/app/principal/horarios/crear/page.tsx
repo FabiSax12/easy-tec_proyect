@@ -3,11 +3,13 @@ import { useState } from "react"
 import { NextPage } from "next"
 import { useGetSchedules } from "@/hooks/useGetSchedules"
 import { ScheduleRow } from "@/interfaces/api-data/schedule"
-import { SectionCard, Spinner, ScheduleBoard, SchedulesSelector, SchedulesTable } from "@/components"
+import { SectionCard } from "@/components"
+import { Spinner } from "@/components/nextui"
+import { ScheduleBoard, SchedulesSelector, SchedulesTable } from "@/components/schedule"
 
 interface Props { }
 
-const CreateSchedulePage: NextPage<Props> = ({ }) => {
+const CreateSchedulePage: NextPage<Props> = () => {
   const [selectedSubjects, setSelectedSubjects] = useState<ScheduleRow[]>([])
   const { getSchedules, isLoading, schedules, setCampus, setCarrier, setPeriod, campus } = useGetSchedules()
 

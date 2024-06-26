@@ -2,7 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions"
-import { HeaderUserInfo } from "@/components"
+import { HeaderUserInfo } from "@/components/header"
 import { FaGear } from "react-icons/fa6"
 
 export const Header = async () => {

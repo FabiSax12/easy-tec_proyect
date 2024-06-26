@@ -1,6 +1,6 @@
 "use client"
 import { signOut } from "next-auth/react"
-import { UserUI } from "@/components"
+import { UserUI } from "@/components/nextui"
 import { Badge, Button } from "@nextui-org/react"
 import { FaRegBell } from "react-icons/fa6"
 import { MdLogout } from "react-icons/md"

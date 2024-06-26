@@ -1,7 +1,7 @@
-import Link from "next/link";
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
-import { FaArrowUpRightFromSquare, FaPen, FaTrashCan } from "react-icons/fa6";
-import { HiDotsVertical } from "react-icons/hi";
+import Link from "next/link"
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react"
+import { FaArrowUpRightFromSquare, FaPen, FaTrashCan } from "react-icons/fa6"
+import { HiDotsVertical } from "react-icons/hi"
 
 export function TableActionsMenu() {
   return (

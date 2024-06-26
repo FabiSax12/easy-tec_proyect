@@ -1,6 +1,6 @@
-import { capitalize } from "@/utils";
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Selection } from "@nextui-org/react";
-import { FaChevronDown } from "react-icons/fa6";
+import { capitalize } from "@/utils"
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Selection } from "@nextui-org/react"
+import { FaChevronDown } from "react-icons/fa6"
 
 interface Props {
   title: string;

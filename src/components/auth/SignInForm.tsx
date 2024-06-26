@@ -2,7 +2,7 @@
 import { type Dispatch, type SetStateAction, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { signIn, useSession } from "next-auth/react"
-import { SignInInputs } from "@/components"
+import { SignInInputs } from "@/components/auth"
 import { Button, Link } from "@nextui-org/react"
 
 interface Props {

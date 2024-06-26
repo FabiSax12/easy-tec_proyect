@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useCourses } from "@/hooks/useCoursesTable"
 import { Course } from "@prisma/client"
-import { TableActionsMenu, TableBottomContent, TableFilterOption } from "@/components"
+import { TableActionsMenu, TableBottomContent, TableFilterOption } from "@/components/courses"
 import {
   Table, TableHeader, TableColumn, TableBody, TableRow,
   TableCell, Input, Button, Chip, ChipProps
@@ -104,24 +104,24 @@ export const CoursesMainTable = ({ filter }: Props) => {
     (course: Course, columnKey: React.Key) => {
       const cellValue = course[columnKey as keyof Course]
       switch (columnKey) {
-        case "name":
-          return <>
-            <p className="text-bold text-small capitalize">{course.name}</p>
-            <p className="text-xs">{course.teacher}</p>
-          </>
-        case "state":
-          return <Chip
-            className="capitalize"
-            color={statusColorMap[course.state]}
-            size="sm"
-            variant="flat"
-          >
-            <>{cellValue}</>
-          </Chip>
-        case "actions":
-          return <TableActionsMenu />
-        default:
-          return <>{cellValue}</>
+      case "name":
+        return <>
+          <p className="text-bold text-small capitalize">{course.name}</p>
+          <p className="text-xs">{course.teacher}</p>
+        </>
+      case "state":
+        return <Chip
+          className="capitalize"
+          color={statusColorMap[course.state]}
+          size="sm"
+          variant="flat"
+        >
+          <>{cellValue}</>
+        </Chip>
+      case "actions":
+        return <TableActionsMenu />
+      default:
+        return <>{cellValue}</>
       }
     },
     []

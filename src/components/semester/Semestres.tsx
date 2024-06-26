@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth"
 import { formatDate } from "@/utils"
-import { SemestreButton, AddSemesterButton } from "@/components"
+import { SemestreButton, AddSemesterButton } from "@/components/semester"
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions"
 import { AcademicPeriod } from "@/interfaces/api-data/academic-period"
 
