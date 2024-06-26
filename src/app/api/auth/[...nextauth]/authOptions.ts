@@ -56,12 +56,12 @@ export const authOptions: AuthOptions = {
     },
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
-        token.email = user.email;
-        token.name = user.name;
-        token.lastname = user.lastname;
-        token.carrier = user.carrier;
-        token.avatar = user.avatar;
+        token.id = user.id
+        token.email = user.email
+        token.name = user.name
+        token.lastname = user.lastname
+        token.carrier = user.carrier
+        token.avatar = user.avatar
       }
       return token
     }

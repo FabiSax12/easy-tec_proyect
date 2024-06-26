@@ -1,6 +1,6 @@
 "use client"
-import { useState } from "react";
-import { Select as SelectUI, SelectItem, Selection, SelectProps } from "@nextui-org/react";
+import { useState } from "react"
+import { Select as SelectUI, SelectItem, Selection, SelectProps } from "@nextui-org/react"
 
 interface Props extends Omit<SelectProps, "children"> {
   label?: string
@@ -59,5 +59,5 @@ export const Select = (props: Props) => {
         </SelectItem>
       ))}
     </SelectUI>
-  );
+  )
 }

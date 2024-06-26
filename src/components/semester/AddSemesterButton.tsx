@@ -7,7 +7,7 @@ interface Props {
   // Props
 }
 
-export const AddSemesterButton = ({ }: Props) => {
+export const AddSemesterButton = () => {
   const { onOpen, isOpen, onOpenChange } = useDisclosure()
 
   return <>

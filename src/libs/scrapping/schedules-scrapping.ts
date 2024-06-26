@@ -1,100 +1,105 @@
-import fs from "fs/promises";
-import puppeteer, { type Page } from "puppeteer";
-import { ScheduleRow } from "@/interfaces/api-data/schedule";
+/* eslint-disable indent */
+import fs from "fs/promises"
+import puppeteer, { Page } from "puppeteer"
+import { ScheduleRow } from "@/interfaces/api-data/schedule"
 
 async function saveCookies(page: Page) {
-  const cookies = await page.cookies();
-  await fs.writeFile("./src/libs/scrapping/cookies.json", JSON.stringify(cookies, null, 2));
+  const cookies = await page.cookies()
+  await fs.writeFile("./cookies.json", JSON.stringify(cookies, null, 2))
 }
 
 async function loadCookies(page: Page) {
-  if (await fs.access("./src/libs/scrapping/cookies.json").then(() => true).catch(() => false)) {
-    const cookies = JSON.parse(await fs.readFile("./src/libs/scrapping/cookies.json", "utf-8"));
+  if (await fs.access("./cookies.json").then(() => true).catch(() => false)) {
+    const cookies = JSON.parse(await fs.readFile("./cookies.json", "utf-8"))
     if (cookies.length > 0) {
-      await page.setCookie(...cookies);
+      await page.setCookie(...cookies)
     }
   } else {
-    await fs.writeFile("./src/libs/scrapping/cookies.json", "[]");
+    await fs.writeFile("./cookies.json", "[]")
   }
 }
 
 async function preventResources(page: Page) {
-  await page.setRequestInterception(true);
+  await page.setRequestInterception(true)
 
   page.on("request", (request) => {
     if (["image", "font"].includes(request.resourceType())) {
-      request.abort();
+      request.abort()
     } else {
-      request.continue();
+      request.continue()
     }
-  });
+  })
 }
 
 async function login(page: Page, email: string, password: string) {
   if (page.url().includes("tecdigital.tec.ac.cr/register/")) {
-    await page.type("#mail-input", email, { delay: 10 });
-    await page.type("#password-input", password, { delay: 10 });
+    await page.type("#mail-input", email, { delay: 10 })
+    await page.type("#password-input", password, { delay: 10 })
 
     await page.evaluate(() => {
-      const button = document.querySelector<HTMLButtonElement>("button[type='submit']");
-      button?.removeAttribute("disabled");
-      button?.click();
-    });
+      const button = document.querySelector<HTMLButtonElement>("button[type='submit']")
+      button?.removeAttribute("disabled")
+      button?.click()
+    })
 
-    await page.waitForNavigation();
-    await saveCookies(page);
+    await page.waitForNavigation()
+    await saveCookies(page)
   }
 }
 
 async function selectInfo(page: Page, campus: string, carrier: string, period: string) {
   await page.evaluate((campus, carrier, period) => {
-    const campusSelect = document.querySelector("#sede_n");
-    const carrierSelect = document.querySelector("#carrera_n");
-    const periodSelect = document.querySelector("#periodo_n");
+    const campusSelect = document.querySelector("#sede_n")
+    const carrierSelect = document.querySelector("#carrera_n")
+    const periodSelect = document.querySelector("#periodo_n")
 
-    campusSelect?.setAttribute("value", campus);
-    carrierSelect?.setAttribute("value", carrier);
-    periodSelect?.setAttribute("value", period);
+    campusSelect?.setAttribute("value", campus)
+    carrierSelect?.setAttribute("value", carrier)
+    periodSelect?.setAttribute("value", period)
 
-  }, campus, carrier, period);
+  }, campus, carrier, period)
 }
 
 async function getSchedule(campus: string, carrier: string, period: string, credentials: { email: string, password: string }) {
-  const browser = await puppeteer.launch({ headless: true, args: ["--no-sandbox", "--disable-setuid-sandbox"] });
-  const page = await browser.newPage();
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    executablePath: "/usr/bin/chromium-browser"
+  })
+  const page = await browser.newPage()
 
-  await preventResources(page);
-  await loadCookies(page);
+  await preventResources(page)
+  await loadCookies(page)
 
-  await page.goto("https://tecdigital.tec.ac.cr/tda-expediente-estudiantil/");
-  await login(page, credentials.email, credentials.password);
+  await page.goto("https://tecdigital.tec.ac.cr/tda-expediente-estudiantil/")
+  await login(page, credentials.email, credentials.password)
 
-  await page.click("button#guia_horario");
+  await page.click("button#guia_horario")
 
-  await page.waitForSelector("div#sede_n");
-  await selectInfo(page, campus, carrier, period);
-  await page.click("i#imgBuscar");
+  await page.waitForSelector("div#sede_n")
+  await selectInfo(page, campus, carrier, period)
+  await page.click("i#imgBuscar")
 
-  await page.waitForSelector("table#tguiaHorario");
+  await page.waitForSelector("table#tguiaHorario")
   const json = await page.evaluate(() => {
     const table = document.querySelector<HTMLTableElement>("#tguiaHorario")
 
     const headers = Array.from(
       table?.querySelectorAll<HTMLTableCaptionElement>("thead th") || []
-    ).map(th => th.innerText);
+    ).map(th => th.innerText)
 
-    const tableRows = Array.from(table?.querySelectorAll('tbody tr') || []);
+    const tableRows = Array.from(table?.querySelectorAll("tbody tr") || [])
 
     const data = tableRows.map(row => {
-      const cells = Array.from(row.querySelectorAll('td'));
-      let dataRow: Partial<ScheduleRow> = {}
+      const cells = Array.from(row.querySelectorAll("td"))
+      const dataRow: Partial<ScheduleRow> = {}
 
       cells.forEach((cell, index) => {
         switch (headers[index]) {
           case "Código": dataRow.code = cell.innerText
-            break;
+            break
           case "Materia": dataRow.subject = cell.innerText
-            break;
+            break
           case "Horario":
             const schedule = cell.innerText.split(" - ")
             const day = schedule[0].slice(0, 3)
@@ -107,63 +112,63 @@ async function getSchedule(campus: string, carrier: string, period: string, cred
               start: hour1,
               end: hour2
             }
-            break;
+            break
           case "Aula": dataRow.classroom = cell.innerText
-            break;
+            break
           case "Profesor": dataRow.teacher = cell.innerText
-            break;
+            break
           case "Tipo Materia": dataRow.typeOfSubject = cell.innerText
-            break;
+            break
           case "Tipo Grupo": dataRow.typeOfGroup = cell.innerText
-            break;
+            break
           case "Grupo": dataRow.group = parseInt(cell.innerText)
-            break;
+            break
           case "Créditos": dataRow.credits = parseInt(cell.innerText)
-            break;
+            break
           case "Cupo": dataRow.totalSpaces = parseInt(cell.innerText)
-            break;
+            break
           case "Reservados": dataRow.reserved = parseInt(cell.innerText)
         }
-      });
+      })
 
-      dataRow.id = crypto.randomUUID();
+      dataRow.id = crypto.randomUUID()
 
-      return dataRow;
-    });
+      return dataRow
+    })
 
     // Combine rows with the same code
-    const combinedData: Partial<ScheduleRow>[] = [];
+    const combinedData: Partial<ScheduleRow>[] = []
 
     data.forEach(row => {
-      let existingRow = combinedData.find(item => item.code === row.code && item.group === row.group);
+      const existingRow = combinedData.find(item => item.code === row.code && item.group === row.group)
 
       if (existingRow) {
-        existingRow.teachers = existingRow.teachers || [];
-        existingRow.schedules = existingRow.schedules || [];
+        existingRow.teachers = existingRow.teachers || []
+        existingRow.schedules = existingRow.schedules || []
         if (row.teacher && !existingRow.teachers.includes(row.teacher)) {
-          existingRow.teachers.push(row.teacher);
+          existingRow.teachers.push(row.teacher)
         }
 
         if (row.schedule && !existingRow.schedules.some(schedule => {
           return row.schedule?.day === schedule.day && row.schedule.start === schedule.start
         })) {
           console.log(existingRow.schedules, row.schedule)
-          existingRow.schedules.push(row.schedule);
+          existingRow.schedules.push(row.schedule)
         }
       } else {
         const newRow = {
           ...row,
           teachers: row.teacher ? [row.teacher] : [],
           schedules: row.schedule ? [row.schedule] : []
-        };
-        combinedData.push(newRow);
+        }
+        combinedData.push(newRow)
       }
-    });
+    })
 
-    return combinedData;
-  });
+    return combinedData
+  })
 
-  await browser.close();
+  await browser.close()
   return json
 }
 

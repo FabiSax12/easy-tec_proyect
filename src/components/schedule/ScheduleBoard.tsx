@@ -46,8 +46,8 @@ export const ScheduleBoard = ({ classname, selectedSubjects }: Props) => {
 
     selectedSubjects.forEach(subject => {
       subject.schedules.forEach(schedule => {
-        const daysOfWeek = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie'];
-        const dayIndex = daysOfWeek.indexOf(schedule.day) + 1;
+        const daysOfWeek = ["Lun", "Mar", "Mie", "Jue", "Vie"]
+        const dayIndex = daysOfWeek.indexOf(schedule.day) + 1
 
         if (dayIndex === -1) return
 

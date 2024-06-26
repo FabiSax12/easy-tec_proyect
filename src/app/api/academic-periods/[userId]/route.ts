@@ -15,8 +15,8 @@ export async function GET(req: Request, context: { params: { userId: string } })
 export async function POST(req: Request, context: { params: { userId: string } }) {
   try {
     // Get the body of the request
-    const body = await req.json();
-    const userId = parseInt(context.params.userId, 10);
+    const body = await req.json()
+    const userId = parseInt(context.params.userId, 10)
 
     // Prepare the data
     const data = {
@@ -27,20 +27,20 @@ export async function POST(req: Request, context: { params: { userId: string } }
       user: {
         connect: { id: userId }
       }
-    };
+    }
 
     // Create the academic period
-    const createdAcademicPeriod = await db.academicPeriod.create({ data });
+    const createdAcademicPeriod = await db.academicPeriod.create({ data })
 
     // If creation fails
     if (!createdAcademicPeriod) {
-      return NextResponse.json({ error: "Error creating academic period" }, { status: 500 });
+      return NextResponse.json({ error: "Error creating academic period" }, { status: 500 })
     }
 
     // revalidatePath("/principal")
-    return NextResponse.json(createdAcademicPeriod, { status: 201 });
+    return NextResponse.json(createdAcademicPeriod, { status: 201 })
 
   } catch (error) {
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })
   }
 }

@@ -1,12 +1,12 @@
-"use client";
-import { useState, useEffect, ChangeEvent } from "react";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { addAcademicPeriod } from "@/helpers/api";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react";
-import { Select, NumberInput } from "@/components";
+"use client"
+import { useState, useEffect, ChangeEvent } from "react"
+import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
+import { addAcademicPeriod } from "@/helpers/api"
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react"
+import { Select, NumberInput } from "@/components"
 
-const options = [{ label: "Semestre", value: "S" }, { label: "Verano", value: "V" }];
+const options = [{ label: "Semestre", value: "S" }, { label: "Verano", value: "V" }]
 
 interface Props {
   isOpen: boolean;
@@ -14,59 +14,59 @@ interface Props {
 }
 
 export const ModalSemestre = ({ isOpen, onOpenChange }: Props) => {
-  const router = useRouter();
-  const { data: session } = useSession();
+  const router = useRouter()
+  const { data: session } = useSession()
 
-  const [modality, setModality] = useState("");
-  const [title, setTitle] = useState("");
-  const [id, setId] = useState(0);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [modality, setModality] = useState("")
+  const [title, setTitle] = useState("")
+  const [id, setId] = useState(0)
+  const [startDate, setStartDate] = useState("")
+  const [endDate, setEndDate] = useState("")
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     switch (modality) {
-      case "S":
-        setTitle("Semestre");
-        setId(1);
-        break;
-      case "V":
-        setTitle("Verano");
-        setId(2024);
-        break;
-      default:
-        setTitle("");
-        setId(0);
-        break;
+    case "S":
+      setTitle("Semestre")
+      setId(1)
+      break
+    case "V":
+      setTitle("Verano")
+      setId(2024)
+      break
+    default:
+      setTitle("")
+      setId(0)
+      break
     }
-  }, [modality]);
+  }, [modality])
 
   const onAccept = async () => {
-    setLoading(true);
+    setLoading(true)
 
     const semesterData = {
       type: title,
       typeId: id,
       startDate: new Date(startDate),
       endDate: new Date(endDate),
-    };
+    }
 
     try {
-      await addAcademicPeriod(semesterData, session?.user?.id ?? null);
-      setModality("");
-      setStartDate("");
-      setEndDate("");
-      onOpenChange();
-      router.refresh();
+      await addAcademicPeriod(semesterData, session?.user?.id ?? null)
+      setModality("")
+      setStartDate("")
+      setEndDate("")
+      onOpenChange()
+      router.refresh()
     } catch (error) {
-      console.error("Error al añadir semestre:", error);
+      console.error("Error al añadir semestre:", error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
-  const canAddSemester = title && startDate && endDate;
+  const canAddSemester = title && startDate && endDate
 
   return (
     <Modal
@@ -148,5 +148,5 @@ export const ModalSemestre = ({ isOpen, onOpenChange }: Props) => {
         )}
       </ModalContent>
     </Modal>
-  );
-};
+  )
+}

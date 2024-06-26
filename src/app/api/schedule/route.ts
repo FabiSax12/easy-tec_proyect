@@ -1,5 +1,5 @@
-import { NextResponse, type NextRequest } from 'next/server'
-import { getSchedule } from '@/libs/scrapping/schedules-scrapping'
+import { NextResponse, type NextRequest } from "next/server"
+import { getSchedule } from "@/libs/scrapping/schedules-scrapping"
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams

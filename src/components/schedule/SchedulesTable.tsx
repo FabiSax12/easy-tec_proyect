@@ -60,10 +60,10 @@ export const SchedulesTable = ({ selectedSubjects, setSelectedSubjects, schedule
             <TableCell>{item.subject}</TableCell>
             <TableCell>{item.group}</TableCell>
             <TableCell>
-              {item.teachers.map(teacher => <p>{teacher}</p>)}
+              {item.teachers.map((teacher, idx) => <p key={idx}>{teacher}</p>)}
             </TableCell>
             <TableCell>
-              {item.schedules.map(schedule => <p>
+              {item.schedules.map((schedule, idx) => <p key={idx}>
                 {`${schedule.day} ${schedule.start} - ${schedule.end}`}
               </p>)}
             </TableCell>

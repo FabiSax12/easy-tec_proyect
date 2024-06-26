@@ -8,15 +8,15 @@ export const addAcademicPeriod = async (data: any, userId: string | null) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-    });
+    })
 
     if (!response.ok) {
-      throw new Error("Failed to create academic period");
+      throw new Error("Failed to create academic period")
     }
 
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    console.error("Error creating academic period:", error);
-    throw error;
+    console.error("Error creating academic period:", error)
+    throw error
   }
-};
+}
