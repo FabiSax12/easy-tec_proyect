@@ -1,4 +1,5 @@
-import { useCallback, type Dispatch, type SetStateAction } from "react"
+import { useCallback, useEffect, useState } from "react"
+import { useScheduleContext } from "@/hooks"
 import { ScheduleRow } from "@/interfaces/api-data/schedule"
 import { Selection, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react"
 
@@ -13,31 +14,49 @@ const columns = [
 
 interface Props {
   schedules: ScheduleRow[]
-  selectedSubjects: ScheduleRow[]
-  setSelectedSubjects: Dispatch<SetStateAction<ScheduleRow[]>>
 }
 
-export const SchedulesTable = ({ selectedSubjects, setSelectedSubjects, schedules }: Props) => {
-  const handleSelectionChange = useCallback((key: Selection) => {
-    setSelectedSubjects(prevState => {
-      if (key === "all") return prevState
-      if (key === undefined) return []
-      if (key instanceof Set) return schedules.filter(schedule => key.has(schedule.id))
-      return prevState
-    })
-  }, [])
+export const SchedulesTable = ({ schedules }: Props) => {
+  const { selectedSubjects = [], addSubject, removeSubject } = useScheduleContext()
+  const [localeSelectedSubjects, setLocaleSelectedSubjects] = useState<ScheduleRow[]>(selectedSubjects)
 
-  const getDisabledKeys = () => {
-    return new Set(
-      schedules.filter(
-        schedule => selectedSubjects.some(
-          selected => selected.code === schedule.code && selected.group !== schedule.group
-        )
-      ).map(
-        item => item.id
+  useEffect(() => {
+    const newSelectedSubjects = selectedSubjects.filter(subject => (
+      schedules.some(schedule => schedule.id === subject.id)
+    ))
+    setLocaleSelectedSubjects(newSelectedSubjects)
+  }, [selectedSubjects, schedules])
+
+
+  // Functions
+  const handleSelectionChange = useCallback((key: Selection) => {
+    if (key === "all") return
+    if (key === undefined) {
+      setLocaleSelectedSubjects([])
+      selectedSubjects.forEach(subject => removeSubject(subject))
+      return
+    }
+
+    if (key instanceof Set) {
+      const newSelectedSubjects = schedules.filter(schedule => key.has(schedule.id))
+      const addedSubjects = newSelectedSubjects.filter(subject => !localeSelectedSubjects.some(s => s.id === subject.id))
+      const removedSubjects = localeSelectedSubjects.filter(subject => !key.has(subject.id))
+
+      addedSubjects.forEach(subject => addSubject(subject))
+      removedSubjects.forEach(subject => removeSubject(subject))
+      setLocaleSelectedSubjects(newSelectedSubjects)
+    }
+  }, [addSubject, removeSubject, schedules, selectedSubjects, localeSelectedSubjects])
+
+  const getDisabledKeys = () => new Set(
+    schedules.filter(
+      schedule => localeSelectedSubjects.some(
+        selected => selected.code === schedule.code && selected.group !== schedule.group
       )
-    )
-  }
+    ).map(item => item.id)
+  )
+
+  const getSelectedKeys = () => new Set(localeSelectedSubjects.map(schedule => schedule.id))
 
   return (
     <Table
@@ -45,8 +64,8 @@ export const SchedulesTable = ({ selectedSubjects, setSelectedSubjects, schedule
       aria-label="Tabla de horarios"
       selectionMode="multiple"
       selectionBehavior="toggle"
-      selectedKeys={new Set(selectedSubjects.map(schedule => schedule.id))}
       onSelectionChange={handleSelectionChange}
+      selectedKeys={getSelectedKeys()}
       disabledKeys={getDisabledKeys()}
       classNames={{ base: "max-h-[80vh]" }}
     >
@@ -71,6 +90,6 @@ export const SchedulesTable = ({ selectedSubjects, setSelectedSubjects, schedule
           </TableRow>
         )}
       </TableBody>
-    </Table>
+    </Table >
   )
 }

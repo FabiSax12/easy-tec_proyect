@@ -1,10 +1,10 @@
 "use client"
 import { useEffect, useState } from "react"
+import { useScheduleContext } from "@/hooks"
 import dayjs from "dayjs"
 import "dayjs/locale/es"
 import { Calendar, Components, Event, Formats, dayjsLocalizer } from "react-big-calendar"
 import "react-big-calendar/lib/css/react-big-calendar.css"
-import { ScheduleRow } from "@/interfaces/api-data/schedule"
 
 dayjs.locale("es")
 
@@ -33,11 +33,11 @@ const components: Components<EventItem, object> = {
 }
 
 interface Props {
-  selectedSubjects: ScheduleRow[]
   classname?: string
 }
 
-export const ScheduleBoard = ({ classname, selectedSubjects }: Props) => {
+export const ScheduleBoard = ({ classname }: Props) => {
+  const { selectedSubjects } = useScheduleContext()
   const [events, setEvents] = useState<EventItem[]>([])
   const localizer = dayjsLocalizer(dayjs)
 
