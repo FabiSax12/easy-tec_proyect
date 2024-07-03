@@ -1,3 +1,4 @@
+"use client"
 import { createContext, useState } from "react"
 import { ScheduleRow } from "@/interfaces/api-data/schedule"
 

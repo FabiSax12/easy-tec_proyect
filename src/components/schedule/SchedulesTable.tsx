@@ -1,3 +1,4 @@
+"use client"
 import { useCallback, useEffect, useState } from "react"
 import { useScheduleContext } from "@/hooks"
 import { ScheduleRow } from "@/interfaces/api-data/schedule"

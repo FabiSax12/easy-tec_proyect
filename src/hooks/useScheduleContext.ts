@@ -1,3 +1,4 @@
+"use client"
 import { ScheduleContext } from "@/context/ScheduleContext"
 import { useContext } from "react"
 
