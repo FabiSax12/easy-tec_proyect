@@ -64,7 +64,7 @@ async function getSchedule(campus: string, carrier: string, period: string, cred
   const browser = await puppeteer.launch({
     headless: true,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    executablePath: "/usr/bin/chromium-browser"
+    executablePath: process.env.NODE_ENV === "production" ? "/usr/bin/chromium-browser" : puppeteer.executablePath()
   })
   const page = await browser.newPage()
 
@@ -131,7 +131,12 @@ async function getSchedule(campus: string, carrier: string, period: string, cred
         }
       })
 
-      dataRow.id = crypto.randomUUID()
+      dataRow.id = dataRow.code!
+        + dataRow.group!
+        + dataRow.teacher?.split(" ").map(word => word[0]).join("")
+        + dataRow.schedule?.day
+        + dataRow.schedule?.start
+        + dataRow.schedule?.end // crypto.randomUUID()
 
       return dataRow
     })
