@@ -40,7 +40,7 @@ Necesitaras un token secreto para el `NEXTAUTH_SECRET`, puedes ejecutar `openssl
 Para facilitar el desarrollo, utilizamos Docker para ejecutar la base de datos en un contenedor. Ejecuta el siguiente comando para construir y levantar el contenedor de la base de datos PostgreSQL:
 
 ```bash
-docker-compose up --build
+docker-compose -f docker-compose.dev.yml up -d --build
 ```
 
 5. **Sincroniza la Base de Datos con el Esquema de Prisma:**
