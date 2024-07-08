@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+hr {
+  @apply border-default
+}
+
 .home-main_grid {
   display: grid;
   grid-template-columns: 1fr 3fr;
