@@ -14,7 +14,7 @@ interface Props {
   onOpenChange: () => void;
 }
 
-export const ModalSemestre = ({ isOpen, onOpenChange }: Props) => {
+export const AddPeriodModal = ({ isOpen, onOpenChange }: Props) => {
   const router = useRouter()
   const [modality, setModality] = useState("")
   const [title, setTitle] = useState("")

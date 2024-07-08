@@ -8,7 +8,7 @@ interface Props {
   endDate: string
 }
 
-export const SemestreButton = ({ title, id, startDate, endDate }: Props) => {
+export const PeriodButton = ({ title, id, startDate, endDate }: Props) => {
   return (
     <Link
       href={`/principal/semestre/${id}`}

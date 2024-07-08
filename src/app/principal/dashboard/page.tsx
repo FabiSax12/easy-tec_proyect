@@ -1,6 +1,6 @@
 import { Suspense } from "react"
 import { SectionCard } from "@/components"
-import { Semestres } from "@/components/semester"
+import { Periods } from "@/components/period"
 import { CoursesMainTable, Spinner } from "@/components/nextui"
 
 export default async function Home() {
@@ -8,7 +8,7 @@ export default async function Home() {
     <div className="home-main_grid gap-10">
       <SectionCard title="Semestres" className="h-min">
         <Suspense fallback={<Spinner />}>
-          <Semestres />
+          <Periods />
         </Suspense>
       </SectionCard>
       <SectionCard title="Cursos">

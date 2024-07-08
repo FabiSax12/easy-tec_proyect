@@ -1,13 +1,13 @@
 "use client"
 import { FaPlus } from "react-icons/fa6"
-import { ModalSemestre } from "./AddSemesterModal"
+import { AddPeriodModal } from "./AddPeriodModal"
 import { useDisclosure } from "@nextui-org/react"
 
 interface Props {
   // Props
 }
 
-export const AddSemesterButton = () => {
+export const AddPeriodButton = () => {
   const { onOpen, isOpen, onOpenChange } = useDisclosure()
 
   return <>
@@ -17,6 +17,6 @@ export const AddSemesterButton = () => {
     >
       <span className='flex items-center gap-1 text-sm text-primary-400'>Añadir<FaPlus /></span>
     </button>
-    <ModalSemestre isOpen={isOpen} onOpenChange={onOpenChange} />
+    <AddPeriodModal isOpen={isOpen} onOpenChange={onOpenChange} />
   </>
 }
