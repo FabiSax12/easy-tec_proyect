@@ -1,10 +1,11 @@
+/* eslint-disable indent */
 "use client"
 import { useState, useEffect, ChangeEvent } from "react"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
-import { addAcademicPeriod } from "@/helpers/api"
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react"
+import { addPeriod } from "@/actions"
 import { Select, NumberInput } from "@/components"
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react"
 
 const options = [{ label: "Semestre", value: "S" }, { label: "Verano", value: "V" }]
 
@@ -15,30 +16,29 @@ interface Props {
 
 export const ModalSemestre = ({ isOpen, onOpenChange }: Props) => {
   const router = useRouter()
-  const { data: session } = useSession()
-
   const [modality, setModality] = useState("")
   const [title, setTitle] = useState("")
   const [id, setId] = useState(0)
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
-
   const [loading, setLoading] = useState(false)
+
+  const { data: session } = useSession()
 
   useEffect(() => {
     switch (modality) {
-    case "S":
-      setTitle("Semestre")
-      setId(1)
-      break
-    case "V":
-      setTitle("Verano")
-      setId(2024)
-      break
-    default:
-      setTitle("")
-      setId(0)
-      break
+      case "S":
+        setTitle("Semestre")
+        setId(1)
+        break
+      case "V":
+        setTitle("Verano")
+        setId(2024)
+        break
+      default:
+        setTitle("")
+        setId(0)
+        break
     }
   }, [modality])
 
@@ -53,7 +53,8 @@ export const ModalSemestre = ({ isOpen, onOpenChange }: Props) => {
     }
 
     try {
-      await addAcademicPeriod(semesterData, session?.user?.id ?? null)
+      if (!session) return
+      await addPeriod(parseInt(session.user.id), semesterData)
       setModality("")
       setStartDate("")
       setEndDate("")

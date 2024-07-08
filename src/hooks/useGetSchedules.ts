@@ -1,4 +1,6 @@
+"use client"
 import { useState } from "react"
+import { getSchedules as getSchedulesServer } from "@/actions"
 import { ScheduleRow } from "@/interfaces/api-data/schedule"
 
 export const useGetSchedules = () => {
@@ -13,9 +15,8 @@ export const useGetSchedules = () => {
 
     setIsLoading(true)
     try {
-      const res = await fetch(`/api/schedule?campus=${campus}&carrier=${carrier}&period=${period}`, { cache: "no-cache" })
-      const { data }: { data: ScheduleRow[] } = await res.json()
-      setSchedules(data)
+      const schedules = await getSchedulesServer(campus, carrier, period)
+      setSchedules(schedules)
     } catch {
       setSchedules([])
     } finally {

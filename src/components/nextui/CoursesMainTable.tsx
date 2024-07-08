@@ -1,6 +1,9 @@
+/* eslint-disable indent */
 "use client"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useCourses } from "@/hooks/useCoursesTable"
+import { useSession } from "next-auth/react"
+import { getUserCourses } from "@/actions"
 import { Course } from "@prisma/client"
 import { TableActionsMenu, TableBottomContent, TableFilterOption } from "@/components/courses"
 import {
@@ -9,7 +12,6 @@ import {
 } from "@nextui-org/react"
 import { FaPlus } from "react-icons/fa6"
 import { LuSearch } from "react-icons/lu"
-import { useSession } from "next-auth/react"
 
 const columns = [
   { name: "ID", uid: "id", sortable: true },
@@ -18,7 +20,6 @@ const columns = [
   { name: "PERIODO", uid: "period", sortable: true },
   { name: "ESTADO", uid: "state", sortable: true },
   { name: "ACCIONES", uid: "actions" }
-  // {name: "INSTRUCTOR", uid: "instructor",sortable: true},
 ]
 
 const statusOptions = [
@@ -39,7 +40,7 @@ interface Props {
 
 export const CoursesMainTable = ({ filter }: Props) => {
   const { data } = useSession()
-  const userId = data?.user?.id
+  const userId = data?.user?.id ?? null
   const [courses, setCourses] = useState<Course[]>([])
   const {
     filterValue, selectedKeys, visibleColumns, setSelectedKeys, setVisibleColumns, statusFilter,
@@ -48,13 +49,12 @@ export const CoursesMainTable = ({ filter }: Props) => {
   } = useCourses({ filter, courses })
 
   useEffect(() => {
-    const fetchCourses = async () => {
-      const res = await fetch(`/api/courses/${userId}`)
-      const data = await res.json()
-      setCourses(data)
+    const fetchCourses = async (id: number) => {
+      const courses = await getUserCourses(id)
+      setCourses(courses)
     }
 
-    if (userId) fetchCourses()
+    if (userId) fetchCourses(parseInt(userId))
   }, [userId])
 
   const hasSearchFilter = Boolean(filterValue)
@@ -104,24 +104,24 @@ export const CoursesMainTable = ({ filter }: Props) => {
     (course: Course, columnKey: React.Key) => {
       const cellValue = course[columnKey as keyof Course]
       switch (columnKey) {
-      case "name":
-        return <>
-          <p className="text-bold text-small capitalize">{course.name}</p>
-          <p className="text-xs">{course.teacher}</p>
-        </>
-      case "state":
-        return <Chip
-          className="capitalize"
-          color={statusColorMap[course.state]}
-          size="sm"
-          variant="flat"
-        >
-          <>{cellValue}</>
-        </Chip>
-      case "actions":
-        return <TableActionsMenu />
-      default:
-        return <>{cellValue}</>
+        case "name":
+          return <>
+            <p className="text-bold text-small capitalize">{course.name}</p>
+            <p className="text-xs">{course.teacher}</p>
+          </>
+        case "state":
+          return <Chip
+            className="capitalize"
+            color={statusColorMap[course.state]}
+            size="sm"
+            variant="flat"
+          >
+            <>{cellValue}</>
+          </Chip>
+        case "actions":
+          return <TableActionsMenu />
+        default:
+          return <>{cellValue}</>
       }
     },
     []

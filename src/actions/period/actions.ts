@@ -4,7 +4,7 @@ import db from "@/libs/db"
 import { AcademicPeriod } from "@prisma/client"
 
 export async function getUserPeriods(userId: number) {
-  const periods = await db.academicPeriod.findMany({ where: { userId: Number(userId) } })
+  const periods = await db.academicPeriod.findMany({ where: { userId } })
   return periods
 }
 
