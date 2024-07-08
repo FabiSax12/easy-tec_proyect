@@ -1,10 +1,14 @@
 "use client"
 import { Dispatch, SetStateAction } from "react"
-import { campusOptions, carriersOptions, periodsOptions } from "@/data/schedule-options"
+import { campusOptions, carriersOptions, subjectsOptions, periodsOptions } from "@/data/schedule-options"
 import { Button } from "@nextui-org/react"
 import { Select } from "@/components/nextui/Select"
 import { SectionCard } from "@/components"
 import { BiSearchAlt } from "react-icons/bi"
+
+// Define the types to the options
+type CarrierOption = typeof carriersOptions[keyof typeof carriersOptions]
+type SubjectOption = typeof subjectsOptions[keyof typeof subjectsOptions]
 
 interface Props {
   campus: string | null
@@ -13,7 +17,26 @@ interface Props {
   setPeriod: Dispatch<SetStateAction<string | null>>
   getSchedules: () => Promise<void>
 }
+
 export const SchedulesSelector = ({ setCampus, setCarrier, setPeriod, getSchedules, campus }: Props) => {
+
+  const getCarriersAndSubjects = (codes: string[], options: Record<string, CarrierOption | SubjectOption>) => {
+    return codes
+      .map(code => options[code])
+      .filter(Boolean)
+      .map(option => ({ key: option.code, label: option.name }))
+  }
+
+  const schoolsOptions = () => {
+    const campusData = campusOptions.find(campusOption => campusOption.code === campus)
+    if (!campusData) return []
+
+    const carriers = getCarriersAndSubjects(campusData.carriers, carriersOptions)
+    const subjects = getCarriersAndSubjects(campusData.subjects, subjectsOptions)
+
+    return [...carriers, ...subjects]
+  }
+
   return (
     <SectionCard className="w-full flex flex-wrap justify-center items-center gap-2">
       <div className="flex-1 flex flex-wrap justify-evenly gap-2">
@@ -27,11 +50,7 @@ export const SchedulesSelector = ({ setCampus, setCarrier, setPeriod, getSchedul
         <Select
           label="Escuela"
           errorMessage="Debe seleccionar una escuela"
-          options={
-            Object.values(carriersOptions).filter(
-              carrier => campusOptions.find(campusOption => campusOption.code === campus)?.carriers.includes(carrier)
-            ).map(carrier => ({ key: carrier.code, label: carrier.name }))
-          }
+          options={schoolsOptions()}
           size="sm"
           onValueChange={setCarrier}
         />
