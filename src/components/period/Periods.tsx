@@ -13,7 +13,8 @@ export const Periods = async () => {
       {periods && periods.map((period) => (
         <PeriodButton
           key={period.id}
-          id={`${period.type.charAt(0)}-${period.typeId}`}
+          id={period.id}
+          code={`${period.type.charAt(0)}-${period.typeId}`}
           title={`${period.type} ${period.typeId}`}
           startDate={formatDate(period.startDate.toString())}
           endDate={formatDate(period.endDate.toString())}
