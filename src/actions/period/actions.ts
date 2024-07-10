@@ -31,3 +31,8 @@ export async function addPeriod(userId: number, periodData: Omit<AcademicPeriod,
   // revalidatePath("/principal")
   return createdAcademicPeriod
 }
+
+export async function deletePeriod(periodId: number) {
+  const deletedPeriod = await db.academicPeriod.delete({ where: { id: periodId } })
+  return deletedPeriod
+}
