@@ -2,7 +2,6 @@ import { notFound } from "next/navigation"
 import { NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import db from "@/libs/db"
-import { carriersOptions, campusOptions, periodsOptions, subjectsOptions } from "@/data/schedule-options"
 
 export async function GET(req: Request) {
   if (process.env.NODE_ENV !== "development") return notFound()
@@ -11,10 +10,6 @@ export async function GET(req: Request) {
   await db.course.deleteMany()
   await db.academicPeriod.deleteMany()
   await db.user.deleteMany()
-
-  await db.campus.deleteMany()
-  await db.carrier.deleteMany()
-  await db.period.deleteMany()
 
   // Create users
   const user1 = await db.user.create({
@@ -58,49 +53,6 @@ export async function GET(req: Request) {
       academicPeriodId: academicPeriod1.id,
     }
   })
-
-  // // Add carriers
-  // for (const carrier of Object.values(carriersOptions)) {
-  //   await db.carrier.create({
-  //     data: {
-  //       name: carrier.name,
-  //       code: carrier.code,
-  //     },
-  //   })
-  // }
-
-  // for (const subject of Object.values(subjectsOptions)) {
-  //   await db.subject.create({
-  //     data: {
-  //       name: subject.name,
-  //       code: subject.code,
-  //     },
-  //   })
-  // }
-
-  // for (const campus of campusOptions) {
-  //   await db.campus.create({
-  //     data: {
-  //       name: campus.name,
-  //       code: campus.code,
-  //       carriers: {
-  //         connect: campus.carriers.map(carrier => ({ code: carrier.code })),
-  //       },
-  //       subjects: {
-  //         connect: campus.subjects.map(subject => ({ code: subject.code })),
-  //       },
-  //     },
-  //   })
-  // }
-
-  // for (const period of periodsOptions) {
-  //   await db.period.create({
-  //     data: {
-  //       name: period.name,
-  //       code: period.code,
-  //     },
-  //   })
-  // }
 
   console.log("Data created successfully.")
   return NextResponse.json({ message: "Data created successfully." }, { status: 200 })
