@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation"
 import { NextResponse } from "next/server"
 import db from "@/libs/db"
-import bcrypt from "bcrypt"
+import bcrypt from "bcryptjs"
 
 export async function GET(req: Request) {
   if (process.env.NODE_ENV !== "development") return notFound()

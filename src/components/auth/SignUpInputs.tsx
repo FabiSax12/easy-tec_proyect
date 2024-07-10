@@ -1,5 +1,5 @@
 import { Input } from "@nextui-org/react"
-import { InputProps, InputsData } from "./interfaces"
+import { InputProps, InputsData } from "@/interfaces/components/auth"
 
 interface Props {
   data: InputsData

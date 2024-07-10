@@ -1,14 +1,5 @@
-import { CoursesMainTable, SectionCard, Semestres } from "@/components"
+import { redirect } from "next/navigation"
 
-export default function Home() {
-  return (
-    <main className="home-main_grid gap-10">
-      <SectionCard title="Semestres" className="h-min">
-        <Semestres />
-      </SectionCard>
-      <SectionCard title="Cursos">
-        <CoursesMainTable />
-      </SectionCard>
-    </main>
-  )
+export default async function Home() {
+  return redirect("/principal/dashboard")
 }

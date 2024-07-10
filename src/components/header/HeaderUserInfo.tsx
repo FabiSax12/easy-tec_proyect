@@ -1,26 +1,34 @@
 "use client"
-import { UserUI } from "@/components"
-import useUserInfo from "@/store/user"
-import { Badge, Button } from "@nextui-org/react"
 import { signOut } from "next-auth/react"
+import { UserUI } from "@/components/nextui"
+import { Badge, Button } from "@nextui-org/react"
 import { FaRegBell } from "react-icons/fa6"
 import { MdLogout } from "react-icons/md"
+import { User } from "next-auth"
 
-
-export const HeaderUserInfo = () => {
-  const user = useUserInfo((state) => state)
-
+export const HeaderUserInfo = ({ user }: { user: User | undefined }) => {
   return (
     <>
-      <Badge content={user.notifications} shape="circle" color="danger" className="cursor-pointer">
+      <Badge content={2} shape="circle" color="danger" className="cursor-pointer">
         <FaRegBell className="text-black text-lg cursor-pointer" />
       </Badge>
-      <UserUI
-        name={user.name}
-        lastname={user.lastname}
-        carrier={user.carrier}
-        avatarImage={user.avatarImageURL}
-      />
+      {
+        user ? (
+          <UserUI
+            name={user.name}
+            lastname={user.lastname}
+            carrier={user.carrier}
+            avatarImage={user.avatar}
+          />
+        ) : (
+          <UserUI
+            name="Usuario"
+            lastname="Invitado"
+            carrier="Sin carrera"
+            avatarImage="/avatar.png"
+          />
+        )
+      }
       <Button
         size="md"
         variant="light"
@@ -33,3 +41,4 @@ export const HeaderUserInfo = () => {
     </>
   )
 }
+

@@ -1,16 +1,32 @@
+/* eslint-disable indent */
 "use client"
-import React, { useCallback, useMemo } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
+import { useCourses } from "@/hooks/useCoursesTable"
+import { useSession } from "next-auth/react"
+import { getUserCourses } from "@/actions"
+import { Course } from "@prisma/client"
+import { TableActionsMenu, TableBottomContent, TableFilterOption } from "@/components/courses"
 import {
-  Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
-  Input, Button, DropdownTrigger, Dropdown, DropdownMenu, DropdownItem,
-  Chip, User as Course, Pagination, ChipProps
+  Table, TableHeader, TableColumn, TableBody, TableRow,
+  TableCell, Input, Button, Chip, ChipProps
 } from "@nextui-org/react"
-import { FaPlus, FaChevronDown } from "react-icons/fa6"
-import { HiDotsVertical } from "react-icons/hi"
+import { FaPlus } from "react-icons/fa6"
 import { LuSearch } from "react-icons/lu"
-import { columns, courses, statusOptions } from "@/components/nextui/data"
-import { capitalize } from "@/utils/Capitalize"
-import { useCourses } from "./useCoursesTable"
+
+const columns = [
+  { name: "ID", uid: "id", sortable: true },
+  { name: "NOMBRE", uid: "name", sortable: true },
+  { name: "CRÉDITOS", uid: "credits", sortable: true },
+  { name: "PERIODO", uid: "period", sortable: true },
+  { name: "ESTADO", uid: "state", sortable: true },
+  { name: "ACCIONES", uid: "actions" }
+]
+
+const statusOptions = [
+  { name: "Pendiente", uid: "pendiente" },
+  { name: "Cursando", uid: "cursando" },
+  { name: "Aprobado", uid: "aprobado" }
+]
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
   aprobado: "success",
@@ -18,28 +34,35 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
   cursando: "primary",
 }
 
-type Course = typeof courses[0];
-
 interface Props {
-  filter?: { semester?: string; state?: string };
+  filter?: { period?: string; state?: string };
 }
 
 export const CoursesMainTable = ({ filter }: Props) => {
+  const { data } = useSession()
+  const userId = data?.user?.id ?? null
+  const [courses, setCourses] = useState<Course[]>([])
   const {
-    filterValue, selectedKeys, visibleColumns, setFilterValue, setSelectedKeys, setVisibleColumns,
-    statusFilter, setStatusFilter, semesterFilter, setSemesterFilter, rowsPerPage, setRowsPerPage,
-    sortDescriptor, setSortDescriptor, page, setPage, items, onClear, onNextPage, onPreviousPage,
-    onRowsPerPageChange, onSearchChange, pages
-  } = useCourses({ filter })
+    filterValue, selectedKeys, visibleColumns, setSelectedKeys, setVisibleColumns, statusFilter,
+    setStatusFilter, semesterFilter, sortDescriptor, setSortDescriptor, page, setPage,
+    items, onClear, onNextPage, onPreviousPage, onRowsPerPageChange, onSearchChange, pages
+  } = useCourses({ filter, courses })
+
+  useEffect(() => {
+    const fetchCourses = async (id: number) => {
+      const courses = await getUserCourses(id)
+      setCourses(courses)
+    }
+
+    if (userId) fetchCourses(parseInt(userId))
+  }, [userId])
 
   const hasSearchFilter = Boolean(filterValue)
 
   const headerColumns = useMemo(() => {
     if (visibleColumns === "all") return columns
 
-    return columns.filter((column) =>
-      Array.from(visibleColumns).includes(column.uid)
-    )
+    return columns.filter(column => Array.from(visibleColumns).includes(column.uid))
   }, [visibleColumns])
 
   const filteredItems = useMemo(() => {
@@ -60,7 +83,7 @@ export const CoursesMainTable = ({ filter }: Props) => {
     }
     if (semesterFilter !== "all") {
       filteredCourses = filteredCourses.filter(
-        (course) => semesterFilter == course.semester
+        (course) => semesterFilter == `${course.academicPeriodId}`
       )
     }
 
@@ -80,54 +103,25 @@ export const CoursesMainTable = ({ filter }: Props) => {
   const renderCell = useCallback(
     (course: Course, columnKey: React.Key) => {
       const cellValue = course[columnKey as keyof Course]
-
       switch (columnKey) {
         case "name":
-          return (
-            <Course
-              // avatarProps={{radius: "lg", src: course.avatar}}
-              description={course.teacher}
-              name={cellValue}
-            >
-              {course.teacher}
-            </Course>
-          )
+          return <>
+            <p className="text-bold text-small capitalize">{course.name}</p>
+            <p className="text-xs">{course.teacher}</p>
+          </>
         case "state":
-          return (
-            <Chip
-              className="capitalize"
-              color={statusColorMap[course.state]}
-              size="sm"
-              variant="flat"
-            >
-              {cellValue}
-            </Chip>
-          )
+          return <Chip
+            className="capitalize"
+            color={statusColorMap[course.state]}
+            size="sm"
+            variant="flat"
+          >
+            <>{cellValue}</>
+          </Chip>
         case "actions":
-          return (
-            <div className="relative flex justify-end items-center gap-2">
-              <Dropdown>
-                <DropdownTrigger>
-                  <Button isIconOnly size="sm" variant="light">
-                    <HiDotsVertical className="text-default-300" />
-                  </Button>
-                </DropdownTrigger>
-                <DropdownMenu>
-                  <DropdownItem color="primary" variant="light">
-                    Abrir
-                  </DropdownItem>
-                  <DropdownItem color="success" variant="light">
-                    Editar
-                  </DropdownItem>
-                  <DropdownItem className="text-danger" color="danger" variant="solid">
-                    Eliminar
-                  </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-            </div>
-          )
+          return <TableActionsMenu />
         default:
-          return cellValue
+          return <>{cellValue}</>
       }
     },
     []
@@ -147,48 +141,18 @@ export const CoursesMainTable = ({ filter }: Props) => {
             onValueChange={onSearchChange}
           />
           <div className="flex gap-3">
-            <Dropdown>
-              <DropdownTrigger className="sm:flex">
-                <Button endContent={<FaChevronDown className="text-small" />} variant="flat">
-                  Estado
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                disallowEmptySelection
-                aria-label="Table Columns"
-                closeOnSelect={false}
-                selectedKeys={statusFilter}
-                selectionMode="multiple"
-                onSelectionChange={setStatusFilter}
-              >
-                {statusOptions.map((status) => (
-                  <DropdownItem key={status.uid} className="capitalize">
-                    {capitalize(status.name)}
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
-            </Dropdown>
-            <Dropdown>
-              <DropdownTrigger className="sm:flex">
-                <Button endContent={<FaChevronDown className="text-small" />} variant="flat">
-                  Columnas
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                disallowEmptySelection
-                aria-label="Table Columns"
-                closeOnSelect={false}
-                selectedKeys={visibleColumns}
-                selectionMode="multiple"
-                onSelectionChange={setVisibleColumns}
-              >
-                {columns.map((column) => (
-                  <DropdownItem key={column.uid} className="capitalize">
-                    {capitalize(column.name)}
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
-            </Dropdown>
+            <TableFilterOption
+              title="Estado"
+              selectedKeys={statusFilter}
+              onSelectionChange={setStatusFilter}
+              options={statusOptions}
+            />
+            <TableFilterOption
+              title="Columnas"
+              selectedKeys={visibleColumns}
+              onSelectionChange={setVisibleColumns}
+              options={columns}
+            />
             <Button color="primary" endContent={<FaPlus />}>
               Nuevo
             </Button>
@@ -221,32 +185,14 @@ export const CoursesMainTable = ({ filter }: Props) => {
   ])
 
   const bottomContent = useMemo(() => {
-    return (
-      <div className="py-2 px-2 flex justify-between items-center">
-        <span className="w-[30%] text-small text-default-400">
-          {selectedKeys === "all"
-            ? "Todos seleccionados"
-            : `${selectedKeys.size} de ${filteredItems.length} seleccionados`}
-        </span>
-        <Pagination
-          isCompact
-          showControls
-          showShadow
-          color="primary"
-          page={page}
-          total={pages}
-          onChange={setPage}
-        />
-        <div className="hidden sm:flex w-[30%] justify-end gap-2">
-          <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onPreviousPage}>
-            Previous
-          </Button>
-          <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onNextPage}>
-            Next
-          </Button>
-        </div>
-      </div>
-    )
+    return <TableBottomContent
+      filteredItems={filteredItems}
+      selectedKeys={selectedKeys}
+      page={page} pages={pages}
+      setPage={setPage}
+      onPreviousPage={onPreviousPage}
+      onNextPage={onNextPage}
+    />
   }, [selectedKeys, items.length, page, pages, hasSearchFilter])
 
   return (

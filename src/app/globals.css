@@ -2,9 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Calendario */
-.fc {
-  @apply mx-32
+hr {
+  @apply border-default
 }
 
 .home-main_grid {
@@ -12,9 +11,16 @@
   grid-template-columns: 1fr 3fr;
   grid-auto-rows: min-content;
   max-height: calc(100vh - 20px);
-  /* overflow-y: auto; */
 }
 
+@media (max-width: 1024px) {
+  .home-main_grid {
+    /* background-color: red; */
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+}
 
 /* :root {
   --foreground-rgb: 0, 0, 0;

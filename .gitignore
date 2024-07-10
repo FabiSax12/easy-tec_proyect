@@ -43,3 +43,9 @@ next-env.d.ts
 
 # prisma
 /prisma/migrations
+
+# IDE
+.vscode
+
+# Credentials
+cookies.json

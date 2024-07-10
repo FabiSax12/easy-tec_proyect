@@ -1,4 +1,7 @@
-import { CoursesMainTable, SectionCard } from "@/components"
+import { Suspense } from "react"
+import { SectionCard } from "@/components"
+import { CoursesMainTable } from "@/components/nextui"
+import { Spinner } from "@nextui-org/react"
 
 interface Props {
   params: { id: string }
@@ -6,6 +9,10 @@ interface Props {
 
 export default function Page({ params }: Props) {
   return (
-    <SectionCard><CoursesMainTable filter={{ semester: params.id }} /></SectionCard>
+    <SectionCard>
+      <Suspense fallback={<Spinner color="primary" />}>
+        <CoursesMainTable filter={{ period: params.id }} />
+      </Suspense>
+    </SectionCard>
   )
 }

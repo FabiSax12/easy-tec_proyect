@@ -1,18 +1,21 @@
+/* eslint-disable indent */
 "use client"
 import { useState, useEffect, ChangeEvent } from "react"
+import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
+import { addPeriod } from "@/actions"
 import { Select, NumberInput } from "@/components"
-import useUserInfo from "@/store/user"
-import { formatDate } from "@/utils/FormatDate"
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react"
 
-const data = [{ label: "Semestre", value: "S" }, { label: "Verano", value: "V" }]
+const options = [{ label: "Semestre", value: "S" }, { label: "Verano", value: "V" }]
 
 interface Props {
   isOpen: boolean;
   onOpenChange: () => void;
 }
 
-export const ModalSemestre = ({ isOpen, onOpenChange }: Props) => {
+export const AddPeriodModal = ({ isOpen, onOpenChange }: Props) => {
+  const router = useRouter()
   const [modality, setModality] = useState("")
   const [title, setTitle] = useState("")
   const [id, setId] = useState(0)
@@ -20,38 +23,43 @@ export const ModalSemestre = ({ isOpen, onOpenChange }: Props) => {
   const [endDate, setEndDate] = useState("")
   const [loading, setLoading] = useState(false)
 
+  const { data: session } = useSession()
+
   useEffect(() => {
-    if (modality === "") {
-      setTitle("")
-      setId(0)
-    }
-    else if (modality === "S") {
-      setTitle("Semestre")
-      setId(1)
-    }
-    else if (modality === "V") {
-      setTitle("Verano")
-      setId(2024)
+    switch (modality) {
+      case "S":
+        setTitle("Semestre")
+        setId(1)
+        break
+      case "V":
+        setTitle("Verano")
+        setId(2024)
+        break
+      default:
+        setTitle("")
+        setId(0)
+        break
     }
   }, [modality])
 
-  const addSemester = useUserInfo((state) => state.addSemester)
-
   const onAccept = async () => {
     setLoading(true)
-    const semestreData = {
-      title: `${title} ${id}`,
-      id: `${modality}-${id}`,
-      startDate: formatDate(startDate),
-      endDate: formatDate(endDate),
+
+    const semesterData = {
+      type: title,
+      typeId: id,
+      startDate: new Date(startDate),
+      endDate: new Date(endDate),
     }
+
     try {
-      setTimeout(() => { }, 2000)
-      addSemester(semestreData)
+      if (!session) return
+      await addPeriod(parseInt(session.user.id), semesterData)
       setModality("")
       setStartDate("")
       setEndDate("")
       onOpenChange()
+      router.refresh()
     } catch (error) {
       console.error("Error al añadir semestre:", error)
     } finally {
@@ -95,32 +103,22 @@ export const ModalSemestre = ({ isOpen, onOpenChange }: Props) => {
               <div className="flex gap-6">
                 <Select
                   className="flex-[3]"
-                  options={data}
+                  options={options}
                   autoFocus
                   label="Título"
                   placeholder="Modalidad"
                   variant="bordered"
-                  value={title}
+                  value={modality}
                   onChange={(e: ChangeEvent<HTMLSelectElement>) => setModality(e.target.value)}
                 />
-                {
-                  modality !== "" ? (
-                    <NumberInput
-                      label={modality === "S" ? "Semestre" : "Año"}
-                      className="flex-[1] w-full"
-                      value={id}
-                      setValue={setId}
-                      min={1}
-                    />
-                  ) : (
-                    <NumberInput
-                      className="flex-[1] w-full"
-                      value={0}
-                      setValue={setId}
-                      disabled
-                    />
-                  )
-                }
+                <NumberInput
+                  label={modality === "S" ? "Semestre" : "Año"}
+                  className="flex-[1] w-full"
+                  value={id}
+                  setValue={setId}
+                  min={1}
+                  disabled={!modality}
+                />
               </div>
               <Input
                 label="Fecha de inicio"
@@ -143,7 +141,7 @@ export const ModalSemestre = ({ isOpen, onOpenChange }: Props) => {
               <Button color="danger" variant="flat" onPress={onClose}>
                 Cancelar
               </Button>
-              <Button color="primary" onPress={onAccept} isDisabled={!canAddSemester || loading} >
+              <Button color="primary" onPress={onAccept} isDisabled={!canAddSemester || loading}>
                 {loading ? "Añadiendo..." : "Añadir"}
               </Button>
             </ModalFooter>
