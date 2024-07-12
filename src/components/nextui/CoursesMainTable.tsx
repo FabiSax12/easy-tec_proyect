@@ -12,6 +12,7 @@ import {
 } from "@nextui-org/react"
 import { FaPlus } from "react-icons/fa6"
 import { LuSearch } from "react-icons/lu"
+import { AddCourseModal } from "../courses/AddCourseModal"
 
 const columns = [
   { name: "ID", uid: "id", sortable: true },
@@ -41,6 +42,7 @@ interface Props {
 export const CoursesMainTable = ({ filter }: Props) => {
   const { data } = useSession()
   const userId = data?.user?.id ?? null
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [courses, setCourses] = useState<Course[]>([])
   const {
     filterValue, selectedKeys, visibleColumns, setSelectedKeys, setVisibleColumns, statusFilter,
@@ -58,6 +60,10 @@ export const CoursesMainTable = ({ filter }: Props) => {
   }, [userId])
 
   const hasSearchFilter = Boolean(filterValue)
+
+  const onModalOpenChange = useCallback(() => {
+    setIsModalOpen(prev => !prev)
+  }, [])
 
   const headerColumns = useMemo(() => {
     if (visibleColumns === "all") return columns
@@ -119,7 +125,7 @@ export const CoursesMainTable = ({ filter }: Props) => {
             <>{cellValue}</>
           </Chip>
         case "actions":
-          return <TableActionsMenu />
+          return <TableActionsMenu courseId={course.id} />
         default:
           return <>{cellValue}</>
       }
@@ -153,7 +159,7 @@ export const CoursesMainTable = ({ filter }: Props) => {
               onSelectionChange={setVisibleColumns}
               options={columns}
             />
-            <Button color="primary" endContent={<FaPlus />}>
+            <Button color="primary" endContent={<FaPlus />} onClick={onModalOpenChange}>
               Nuevo
             </Button>
           </div>
@@ -195,7 +201,7 @@ export const CoursesMainTable = ({ filter }: Props) => {
     />
   }, [selectedKeys, items.length, page, pages, hasSearchFilter])
 
-  return (
+  return <>
     <Table
       aria-label="Example table with custom cells, pagination and sorting"
       isHeaderSticky
@@ -232,5 +238,6 @@ export const CoursesMainTable = ({ filter }: Props) => {
         )}
       </TableBody>
     </Table>
-  )
+    <AddCourseModal isOpen={isModalOpen} onOpenChange={onModalOpenChange} />
+  </>
 }
