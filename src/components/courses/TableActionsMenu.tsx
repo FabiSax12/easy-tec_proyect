@@ -2,8 +2,22 @@ import Link from "next/link"
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react"
 import { FaArrowUpRightFromSquare, FaPen, FaTrashCan } from "react-icons/fa6"
 import { HiDotsVertical } from "react-icons/hi"
+import { deleteCourse } from "@/actions"
+import { useRouter } from "next/navigation"
 
-export function TableActionsMenu() {
+interface Props {
+  courseId: any
+}
+
+export function TableActionsMenu({ courseId }: Props) {
+  const router = useRouter()
+
+  const onDeleteCourse = async () => {
+    console.log("Deleting course", courseId)
+    await deleteCourse(courseId)
+    router.refresh()
+  }
+
   return (
     <div className="relative flex justify-end items-center gap-2">
       <span className="w-full flex items-center justify-evenly lg:hidden">
@@ -31,7 +45,7 @@ export function TableActionsMenu() {
           <DropdownItem color="success" variant="light" startContent={<FaPen />}>
             Editar
           </DropdownItem>
-          <DropdownItem className="text-danger" color="danger" variant="solid" startContent={<FaTrashCan />}>
+          <DropdownItem className="text-danger" color="danger" variant="solid" startContent={<FaTrashCan />} onPress={onDeleteCourse}>
             Eliminar
           </DropdownItem>
         </DropdownMenu>
