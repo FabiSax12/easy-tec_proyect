@@ -9,6 +9,7 @@ interface Option {
 
 interface Props extends Omit<SelectProps, "children"> {
   options: Option[]
+  children?: any
 }
 
 export function Select(props: Props) {
@@ -16,17 +17,18 @@ export function Select(props: Props) {
 
   return (
     <SelectUI
-      defaultSelectedKeys={"S"}
       selectedKeys={value}
       onSelectionChange={setValue}
       onChange={props.onChange}
       {...props}
     >
-      {props.options.map((period) => (
-        <SelectItem key={period.value} value={period.value}>
-          {period.label}
-        </SelectItem>
-      ))}
+      {props.children
+        ? props.children
+        : props.options.map((period) => (
+          <SelectItem key={period.value} value={period.value}>
+            {period.label}
+          </SelectItem>
+        ))}
     </SelectUI>
   )
 }
