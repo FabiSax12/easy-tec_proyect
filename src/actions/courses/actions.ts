@@ -17,6 +17,11 @@ export async function getUserCourses(userId: number) {
   return courses
 }
 
+export async function getUserCoursesByPeriod(periodId: number) {
+  const courses = await db.course.findMany({ where: { academicPeriodId: periodId } })
+  return courses
+}
+
 export async function addCourse(courseData: Course) {
   const course = await db.course.create({ data: courseData })
   return course
