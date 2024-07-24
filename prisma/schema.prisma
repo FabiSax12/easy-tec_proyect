@@ -25,6 +25,7 @@ model User {
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   academicPeriods AcademicPeriod[]
+  task            Task[]
 }
 
 model AcademicPeriod {
@@ -36,6 +37,7 @@ model AcademicPeriod {
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
   courses   Course[]
+  tasks     Task[]
 }
 
 model Course {
@@ -48,6 +50,23 @@ model Course {
   credits          Int
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
+  academicPeriodId Int
+  academicPeriod   AcademicPeriod @relation(fields: [academicPeriodId], references: [id])
+  tasks            Task[]
+}
+
+model Task {
+  id               Int            @id @default(autoincrement())
+  name             String
+  description      String
+  state            String
+  date             DateTime
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  userId           Int
+  user             User           @relation(fields: [userId], references: [id])
+  courseId         Int
+  course           Course         @relation(fields: [courseId], references: [id])
   academicPeriodId Int
   academicPeriod   AcademicPeriod @relation(fields: [academicPeriodId], references: [id])
 }

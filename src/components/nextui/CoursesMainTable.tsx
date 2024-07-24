@@ -1,11 +1,11 @@
 /* eslint-disable indent */
 "use client"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
-import { useCourses } from "@/hooks/useCoursesTable"
 import { useSession } from "next-auth/react"
-import { getUserCourses } from "@/actions"
 import { Course } from "@prisma/client"
-import { TableActionsMenu, TableBottomContent, TableFilterOption } from "@/components/courses"
+import { useCourses } from "@/hooks/useCoursesTable"
+import { getUserCourses } from "@/actions"
+import { TableActionsMenu, TableBottomContent, TableFilterOption, AddCourseModal } from "@/components/courses"
 import {
   Table, TableHeader, TableColumn, TableBody, TableRow,
   TableCell, Input, Button, Chip, ChipProps
@@ -41,6 +41,7 @@ interface Props {
 export const CoursesMainTable = ({ filter }: Props) => {
   const { data } = useSession()
   const userId = data?.user?.id ?? null
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [courses, setCourses] = useState<Course[]>([])
   const {
     filterValue, selectedKeys, visibleColumns, setSelectedKeys, setVisibleColumns, statusFilter,
@@ -58,6 +59,10 @@ export const CoursesMainTable = ({ filter }: Props) => {
   }, [userId])
 
   const hasSearchFilter = Boolean(filterValue)
+
+  const onModalOpenChange = useCallback(() => {
+    setIsModalOpen(prev => !prev)
+  }, [])
 
   const headerColumns = useMemo(() => {
     if (visibleColumns === "all") return columns
@@ -119,7 +124,7 @@ export const CoursesMainTable = ({ filter }: Props) => {
             <>{cellValue}</>
           </Chip>
         case "actions":
-          return <TableActionsMenu />
+          return <TableActionsMenu courseId={course.id} />
         default:
           return <>{cellValue}</>
       }
@@ -130,17 +135,17 @@ export const CoursesMainTable = ({ filter }: Props) => {
   const topContent = useMemo(() => {
     return (
       <div className="flex flex-col gap-4">
-        <div className="flex justify-between gap-3 items-end">
+        <div className="flex flex-wrap justify-between gap-3 items-end">
           <Input
             isClearable
-            className="w-full sm:max-w-[44%]"
+            className="w-full"
             placeholder="Buscar por nombre..."
             startContent={<LuSearch />}
             value={filterValue}
             onClear={() => onClear()}
             onValueChange={onSearchChange}
           />
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <TableFilterOption
               title="Estado"
               selectedKeys={statusFilter}
@@ -153,7 +158,7 @@ export const CoursesMainTable = ({ filter }: Props) => {
               onSelectionChange={setVisibleColumns}
               options={columns}
             />
-            <Button color="primary" endContent={<FaPlus />}>
+            <Button color="primary" endContent={<FaPlus />} onClick={onModalOpenChange}>
               Nuevo
             </Button>
           </div>
@@ -195,7 +200,7 @@ export const CoursesMainTable = ({ filter }: Props) => {
     />
   }, [selectedKeys, items.length, page, pages, hasSearchFilter])
 
-  return (
+  return <>
     <Table
       aria-label="Example table with custom cells, pagination and sorting"
       isHeaderSticky
@@ -232,5 +237,6 @@ export const CoursesMainTable = ({ filter }: Props) => {
         )}
       </TableBody>
     </Table>
-  )
+    <AddCourseModal isOpen={isModalOpen} onOpenChange={onModalOpenChange} />
+  </>
 }
