@@ -1,18 +1,17 @@
 /* eslint-disable indent */
 "use client"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
-import { useCourses } from "@/hooks/useCoursesTable"
 import { useSession } from "next-auth/react"
-import { getUserCourses } from "@/actions"
 import { Course } from "@prisma/client"
-import { TableActionsMenu, TableBottomContent, TableFilterOption } from "@/components/courses"
+import { useCourses } from "@/hooks/useCoursesTable"
+import { getUserCourses } from "@/actions"
+import { TableActionsMenu, TableBottomContent, TableFilterOption, AddCourseModal } from "@/components/courses"
 import {
   Table, TableHeader, TableColumn, TableBody, TableRow,
   TableCell, Input, Button, Chip, ChipProps
 } from "@nextui-org/react"
 import { FaPlus } from "react-icons/fa6"
 import { LuSearch } from "react-icons/lu"
-import { AddCourseModal } from "../courses/AddCourseModal"
 
 const columns = [
   { name: "ID", uid: "id", sortable: true },
@@ -136,17 +135,17 @@ export const CoursesMainTable = ({ filter }: Props) => {
   const topContent = useMemo(() => {
     return (
       <div className="flex flex-col gap-4">
-        <div className="flex justify-between gap-3 items-end">
+        <div className="flex flex-wrap justify-between gap-3 items-end">
           <Input
             isClearable
-            className="w-full sm:max-w-[44%]"
+            className="w-full"
             placeholder="Buscar por nombre..."
             startContent={<LuSearch />}
             value={filterValue}
             onClear={() => onClear()}
             onValueChange={onSearchChange}
           />
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <TableFilterOption
               title="Estado"
               selectedKeys={statusFilter}
