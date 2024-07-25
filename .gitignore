@@ -9,7 +9,6 @@ planner.md
 .pnp.js
 .yarn/install-state.gz
 /docker
-/prisma/migrations
 
 # testing
 /coverage
@@ -40,9 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# prisma
-/prisma/migrations
 
 # IDE
 .vscode
