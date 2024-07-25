@@ -64,7 +64,7 @@ async function getSchedule(campus: string, carrier: string, period: string, cred
   const browser = await puppeteer.launch({
     headless: true,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    executablePath: process.env.NODE_ENV === "production" ? "/usr/bin/chromium-browser" : puppeteer.executablePath()
+    // executablePath: process.env.NODE_ENV === "production" ? "/usr/bin/chromium-browser" : puppeteer.executablePath()
   })
   const page = await browser.newPage()
 
