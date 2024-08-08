@@ -8,7 +8,7 @@ import { createTask, deleteTask } from "@/actions"
 import { Chip, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Tooltip } from "@nextui-org/react"
 import { TaskModal, TaskCardInfo } from "@/components/trello"
 import { IoEllipsisVerticalSharp, IoOpen, IoPencil, IoTrash } from "react-icons/io5"
-import { FaClock } from "react-icons/fa6"
+import { FaCheck, FaClock } from "react-icons/fa6"
 
 interface Props {
   task: Task & { course: { name: string } };
@@ -78,6 +78,7 @@ export function TaskCard({ task, handleTaskUpdate, handleTaskDelete, handleTaskA
         bg-white p-2 h-16 min-h-[64px] flex text-left rounded-xl cursor-grab relative group ring-default ring-1 active:cursor-grabbing
         ${isDragging ? "opacity-30 ring-default cursor-grabbing" : "opacity-100"}
         ${timeLeft.daysLeft > 3 ? "hover:ring-primary" : timeLeft.daysLeft > 0 ? "hover:ring-warning" : "hover:ring-danger"}
+        ${task.state === "delivered" && "hover:ring-success"}
       `}
     >
       <span>
@@ -104,22 +105,32 @@ export function TaskCard({ task, handleTaskUpdate, handleTaskDelete, handleTaskA
         </DropdownMenu>
       </Dropdown>
 
-      <Chip
-        variant="solid"
-        color={timeLeft.daysLeft > 3 ? "primary" : timeLeft.daysLeft > 0 ? "warning" : "danger"}
-        size="sm"
-        startContent={<FaClock />}
-        className="absolute -top-2 -right-2"
-      >
-        {timeLeft.daysLeft > 0
-          ? `${timeLeft.daysLeft}d`
-          : timeLeft.hoursLeft > 0
-            ? `${timeLeft.hoursLeft}h`
-            : timeLeft.minutesLeft > 0
-              ? `${timeLeft.minutesLeft}m`
-              : "---"
-        }
-      </Chip>
+      {task.state !== "delivered"
+        ? <Chip
+          variant="solid"
+          color={timeLeft.daysLeft > 3 ? "primary" : timeLeft.daysLeft > 0 ? "warning" : "danger"}
+          size="sm"
+          startContent={<FaClock />}
+          className="absolute -top-2 -right-2"
+        >
+          {timeLeft.daysLeft > 0
+            ? `${timeLeft.daysLeft}d`
+            : timeLeft.hoursLeft > 0
+              ? `${timeLeft.hoursLeft}h`
+              : timeLeft.minutesLeft > 0
+                ? `${timeLeft.minutesLeft}m`
+                : "---"
+          }
+        </Chip>
+        : <Chip
+          variant="solid"
+          color="success"
+          size="sm"
+          className="absolute -top-2 -right-2"
+        >
+          <FaCheck />
+        </Chip>
+      }
 
       {isCardOpen && <TaskCardInfo task={task} isCardOpen={isCardOpen} setIsCardOpen={setIsCardOpen} />}
       {isModalOpen && <TaskModal
