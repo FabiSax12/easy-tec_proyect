@@ -47,13 +47,10 @@ docker-compose -f docker-compose.dev.yml up -d --build
 Una vez que la base de datos esté en funcionamiento, ejecuta el siguiente comando para sincronizar el esquema de la base de datos con Prisma:
 
 ```bash
-npx prisma migrate dev
+npx prisma db push
 ```
 
-6. **Activar la Semilla de Datos:**
-Si deseas llenar la base de datos con alguna información de ejemplo para el desarollo, puedes acceder a [http://localhost:3000/api/seed](http://localhost:3000/api/seed). Esto creará algunos usuarios, periodos acádemicos y cursos.
-
-7. **Inicia el Servidor de Desarrollo:**
+6. **Inicia el Servidor de Desarrollo:**
 Una vez que todas las dependencias estén instaladas y el entorno esté configurado, puedes iniciar el servidor de desarrollo:
 
 ```bash
@@ -61,6 +58,9 @@ npm run dev
 ```
 
 Esto iniciará el servidor de desarrollo y podrás acceder a la aplicación en [http://localhost:3000](http://localhost:3000)
+
+7. **Activar la Semilla de Datos:**
+Si deseas llenar la base de datos con alguna información de ejemplo para el desarollo, puedes acceder a [http://localhost:3000/api/seed](http://localhost:3000/api/seed). Esto creará algunos usuarios, periodos acádemicos y cursos.
 
 ### Contribuye
 
