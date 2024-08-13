@@ -6,6 +6,11 @@ const nextConfig = {
         protocol: "https",
         hostname: "cdn.icon-icons.com",
       },
+      {
+        // CDN for images
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
     ],
   }
 }
