@@ -44,17 +44,26 @@ export const authOptions: AuthOptions = {
     async session({ session, token }) {
       if (token) {
         session.user = {
-          id: token.id,
-          email: token.email,
-          name: token.name,
-          lastname: token.lastname,
-          carrier: token.carrier,
-          avatar: token.avatar
+          id: token.id || session.user.id,
+          email: token.email || session.user.email,
+          name: token.name || session.user.name,
+          lastname: token.lastname || session.user.lastname,
+          carrier: token.carrier || session.user.carrier,
+          avatar: token.avatar || session.user.avatar
         }
       }
       return session
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
+      if (trigger === "update" && session.user) {
+        token.id = session.user.id || token.id
+        token.email = session.user.email || token.email
+        token.name = session.user.name || token.name
+        token.lastname = session.user.lastname || token.lastname
+        token.carrier = session.user.carrier || token.carrier
+        token.avatar = session.user.avatar || token.avatar
+      }
+
       if (user) {
         token.id = user.id
         token.email = user.email
