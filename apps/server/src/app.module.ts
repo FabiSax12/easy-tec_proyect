@@ -5,13 +5,14 @@ import { UsersModule } from "./users/users.module"
 import { PeriodsModule } from "./periods/periods.module"
 import { CoursesModule } from "./courses/courses.module"
 import { TasksModule } from "./tasks/tasks.module"
+import { AuthModule } from "./auth/auth.module"
 
 const serveClient = ServeStaticModule.forRoot({
   rootPath: join(__dirname, "../..", "client/dist")
 })
 
 @Module({
-  imports: [serveClient, UsersModule, PeriodsModule, CoursesModule, TasksModule],
+  imports: [serveClient, UsersModule, PeriodsModule, CoursesModule, TasksModule, AuthModule],
   controllers: [],
   providers: [],
 })
