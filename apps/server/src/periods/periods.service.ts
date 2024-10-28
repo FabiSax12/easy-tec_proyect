@@ -1,26 +1,33 @@
-import { Injectable } from '@nestjs/common';
-import { CreatePeriodDto } from './dto/create-period.dto';
-import { UpdatePeriodDto } from './dto/update-period.dto';
+import { Injectable } from "@nestjs/common"
+import { CreatePeriodDto } from "./dto/create-period.dto"
+import { UpdatePeriodDto } from "./dto/update-period.dto"
+import { PrismaService } from "src/prisma/prisma.service"
 
 @Injectable()
 export class PeriodsService {
-  create(createPeriodDto: CreatePeriodDto) {
-    return 'This action adds a new period';
+  constructor(private prisma: PrismaService) { }
+
+  create(data: CreatePeriodDto) {
+    return this.prisma.academicPeriod.create({ data })
   }
 
   findAll() {
-    return `This action returns all periods`;
+    return this.prisma.academicPeriod.findMany()
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} period`;
+    return this.prisma.academicPeriod.findUnique({ where: { id } })
   }
 
-  update(id: number, updatePeriodDto: UpdatePeriodDto) {
-    return `This action updates a #${id} period`;
+  update(id: number, data: UpdatePeriodDto) {
+    return this.prisma.academicPeriod.update({ where: { id }, data })
   }
 
   remove(id: number) {
-    return `This action removes a #${id} period`;
+    return this.prisma.academicPeriod.delete({ where: { id } })
+  }
+
+  findByUser(userId: number) {
+    return this.prisma.academicPeriod.findMany({ where: { userId } })
   }
 }
