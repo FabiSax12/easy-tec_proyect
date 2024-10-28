@@ -1,9 +1,8 @@
-// import { useRouter } from "next/navigation"
-// import { useSession } from "next-auth/react"
-// import { addPeriod } from "@/actions"
 import { useState, useEffect, ChangeEvent } from "react"
 import { Select, NumberInput } from "@/components"
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react"
+import { useNavigate } from "react-router-dom"
+import { useAuth } from "@/hooks/useAuth"
 
 const options = [{ label: "Semestre", value: "S" }, { label: "Verano", value: "V" }]
 
@@ -12,8 +11,25 @@ interface Props {
   onOpenChange: () => void;
 }
 
+interface PeriodData {
+  type: string;
+  typeId: number;
+  startDate: Date;
+  endDate: Date;
+}
+
+function addPeriod(userId: number, periodData: PeriodData) {
+  return fetch("/api/periods", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ userId, ...periodData }),
+  })
+}
+
 export const AddPeriodModal = ({ isOpen, onOpenChange }: Props) => {
-  // const router = useRouter()
+  const navigate = useNavigate()
   const [modality, setModality] = useState("")
   const [title, setTitle] = useState("")
   const [id, setId] = useState(0)
@@ -21,7 +37,7 @@ export const AddPeriodModal = ({ isOpen, onOpenChange }: Props) => {
   const [endDate, setEndDate] = useState("")
   const [loading, setLoading] = useState(false)
 
-  // const { data: session } = useSession()
+  const { user } = useAuth()
 
   useEffect(() => {
     switch (modality) {
@@ -43,26 +59,31 @@ export const AddPeriodModal = ({ isOpen, onOpenChange }: Props) => {
   const onAccept = async () => {
     setLoading(true)
 
-    // const semesterData = {
-    //   type: title,
-    //   typeId: id,
-    //   startDate: new Date(startDate),
-    //   endDate: new Date(endDate),
-    // }
+    const semesterData = {
+      type: title,
+      typeId: id,
+      startDate: new Date(startDate),
+      endDate: new Date(endDate),
+    }
 
-    // try {
-    //   if (!session) return
-    //   // await addPeriod(parseInt(session.user.id), semesterData)
-    //   setModality("")
-    //   setStartDate("")
-    //   setEndDate("")
-    //   onOpenChange()
-    //   router.refresh()
-    // } catch (error) {
-    //   console.error("Error al añadir semestre:", error)
-    // } finally {
-    //   setLoading(false)
-    // }
+    try {
+      const res = await addPeriod(user!.id, semesterData)
+      const data = await res.json()
+
+      if (res.ok) {
+        setModality("")
+        setStartDate("")
+        setEndDate("")
+        onOpenChange()
+        navigate(0)
+      } else {
+        console.error("Error al añadir semestre:", data)
+      }
+    } catch (error) {
+      console.error("Error al añadir semestre:", error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const canAddSemester = title && startDate && endDate

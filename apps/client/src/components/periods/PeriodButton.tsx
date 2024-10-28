@@ -14,7 +14,7 @@ export const PeriodButton = ({ title, id, code, startDate, endDate }: Props) => 
   return (
     <div className="min-w-36 px-4 py-2 flex justify-between items-center border-b-2 border-b-default-200">
       <Link
-        to={`/principal/semestre/${code}`}
+        to={`/principal/periodo/${code}`}
         className="group"
       >
         <h3 className="flex items-center gap-3 group-hover:text-primary transition-colors ease-in">

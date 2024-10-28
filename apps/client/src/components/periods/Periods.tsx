@@ -1,17 +1,19 @@
-// import { getServerSession } from "next-auth"
-// import { getUserPeriods } from "@/actions"
-// import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions"
-import { PeriodButton, AddPeriodButton } from "@/components/periods"
+import { useAuth, useFetch } from "@/hooks"
+import { Period } from "@/types/api"
 import { formatDate } from "@/utils/formatDate"
+import { PeriodButton, AddPeriodButton } from "@/components/periods"
+import { Spinner } from "../Spinner"
 
 export const Periods = () => {
-  // const session = await getServerSession(authOptions)
-  // const periods = session ? await getUserPeriods(parseInt(session.user.id)) : null
-  const periods = []
+  const { user } = useAuth()
+  const state = useFetch<Period[]>(`/api/periods/user/${user?.id}`, [user])
 
+  console.log("Render", state.status)
   return (
     <div className="grid grid-cols-2 lg:block">
-      {periods && periods.map((period) => (
+      {state.status === "loading" && <Spinner />}
+      {state.status === "error" && <p>{state.error.message}</p>}
+      {state.status === "success" && state.data.map(period => (
         <PeriodButton
           key={period.id}
           id={period.id}
