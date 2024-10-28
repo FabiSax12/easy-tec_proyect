@@ -2,11 +2,15 @@ import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom"
 import { DashboadLayout, AuthLayout } from "@/layouts"
 import { DashboardPage, AuthPage } from "@/pages"
 import "./App.css"
+import { NotFound } from "./pages/NotFound"
+import { Period } from "./pages/Period"
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Navigate to="/principal/dashboard" />,
+    errorElement: <NotFound />,
+    ErrorBoundary: NotFound,
   },
   {
     path: "/auth",
@@ -25,6 +29,10 @@ const router = createBrowserRouter([
       {
         path: "dashboard",
         element: <DashboardPage />,
+      },
+      {
+        path: "periodo/:id",
+        element: <Period />
       },
       {
         path: "calendario",
