@@ -12,8 +12,8 @@ export const Periods = () => {
   return (
     <div className="grid grid-cols-2 lg:block">
       {state.status === "loading" && <Spinner />}
-      {state.status === "error" && <p>{state.error.message}</p>}
-      {state.status === "success" && state.data.map(period => (
+      {state.status === "error" && <p>{state.error?.message}</p>}
+      {state.status === "success" && state.data?.map(period => (
         <PeriodButton
           key={period.id}
           id={period.id}
