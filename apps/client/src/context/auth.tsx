@@ -1,99 +1,127 @@
 import { createContext, ReactNode, useEffect, useState } from "react"
+import { jwtDecode } from "jwt-decode"
 
-type Status = "loading" | "error" | "authenticated" | "unauthenticated" | "success"
+type Status = "loading" | "error" | "authenticated" | "unauthenticated" | "success";
+
+interface User {
+  id: number;
+  name: string;
+  lastname: string;
+  email: string;
+  avatar: string;
+  carrier: string;
+  verified: boolean;
+}
 
 interface SigninFormValues {
-  email: string
-  password: string
+  email: string;
+  password: string;
 }
 
 interface SignupFormValues {
-  name: string
-  lastname: string
-  email: string
-  password: string
+  name: string;
+  lastname: string;
+  email: string;
+  password: string;
 }
 
-export interface AuthContextProps {
-  status: Status;
-  authToken: string | null;
-  login: (user: SigninFormValues) => void;
-  signUp: (user: SignupFormValues) => void;
-  logout: () => void;
+interface AuthUnauthenticated {
+  status: "unauthenticated" | "loading" | "error" | "success";
+  user: null;
+  authToken: null;
 }
+
+interface AuthAuthenticated {
+  status: "authenticated";
+  user: User;
+  authToken: string;
+}
+
+export type AuthContextProps =
+  | AuthUnauthenticated & { login: (user: SigninFormValues) => Promise<void>; signUp: (user: SignupFormValues) => Promise<void>; logout: () => void; }
+  | AuthAuthenticated & { login: (user: SigninFormValues) => Promise<void>; signUp: (user: SignupFormValues) => Promise<void>; logout: () => void; };
 
 export const AuthContext = createContext<AuthContextProps | undefined>(undefined)
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [status, setStatus] = useState<Status>("unauthenticated")
-  const [authToken, setAuthToken] = useState<string | null>(() => {
-    return localStorage.getItem("token")
-  })
+  const [status, setStatus] = useState<Status>("loading")
+  const [user, setUser] = useState<User | null>(null)
+  const [authToken, setAuthToken] = useState<string | null>(() => sessionStorage.getItem("access_token"))
 
   useEffect(() => {
-    const localStorageToken = localStorage.getItem("access_token")
-    if (localStorageToken) setAuthToken(localStorageToken)
-    setStatus(localStorageToken ? "authenticated" : "unauthenticated")
+    const storedToken = sessionStorage.getItem("access_token")
+    if (storedToken) {
+      setAuthToken(storedToken)
+      setUser(jwtDecode<User>(storedToken))
+      setStatus("authenticated")
+    } else {
+      setStatus("unauthenticated")
+    }
   }, [])
 
   const signUp = async (user: SignupFormValues) => {
+    setStatus("loading")
     try {
-      setStatus("loading")
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(user),
-      }).then(res => res.json())
+      })
 
-      if (res.status === 201) return setStatus("success")
-      setStatus("error")
-      console.log(res)
+      if (!res.ok) {
+        setStatus("error")
+        console.error("Error al registrarse", await res.json())
+        return
+      }
 
+      setStatus("success")
     } catch (error) {
       setStatus("error")
-      console.error(error)
+      console.error("Error en la conexión", error)
     }
   }
 
   const login = async (user: SigninFormValues) => {
-
+    setStatus("loading")
     try {
-      setStatus("loading")
-
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(user),
-      }).then(res => res.json())
+      })
 
-      if (res.access_token) {
-        localStorage.setItem("access_token", res.access_token)
-        setAuthToken(res.access_token)
+      const data = await res.json()
+      if (res.ok && data.access_token) {
+        sessionStorage.setItem("access_token", data.access_token)
+        setAuthToken(data.access_token)
+        setUser(jwtDecode<User>(data.access_token))
         setStatus("authenticated")
-        return
+      } else {
+        setStatus("error")
+        console.log("Login fallido:", data)
       }
-
-      setStatus("error")
-      console.log(res)
     } catch (error) {
       setStatus("error")
-      console.error(error)
+      console.error("Error en la conexión", error)
     }
   }
 
   const logout = () => {
-    localStorage.removeItem("access_token")
+    sessionStorage.removeItem("access_token")
     setAuthToken(null)
+    setUser(null)
     setStatus("unauthenticated")
   }
 
-  return <AuthContext.Provider value={{
-    status,
-    authToken,
-    login,
-    signUp,
-    logout
-  }}>
-    {children}
-  </AuthContext.Provider>
+  return (
+    <AuthContext.Provider
+      value={
+        status === "authenticated"
+          ? { status, user: user as User, authToken: authToken as string, login, signUp, logout }
+          : { status, user: null, authToken: null, login, signUp, logout }
+      }
+    >
+      {children}
+    </AuthContext.Provider>
+  )
 }

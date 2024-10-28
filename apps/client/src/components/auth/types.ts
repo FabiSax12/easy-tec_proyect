@@ -1,3 +1,12 @@
+export type AuthMode = "login" | "sign-up";
+
+export interface FormData {
+  email: string;
+  name: string;
+  lastname: string;
+  password: string;
+}
+
 export interface InputsData {
   email: string;
   name: string;
@@ -6,11 +15,9 @@ export interface InputsData {
   [key: string]: string;
 }
 
-type Value = InputsData["email"] | InputsData["name"] | InputsData["lastname"] | InputsData["password"];
-
 export interface InputProps {
   label: string;
   placeholder: string;
   type: string;
-  value: Value;
+  value: keyof FormData;
 }

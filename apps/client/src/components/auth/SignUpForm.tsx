@@ -1,17 +1,17 @@
 import { Dispatch, SetStateAction, useEffect } from "react"
 import { Button, Link } from "@nextui-org/react"
 import { SignUpInputs } from "@/components/auth"
-import { InputsData } from "./types"
+import { type AuthMode, type FormData } from "./types"
 import { useAuth } from "@/hooks/useAuth"
 
 interface Props {
-  data: InputsData
-  handleInputChange: (key: string, value: string) => void
-  setSelected: Dispatch<SetStateAction<string | number>>
+  data: FormData
+  handleInputChange: (key: keyof FormData, value: string) => void
+  setSelected: Dispatch<SetStateAction<AuthMode>>
   setError: Dispatch<SetStateAction<string>>
 }
 
-function validateInputs(data: InputsData) {
+function validateInputs(data: FormData) {
   const { email, name, lastname, password } = data
 
   if (!email.endsWith("@estudiantec.cr")) {

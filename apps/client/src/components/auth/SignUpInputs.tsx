@@ -1,9 +1,9 @@
 import { Input } from "@nextui-org/react"
-import { InputProps, InputsData } from "./types"
+import { type FormData, type InputProps } from "./types"
 
 interface Props {
-  data: InputsData
-  handleInputChange: (key: string, value: string) => void
+  data: FormData
+  handleInputChange: (key: keyof FormData, value: string) => void
 }
 
 const inputs: InputProps[] = [

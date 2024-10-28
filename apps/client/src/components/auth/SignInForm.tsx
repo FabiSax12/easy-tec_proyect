@@ -1,16 +1,13 @@
 import { type Dispatch, type SetStateAction, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import { SignInInputs } from "@/components/auth"
+import { type AuthMode, type FormData, SignInInputs } from "@/components/auth"
 import { Button, Link } from "@nextui-org/react"
 import { useAuth } from "@/hooks/useAuth"
 
 interface Props {
-  data: {
-    email: string;
-    password: string;
-  };
-  handleInputChange: (key: string, value: string) => void;
-  setSelected: Dispatch<SetStateAction<string | number>>;
+  data: FormData;
+  handleInputChange: (key: keyof FormData, value: string) => void;
+  setSelected: Dispatch<SetStateAction<AuthMode>>;
   setError: Dispatch<SetStateAction<string>>;
 }
 
