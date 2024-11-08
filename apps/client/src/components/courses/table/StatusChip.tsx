@@ -8,6 +8,7 @@ const STATUS_COLOR_MAP: StateColorMap = {
   aprobado: "success",
   pendiente: "default",
   cursando: "primary",
+  "": "default"
 }
 
 export const StatusChip = ({ status }: { status: keyof StateColorMap }) => (

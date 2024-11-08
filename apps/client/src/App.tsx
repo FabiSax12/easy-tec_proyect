@@ -1,16 +1,13 @@
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom"
 import { DashboadLayout, AuthLayout } from "@/layouts"
-import { DashboardPage, AuthPage } from "@/pages"
+import { AuthPage, DashboardPage, NotFound, Period, ProtectedPage, SchedulesPage } from "@/pages"
 import "./App.css"
-import { NotFound } from "./pages/NotFound"
-import { Period } from "./pages/Period"
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Navigate to="/principal/dashboard" />,
+    element: <Navigate to="/principal/dashboard" replace />,
     errorElement: <NotFound />,
-    ErrorBoundary: NotFound,
   },
   {
     path: "/auth",
@@ -24,30 +21,38 @@ const router = createBrowserRouter([
   },
   {
     path: "/principal",
-    element: <DashboadLayout />,
+    element: <ProtectedPage />,
     children: [
       {
-        path: "dashboard",
-        element: <DashboardPage />,
-      },
-      {
-        path: "periodo/:id",
-        element: <Period />
-      },
-      {
-        path: "calendario",
-      },
-      {
-        path: "horario",
-      },
-      {
-        path: "config",
-      },
-      {
         path: "",
-        element: <Navigate to="/principal/dashboard" />,
+        element: <DashboadLayout />,
+        children: [
+          {
+            path: "dashboard",
+            element: <DashboardPage />,
+          },
+          {
+            path: "periodo/:id",
+            element: <Period />
+          },
+          {
+            path: "calendario",
+          },
+          {
+            path: "horario",
+            element: <SchedulesPage />
+          },
+          {
+            path: "config",
+          },
+          {
+            path: "*",
+            element: <Navigate to="/principal/dashboard" />,
+          }
+        ]
       }
     ]
+
   }
 ])
 
