@@ -29,8 +29,9 @@ interface Props {
 export const AddCourseModal = ({ isOpen, onOpenChange }: Props) => {
   const navigate = useNavigate()
   const { user } = useAuth()
+
   const { postData, status: coursePostStatus } = usePost<Omit<Course, "id">>()
-  const periodsFetch = useFetch<Period[]>(`/api/periods/user/${user?.id}`)
+  const periodsFetch = useFetch<Period[]>(user ? `/api/periods/user/${user?.id}` : null, [user])
 
   const [formData, setFormData] = useState<Omit<Course, "id">>({
     name: "",

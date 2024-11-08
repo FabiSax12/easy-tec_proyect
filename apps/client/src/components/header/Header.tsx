@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { NavLink } from "react-router-dom"
-import { useAuth } from "@/hooks/useAuth"
+import { useAuth } from "@/hooks"
 import { UserInfo, Logo } from "./"
 import { HiBars3 } from "react-icons/hi2"
 
@@ -27,7 +27,7 @@ import { HiBars3 } from "react-icons/hi2"
 
 export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const { status } = useAuth()
+  const { accessToken } = useAuth()
 
   return (
     <header className="bg-white border-b-1 border-b-default">
@@ -115,7 +115,7 @@ export const Header = () => {
 
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           {
-            status === "unauthenticated" ? (
+            !accessToken ? (
               <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
                 Log in <span aria-hidden="true">&rarr;</span>
               </a>

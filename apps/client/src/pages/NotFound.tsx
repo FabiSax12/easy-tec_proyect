@@ -1,10 +1,8 @@
-import { useAuth } from "@/hooks/useAuth"
-import { useMemo } from "react"
 import { NavLink } from "react-router-dom"
+import { useAuth } from "@/hooks"
 
 export const NotFound = () => {
-  const { status } = useAuth()
-  const isAuthenticated = useMemo(() => status === "authenticated", [status])
+  const { accessToken } = useAuth()
 
   return (
     <>
@@ -15,10 +13,10 @@ export const NotFound = () => {
           <p className="mt-6 text-base leading-7 text-gray-600">Lo sentimos, no pudimos encontrar la pagina que estabas buscando.</p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <NavLink
-              to={isAuthenticated ? "/principal/dashboard" : "/auth"}
+              to={accessToken ? "/principal/dashboard" : "/auth"}
               className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              {isAuthenticated ? "Volver al dashboard" : "Iniciar sesion"}
+              {accessToken ? "Volver al dashboard" : "Iniciar sesion"}
             </NavLink>
             <a href="#" className="text-sm font-semibold text-gray-900">
               Reportar un error <span aria-hidden="true">&rarr;</span>

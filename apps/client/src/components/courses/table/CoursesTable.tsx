@@ -1,7 +1,7 @@
 import { Key, useCallback, useMemo, useState } from "react"
-import { useFetch, usePagination } from "@/hooks"
+import { useAuth, useFetch, usePagination } from "@/hooks"
 import { columns, statusOptions } from "./config"
-import { Course, User } from "@/types/api"
+import { Course } from "@/types/api"
 import { TopContent } from "./TopContent"
 import { BottomContent } from "./BottomContent"
 import {
@@ -20,12 +20,12 @@ import { TableActions } from "./TableActions"
 const INITIAL_VISIBLE_COLUMNS = ["name", "credits", "period", "state", "actions"]
 
 interface Props {
-  user: User;
   filter?: { period?: string; state?: string };
 }
 
-export const CoursesTable = ({ user }: Props) => {
-  const fetchState = useFetch<Course[]>(`/api/courses/user/${user.id}`, [user])
+export const CoursesTable = ({ filter }: Props) => {
+  const { user } = useAuth()
+  const fetchState = useFetch<Course[]>(user ? `/api/courses/user/${user?.id}` : null, [user])
 
   const [filterValue, setFilterValue] = useState("")
   const [visibleColumns, setVisibleColumns] = useState<Selection>(new Set(INITIAL_VISIBLE_COLUMNS))
@@ -85,7 +85,7 @@ export const CoursesTable = ({ user }: Props) => {
         case "state":
           return <StatusChip status={course.state ?? "Sin estado"} />
         case "actions":
-          return <TableActions />
+          return <TableActions courseId={course.id} />
         default:
           return cellValue
       }
