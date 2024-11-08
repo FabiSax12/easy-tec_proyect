@@ -6,13 +6,14 @@ import { PeriodsModule } from "./periods/periods.module"
 import { CoursesModule } from "./courses/courses.module"
 import { TasksModule } from "./tasks/tasks.module"
 import { AuthModule } from "./auth/auth.module"
+import { SchedulesModule } from "./schedules/schedules.module"
 
 const serveClient = ServeStaticModule.forRoot({
   rootPath: join(__dirname, "../..", "client/dist")
 })
 
 @Module({
-  imports: [serveClient, UsersModule, PeriodsModule, CoursesModule, TasksModule, AuthModule],
+  imports: [serveClient, UsersModule, PeriodsModule, CoursesModule, TasksModule, AuthModule, SchedulesModule],
   controllers: [],
   providers: [],
 })

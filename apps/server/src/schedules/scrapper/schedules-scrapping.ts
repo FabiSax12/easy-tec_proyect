@@ -1,7 +1,28 @@
-/* eslint-disable indent */
-import fs from "fs/promises"
+import fs from "node:fs/promises"
 import puppeteer, { Page } from "puppeteer"
-import { ScheduleRow } from "@/interfaces/api-data/schedule"
+
+interface Schedule {
+  day: string
+  start: string
+  end: string
+}
+
+export interface ScheduleRow {
+  id: string
+  code: string
+  subject: string
+  group: number
+  credits: number
+  schedule: Schedule
+  schedules: Schedule[]
+  classroom: string
+  teacher: string
+  teachers: string[]
+  totalSpaces: number
+  typeOfSubject: string
+  typeOfGroup: string
+  reserved: number
+}
 
 async function saveCookies(page: Page) {
   const cookies = await page.cookies()
@@ -68,6 +89,7 @@ async function getSchedule(campus: string, carrier: string, period: string, cred
   })
   const page = await browser.newPage()
 
+
   await preventResources(page)
   await loadCookies(page)
 
@@ -92,7 +114,26 @@ async function getSchedule(campus: string, carrier: string, period: string, cred
 
     const data = tableRows.map(row => {
       const cells = Array.from(row.querySelectorAll("td"))
-      const dataRow: Partial<ScheduleRow> = {}
+      const dataRow: ScheduleRow = {
+        id: "",
+        classroom: "",
+        code: "",
+        credits: 0,
+        group: 0,
+        reserved: 0,
+        schedule: {
+          day: "",
+          start: "",
+          end: ""
+        },
+        schedules: [],
+        subject: "",
+        teacher: "",
+        teachers: [""],
+        totalSpaces: 0,
+        typeOfGroup: "",
+        typeOfSubject: ""
+      }
 
       cells.forEach((cell, index) => {
         switch (headers[index]) {
