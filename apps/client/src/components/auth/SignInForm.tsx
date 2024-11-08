@@ -1,8 +1,8 @@
 import { type Dispatch, type SetStateAction, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
+import { useAuth } from "@/hooks"
 import { type AuthMode, type FormData, SignInInputs } from "@/components/auth"
 import { Button, Link } from "@nextui-org/react"
-import { useAuth } from "@/hooks/useAuth"
 
 interface Props {
   data: FormData;
@@ -13,16 +13,18 @@ interface Props {
 
 export const SignInForm = ({ data, handleInputChange, setSelected, setError }: Props) => {
   const navigate = useNavigate()
-  const { login, status } = useAuth()
+  const { login, accessToken } = useAuth()
 
   useEffect(() => {
-    if (status === "authenticated") navigate("/principal")
-    if (status === "error") setError("Error al iniciar sesión")
-  }, [status, navigate, setError])
+    if (accessToken) navigate("/principal")
+    // if (!accessToken) setError("Error al iniciar sesión")
+  }, [accessToken, navigate, setError])
 
   const handleSubmit = async () => {
     setError("")
-    login(data)
+    login(data.email, data.password).then(() => {
+      if (!accessToken) setError("Error al iniciar sesión")
+    })
   }
 
   return (

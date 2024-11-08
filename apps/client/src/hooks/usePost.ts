@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react"
-import { useAuth } from "./useAuth"
+import { useAuth } from "@/hooks"
 
 interface PostState {
   status: "idle" | "loading" | "success" | "error";
@@ -11,7 +11,7 @@ interface UsePostReturn<T> extends PostState {
 }
 
 export function usePost<T>(): UsePostReturn<T> {
-  const { authToken } = useAuth()
+  const { accessToken } = useAuth()
   const [state, setState] = useState<PostState>({ status: "idle" })
 
   const postData = useCallback(async (url: string, data: T) => {
@@ -23,7 +23,7 @@ export function usePost<T>(): UsePostReturn<T> {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: authToken ? `Bearer ${authToken}` : "",
+          Authorization: accessToken ? `Bearer ${accessToken}` : "",
         },
         body: JSON.stringify(data),
       })
@@ -36,7 +36,7 @@ export function usePost<T>(): UsePostReturn<T> {
     } catch (error) {
       setState({ status: "error", error: error as Error })
     }
-  }, [authToken])
+  }, [accessToken])
 
   return { ...state, postData }
 }

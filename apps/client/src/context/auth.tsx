@@ -1,66 +1,39 @@
-import { createContext, ReactNode, useEffect, useState } from "react"
-import { jwtDecode } from "jwt-decode"
+import React, { createContext, useCallback, useEffect, useState } from "react"
+import { ApiResponse, AuthResponse, SignUpRequest, User } from "@/types"
 
-type Status = "loading" | "error" | "authenticated" | "unauthenticated" | "success";
-
-interface User {
-  id: number;
-  name: string;
-  lastname: string;
-  email: string;
-  avatar: string;
-  carrier: string;
-  verified: boolean;
+interface AuthContextProps {
+  user: User | null;
+  accessToken: string | null;
+  signup: (user: SignUpRequest) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => void;
+  refreshAccessToken: () => Promise<string | null>;
 }
-
-interface SigninFormValues {
-  email: string;
-  password: string;
-}
-
-interface SignupFormValues {
-  name: string;
-  lastname: string;
-  email: string;
-  password: string;
-}
-
-interface AuthUnauthenticated {
-  status: "unauthenticated" | "loading" | "error" | "success";
-  user: null;
-  authToken: null;
-}
-
-interface AuthAuthenticated {
-  status: "authenticated";
-  user: User;
-  authToken: string;
-}
-
-export type AuthContextProps =
-  | AuthUnauthenticated & { login: (user: SigninFormValues) => Promise<void>; signUp: (user: SignupFormValues) => Promise<void>; logout: () => void; }
-  | AuthAuthenticated & { login: (user: SigninFormValues) => Promise<void>; signUp: (user: SignupFormValues) => Promise<void>; logout: () => void; };
 
 export const AuthContext = createContext<AuthContextProps | undefined>(undefined)
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [status, setStatus] = useState<Status>("loading")
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [accessToken, setAccessToken] = useState<string | null>(() => localStorage.getItem("access_token"))
+  const [refreshToken, setRefreshToken] = useState<string | null>(() => localStorage.getItem("refresh_token"))
   const [user, setUser] = useState<User | null>(null)
-  const [authToken, setAuthToken] = useState<string | null>(() => sessionStorage.getItem("access_token"))
 
-  useEffect(() => {
-    const storedToken = sessionStorage.getItem("access_token")
-    if (storedToken) {
-      setAuthToken(storedToken)
-      setUser(jwtDecode<User>(storedToken))
-      setStatus("authenticated")
-    } else {
-      setStatus("unauthenticated")
+  const getUser = useCallback(async () => {
+    if (!accessToken || user) return
+
+    try {
+      const response = await fetch("/api/auth/profile", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      })
+      const { data } = await response.json() as ApiResponse<User>
+
+      if (data) setUser(data)
+    } catch (error) {
+      console.error("Failed to get user data", error)
+      setUser(null)
     }
-  }, [])
+  }, [accessToken, user])
 
-  const signUp = async (user: SignupFormValues) => {
-    setStatus("loading")
+  const signup = async (user: SignUpRequest) => {
     try {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
@@ -69,58 +42,94 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       })
 
       if (!res.ok) {
-        setStatus("error")
         console.error("Error al registrarse", await res.json())
         return
       }
 
-      setStatus("success")
     } catch (error) {
-      setStatus("error")
       console.error("Error en la conexión", error)
     }
   }
 
-  const login = async (user: SigninFormValues) => {
-    setStatus("loading")
+  const login = async (email: string, password: string) => {
     try {
-      const res = await fetch("/api/auth/login", {
+      const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(user),
+        body: JSON.stringify({ email, password }),
       })
+      const { data } = await response.json() as ApiResponse<AuthResponse>
 
-      const data = await res.json()
-      if (res.ok && data.access_token) {
-        sessionStorage.setItem("access_token", data.access_token)
-        setAuthToken(data.access_token)
-        setUser(jwtDecode<User>(data.access_token))
-        setStatus("authenticated")
-      } else {
-        setStatus("error")
-        console.log("Login fallido:", data)
+      if (data?.access_token) {
+        localStorage.setItem("access_token", data.access_token)
+        setAccessToken(data.access_token)
+      }
+
+      if (data?.refresh_token) {
+        localStorage.setItem("refresh_token", data.refresh_token)
+        setRefreshToken(data.refresh_token)
       }
     } catch (error) {
-      setStatus("error")
-      console.error("Error en la conexión", error)
+      console.error("Login failed", error)
     }
+
+    await getUser()
   }
 
   const logout = () => {
-    sessionStorage.removeItem("access_token")
-    setAuthToken(null)
+    localStorage.removeItem("access_token")
+    localStorage.removeItem("refresh_token")
+    setAccessToken(null)
+    setRefreshToken(null)
     setUser(null)
-    setStatus("unauthenticated")
   }
 
-  return (
-    <AuthContext.Provider
-      value={
-        status === "authenticated"
-          ? { status, user: user as User, authToken: authToken as string, login, signUp, logout }
-          : { status, user: null, authToken: null, login, signUp, logout }
+  const refreshAccessToken = useCallback(async () => {
+    try {
+      const response = await fetch("/api/auth/refresh", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken }),
+      })
+
+      const { data } = await response.json() as ApiResponse<AuthResponse>
+
+      if (data?.access_token) {
+        localStorage.setItem("access_token", data.access_token)
+        setAccessToken(data.access_token)
+        return data.access_token
+      } else {
+        logout()
+        return null
       }
-    >
+    } catch (error) {
+      console.error("Failed to refresh access token", error)
+      logout()
+      return null
+    }
+  }, [refreshToken])
+
+  useEffect(() => {
+    getUser()
+
+    const checkTokenExpiration = () => {
+      if (!accessToken) return
+
+      const payload = JSON.parse(atob(accessToken.split(".")[1]))
+      const expiresAt = payload.exp * 1000
+      const timeLeft = expiresAt - Date.now()
+
+      // Refresh if less than 5 minutes left
+      if (timeLeft < 5 * 60 * 1000) refreshAccessToken()
+    }
+
+    // Check every minute
+    const interval = setInterval(checkTokenExpiration, 60 * 1000)
+    return () => clearInterval(interval)
+  }, [accessToken, refreshToken, refreshAccessToken, getUser])
+
+  return (
+    <AuthContext.Provider value={{ user, accessToken, signup, login, logout, refreshAccessToken }}>
       {children}
     </AuthContext.Provider>
   )

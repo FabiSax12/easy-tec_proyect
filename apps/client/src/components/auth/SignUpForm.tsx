@@ -1,8 +1,8 @@
-import { Dispatch, SetStateAction, useEffect } from "react"
+import { Dispatch, SetStateAction } from "react"
 import { Button, Link } from "@nextui-org/react"
-import { SignUpInputs } from "@/components/auth"
+import { useAuth } from "@/hooks"
 import { type AuthMode, type FormData } from "./types"
-import { useAuth } from "@/hooks/useAuth"
+import { SignUpInputs } from "@/components/auth"
 
 interface Props {
   data: FormData
@@ -30,18 +30,18 @@ function validateInputs(data: FormData) {
 }
 
 export const SignUpForm = ({ data, handleInputChange, setSelected, setError }: Props) => {
-  const { status, signUp } = useAuth()
+  const { signup } = useAuth()
 
-  useEffect(() => {
-    if (status === "authenticated") setSelected("login")
-    if (status === "error") setError("Error al crear la cuenta")
-  }, [status, setSelected, setError])
+  // useEffect(() => {
+  //   if (status === "authenticated") setSelected("login")
+  //   if (status === "error") setError("Error al crear la cuenta")
+  // }, [status, setSelected, setError])
 
   const handleSubmit = async () => {
     const validationError = validateInputs(data)
     if (validationError) return setError(validationError)
     setError("")
-    signUp(data)
+    signup(data)
     setSelected("login")
   }
 

@@ -6,11 +6,11 @@ type FetchState<T> = {
   error?: Error;
 };
 
-export function useFetch<T>(url: string, dependencies: unknown[] = []): FetchState<T> {
+export function useFetch<T>(url: string | null, dependencies: unknown[] = []): FetchState<T> {
   const [state, setState] = useState<FetchState<T>>({ status: "loading" })
 
   useEffect(() => {
-    console.log(url, dependencies)
+    if (!url) return
     if (dependencies?.some(d => !d)) return
 
     const fetchData = async () => {
@@ -18,7 +18,6 @@ export function useFetch<T>(url: string, dependencies: unknown[] = []): FetchSta
       const controller = new AbortController()
 
       try {
-        console.log("fetching", url)
         const response = await fetch(url, {
           signal: controller.signal,
         })
