@@ -17,7 +17,10 @@ export class UsersService {
 
     if (!createdUser) throw new ConflictException("User not created")
 
-    return { message: "User created successful", status: HttpStatus.CREATED }
+    return {
+      message: "User created successful",
+      statusCode: HttpStatus.CREATED
+    }
   }
 
   findAll() {
