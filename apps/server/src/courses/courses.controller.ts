@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from "@nestjs/common"
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from "@nestjs/common"
 import { CoursesService } from "./courses.service"
 import { CreateCourseDto } from "./dto/create-course.dto"
 import { UpdateCourseDto } from "./dto/update-course.dto"
@@ -13,8 +13,15 @@ export class CoursesController {
   }
 
   @Get()
-  findAll() {
-    return this.coursesService.findAll()
+  async findAll(
+    @Query("user") user: string,
+    @Query("period") period: string
+  ) {
+    if (!user && !period) return this.coursesService.findAll()
+
+    if (user && period) return this.coursesService.findByUserAndPeriod(+user, period)
+    if (user) return this.coursesService.findByUser(+user)
+    if (period) return this.coursesService.findByPeriod(period)
   }
 
   @Get(":id")
@@ -32,7 +39,7 @@ export class CoursesController {
     return this.coursesService.remove(+id)
   }
 
-  @Get("user/:id")
+  @Get(":id")
   findByUser(@Param("id") id: string) {
     return this.coursesService.findByUser(+id)
   }

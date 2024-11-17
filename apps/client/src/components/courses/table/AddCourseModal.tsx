@@ -8,6 +8,7 @@ import {
   ModalBody, ModalFooter, Button,
   Input, Chip, SelectItem, ChipProps,
 } from "@nextui-org/react"
+import { periodLongToShort } from "@/utils/format-period"
 
 const statusOptions = [
   { label: "Pendiente", value: "pendiente" },
@@ -73,22 +74,22 @@ export const AddCourseModal = ({ isOpen, onOpenChange }: Props) => {
 
   const handleChange = (key: keyof Omit<Course, "id">) => (value: string | number) => {
     setFormData(prev => ({ ...prev, [key]: value }))
+
+    if (key === "academicPeriodId") {
+      const period = periodsFetch.data?.find(p => p.id == value)
+      setFormData(prev => ({
+        ...prev,
+        period: period ? periodLongToShort(`${period.type} ${period.typeId}`) : ""
+      }))
+    }
   }
 
   const onAccept = async () => {
-    if (!user || periodsFetch.status !== "success") return
+    // if (!user || periodsFetch.status !== "success") return
 
-    const { period: selectedPeriod, ...courseData } = formData
-    const periodId = parseInt(selectedPeriod)
-    const periodLabel = periodsFetch.data?.find(p => p.id === periodId)?.type
-
-    await postData("/api/courses", {
-      ...courseData,
-      academicPeriodId: periodId,
-      period: periodLabel ? `${periodLabel.charAt(0)}-${periodLabel.split(" ")[1]}` : "",
-    })
+    await postData("/api/courses", formData)
     onOpenChange()
-    navigate(0)
+    // navigate(0)
   }
 
   const canAddCourse = Object.values(formData).every(field => !!field)
@@ -113,7 +114,9 @@ export const AddCourseModal = ({ isOpen, onOpenChange }: Props) => {
               type={type}
               min={min}
               value={formData[key as keyof Omit<Course, "id">].toString()}
-              onChange={e => handleChange(key as keyof Omit<Course, "id">)(type === "number" ? parseInt(e.target.value) : e.target.value)}
+              onChange={e =>
+                handleChange(key as keyof Omit<Course, "id">)(Number(e.target.value) || e.target.value)
+              }
             />
           ))}
           <div className="flex gap-3 flex-col sm:flex-row">
@@ -123,7 +126,7 @@ export const AddCourseModal = ({ isOpen, onOpenChange }: Props) => {
               label="Periodo"
               variant="bordered"
               options={periods}
-              onChange={e => handleChange("period")(e.target.value)}
+              onChange={e => handleChange("academicPeriodId")(Number(e.target.value))}
             />
             <Select
               required

@@ -16,6 +16,7 @@ import {
 } from "@nextui-org/react"
 import { StatusChip } from "./StatusChip"
 import { TableActions } from "./TableActions"
+import { ApiResponse } from "@/types"
 
 const INITIAL_VISIBLE_COLUMNS = ["name", "credits", "period", "state", "actions"]
 
@@ -25,7 +26,7 @@ interface Props {
 
 export const CoursesTable = ({ filter }: Props) => {
   const { user } = useAuth()
-  const fetchState = useFetch<Course[]>(user ? `/api/courses/user/${user?.id}` : null, [user])
+  const { status, data, error } = useFetch<ApiResponse<Course[]>>(user ? `/api/courses?user=${user?.id}` : null, [user])
 
   const [filterValue, setFilterValue] = useState("")
   const [visibleColumns, setVisibleColumns] = useState<Selection>(new Set(INITIAL_VISIBLE_COLUMNS))
@@ -36,7 +37,7 @@ export const CoursesTable = ({ filter }: Props) => {
   })
 
   const { currentPage, rowsPerPage, totalPages, setPage } = usePagination({
-    totalItems: fetchState.data?.length || 0,
+    totalItems: data?.data?.length || 0,
     initialRowsPerPage: 7,
   })
 
@@ -51,7 +52,7 @@ export const CoursesTable = ({ filter }: Props) => {
   )
 
   const filteredAndSortedItems = useMemo(() => {
-    let result = [...(fetchState.data || [])]
+    let result = data?.data || []
 
     if (hasSearchFilter) {
       result = result.filter((course) => course.name.toLowerCase().includes(filterValue.toLowerCase()))
@@ -69,7 +70,7 @@ export const CoursesTable = ({ filter }: Props) => {
     }
 
     return result
-  }, [filterValue, statusFilter, hasSearchFilter, sortDescriptor, fetchState.data])
+  }, [filterValue, statusFilter, hasSearchFilter, sortDescriptor, data])
 
   const renderCell = useCallback(
     (course: Course, columnKey: Key) => {
@@ -145,7 +146,7 @@ export const CoursesTable = ({ filter }: Props) => {
           statusFilter={statusFilter}
           visibleColumns={visibleColumns}
           columns={columns}
-          courses={fetchState.data || []}
+          courses={data?.data || []}
           statusOptions={statusOptions}
         />
       }
