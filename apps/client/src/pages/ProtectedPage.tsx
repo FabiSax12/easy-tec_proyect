@@ -1,5 +1,5 @@
-import { useAuth } from "@/hooks"
 import { Navigate, Outlet } from "react-router-dom"
+import { useAuth } from "@/shared/hooks"
 
 export const ProtectedPage = () => {
   const { accessToken } = useAuth()

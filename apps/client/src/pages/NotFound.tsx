@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom"
-import { useAuth } from "@/hooks"
+import { useAuth } from "@/shared/hooks"
 
 export const NotFound = () => {
   const { accessToken } = useAuth()

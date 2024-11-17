@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom"
-import { useAuth } from "@/hooks"
+import { useAuth } from "@/shared/hooks"
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Skeleton, User } from "@nextui-org/react"
 import { IoEllipsisVerticalSharp } from "react-icons/io5"
 import { MdLogout } from "react-icons/md"

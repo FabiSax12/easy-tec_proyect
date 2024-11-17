@@ -1,6 +1,7 @@
 import { Suspense } from "react"
-import { SectionCard, Periods } from "@/components"
-import { CoursesTable } from "@/components/courses/table"
+import { SectionCard } from "@/components"
+import { CoursesTable } from "@/course/components"
+import { Periods } from "@/period/components"
 import { Spinner } from "@nextui-org/react"
 
 export function DashboardPage() {

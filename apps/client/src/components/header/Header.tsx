@@ -1,7 +1,8 @@
 import { useState } from "react"
 import { NavLink } from "react-router-dom"
-import { useAuth } from "@/hooks"
-import { UserInfo, Logo } from "./"
+import { useAuth } from "@/shared/hooks"
+import { Logo } from "@/components"
+import { UserInfo } from "@/components/header"
 import { HiBars3 } from "react-icons/hi2"
 
 // const products = [
