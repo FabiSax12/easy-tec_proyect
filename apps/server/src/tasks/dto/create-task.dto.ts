@@ -1,4 +1,4 @@
-import { IsDate, IsNumber, IsString } from "class-validator"
+import { IsDate, IsDateString, IsNumber, IsString } from "class-validator"
 import { IsTaskState } from "./state.decorator"
 
 export class CreateTaskDto {
@@ -12,7 +12,7 @@ export class CreateTaskDto {
   @IsTaskState()
   state: string
 
-  @IsDate()
+  @IsDateString()
   date: Date
 
   @IsNumber()
