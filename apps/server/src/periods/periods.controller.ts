@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from "@nestjs/common"
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from "@nestjs/common"
 import { PeriodsService } from "./periods.service"
 import { CreatePeriodDto } from "./dto/create-period.dto"
 import { UpdatePeriodDto } from "./dto/update-period.dto"
+import { PeriodFilterDto } from "./dto/period-filter.dto"
 
 @Controller("periods")
 export class PeriodsController {
@@ -13,7 +14,8 @@ export class PeriodsController {
   }
 
   @Get()
-  findAll() {
+  findAll(@Query() query: PeriodFilterDto) {
+    if (query.userId) return this.academicPeriodService.findByUser(query.userId)
     return this.academicPeriodService.findAll()
   }
 

@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback, useMemo } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
-import type { AuthMode, FormData } from "@/auth/components"
 import { SignInForm, SignUpForm } from "@/auth/components"
 import { Tab, Tabs } from "@nextui-org/react"
+
+import type { AuthMode, FormData } from "@/auth/components"
 
 export const AuthFormTabs = () => {
   const location = useLocation()
@@ -14,9 +15,7 @@ export const AuthFormTabs = () => {
   )
   const pathname = useMemo(() => location.pathname, [location.pathname])
 
-  const [selected, setSelected] = useState<AuthMode>(
-    (searchParams.get("authMode") as AuthMode) ?? "login"
-  )
+  const [selected, setSelected] = useState<AuthMode>(searchParams.get("authMode") as AuthMode ?? "login")
   const [error, setError] = useState("")
   const [data, setData] = useState<FormData>({
     email: "",

@@ -1,6 +1,8 @@
 import { Key, useCallback, useMemo, useState } from "react"
-import { useFetch, usePagination } from "@/shared/hooks"
+import { useQuery } from "@tanstack/react-query"
+import { usePagination } from "@/shared/hooks"
 import { useAuthStore } from "@/auth/store"
+import { getUserCourses } from "@/course/services/courses.service"
 import { TopContent, BottomContent, StatusChip, TableActions } from "@/course/components"
 import { columns, statusOptions } from "./config"
 import {
@@ -18,18 +20,23 @@ interface Props {
 
 export const CoursesTable = ({ filter }: Props) => {
   const { user } = useAuthStore()
-  const { data } = useFetch<Course[]>(user ? `/api/courses?user=${user?.id}` : null, [user])
-
   const [filterValue, setFilterValue] = useState("")
+  const [periodFilter] = useState(filter?.period || "")
+  const [statusFilter, setStatusFilter] = useState<Selection>(filter?.state ? new Set(filter.state) : "all")
   const [visibleColumns, setVisibleColumns] = useState<Selection>(new Set(INITIAL_VISIBLE_COLUMNS))
-  const [statusFilter, setStatusFilter] = useState<Selection>("all")
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "age",
     direction: "ascending",
   })
 
+  const coursesQuery = useQuery<Course[]>({
+    queryKey: ["courses"],
+    queryFn: async () => getUserCourses(user!.id),
+    enabled: !!user,
+  })
+
   const { currentPage, rowsPerPage, totalPages, setPage } = usePagination({
-    totalItems: data?.length || 0,
+    totalItems: coursesQuery.data?.length || 0,
     initialRowsPerPage: 7,
   })
 
@@ -44,10 +51,13 @@ export const CoursesTable = ({ filter }: Props) => {
   )
 
   const filteredAndSortedItems = useMemo(() => {
-    let result = data || []
+    let result = coursesQuery.data || []
 
     if (hasSearchFilter) {
       result = result.filter((course) => course.name.toLowerCase().includes(filterValue.toLowerCase()))
+    }
+    if (periodFilter) {
+      result = result.filter((course) => course.period === periodFilter)
     }
     if (statusFilter !== "all") {
       result = result.filter((course) => Array.from(statusFilter).includes(course.state))
@@ -62,7 +72,7 @@ export const CoursesTable = ({ filter }: Props) => {
     }
 
     return result
-  }, [filterValue, statusFilter, hasSearchFilter, sortDescriptor, data])
+  }, [filterValue, periodFilter, statusFilter, hasSearchFilter, sortDescriptor, coursesQuery])
 
   const renderCell = useCallback(
     (course: Course, columnKey: Key) => {
@@ -138,7 +148,7 @@ export const CoursesTable = ({ filter }: Props) => {
           statusFilter={statusFilter}
           visibleColumns={visibleColumns}
           columns={columns}
-          courses={data || []}
+          courses={coursesQuery.data || []}
           statusOptions={statusOptions}
         />
       }

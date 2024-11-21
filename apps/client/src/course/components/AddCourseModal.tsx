@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react"
-import { useFetch, usePost } from "@/shared/hooks"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { periodLongToShort } from "@/shared/utils"
+import { createUserCourse } from "@/course/services/courses.service"
 import { Select } from "@/components"
 import { useAuthStore } from "@/auth/store"
 import {
@@ -23,6 +24,23 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
   cursando: "primary",
 }
 
+const initialFormData = {
+  name: "",
+  codex: "",
+  teacher: "",
+  credits: 0,
+  period: "",
+  state: "",
+  academicPeriodId: 0,
+} as Omit<Course, "id">
+
+const modalBodyInputs = [
+  { label: "Nombre", key: "name", type: "text" },
+  { label: "Código", key: "codex", type: "text" },
+  { label: "Créditos", key: "credits", type: "number", min: 0 },
+  { label: "Profesor", key: "teacher", type: "text" },
+]
+
 interface Props {
   isOpen: boolean;
   onOpenChange: () => void;
@@ -30,53 +48,38 @@ interface Props {
 
 export const AddCourseModal = ({ isOpen, onOpenChange }: Props) => {
   const { user } = useAuthStore()
-
-  const { postData, status: coursePostStatus } = usePost<Omit<Course, "id">>()
-  const periodsFetch = useFetch<Period[]>(user ? `/api/periods/user/${user?.id}` : null, [user])
-
-  const [formData, setFormData] = useState<Omit<Course, "id">>({
-    name: "",
-    codex: "",
-    teacher: "",
-    credits: 0,
-    period: "",
-    state: "",
-    academicPeriodId: 0,
+  const [formData, setFormData] = useState(initialFormData)
+  const periodsQuery = useQuery<Period[]>({
+    queryKey: ["userPeriods"],
+    queryFn: () => fetch(`/api/periods/user/${user!.id}`).then(res => res.json()),
+    enabled: !!user
+  })
+  const courseMutation = useMutation<Course, Error, { data: Omit<Course, "id"> }>({
+    mutationKey: ["addedCourse"],
+    mutationFn: ({ data }) => createUserCourse(data),
   })
 
   const periods = useMemo(() => {
-    if (periodsFetch.data) {
-      return periodsFetch.data?.map(p => ({
+    if (periodsQuery.data) {
+      return periodsQuery.data?.map(p => ({
         label: `${p.type} ${p.typeId}`,
         value: p.id.toString(),
       }))
     }
     return []
-  }, [periodsFetch])
+  }, [periodsQuery])
 
   useEffect(() => {
-    if (!user || !isOpen) {
-      resetForm()
-    }
-  }, [isOpen, user])
+    if (!user || !isOpen) resetForm()
+  }, [user, isOpen])
 
-  const resetForm = () => {
-    setFormData({
-      name: "",
-      codex: "",
-      teacher: "",
-      credits: 0,
-      period: "",
-      state: "",
-      academicPeriodId: 0,
-    })
-  }
+  const resetForm = () => setFormData(initialFormData)
 
   const handleChange = (key: keyof Omit<Course, "id">) => (value: string | number) => {
     setFormData(prev => ({ ...prev, [key]: value }))
 
     if (key === "academicPeriodId") {
-      const period = periodsFetch.data?.find(p => p.id == value)
+      const period = periodsQuery.data?.find(p => p.id == value)
       setFormData(prev => ({
         ...prev,
         period: period ? periodLongToShort(`${period.type} ${period.typeId}`) : ""
@@ -85,26 +88,19 @@ export const AddCourseModal = ({ isOpen, onOpenChange }: Props) => {
   }
 
   const onAccept = async () => {
-    // if (!user || periodsFetch.status !== "success") return
-
-    await postData("/api/courses", formData)
+    if (!user) return
+    await courseMutation.mutateAsync({ data: formData })
     onOpenChange()
-    // navigate(0)
   }
 
-  const canAddCourse = Object.values(formData).every(field => !!field)
+  const canAddCourse = Object.values(formData).every(field => !!field || field === 0)
 
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop="opaque">
       <ModalContent>
         <ModalHeader>Añadir nuevo curso</ModalHeader>
         <ModalBody>
-          {[
-            { label: "Nombre", key: "name", type: "text" },
-            { label: "Código", key: "codex", type: "text" },
-            { label: "Créditos", key: "credits", type: "number", min: 0 },
-            { label: "Profesor", key: "teacher", type: "text" },
-          ].map(({ label, key, type, min }) => (
+          {modalBodyInputs.map(({ label, key, type, min }) => (
             <Input
               required
               key={key}
@@ -150,8 +146,8 @@ export const AddCourseModal = ({ isOpen, onOpenChange }: Props) => {
           <Button color="danger" variant="flat" onPress={onOpenChange}>
             Cancelar
           </Button>
-          <Button color="primary" onPress={onAccept} isDisabled={!canAddCourse || coursePostStatus === "loading"}>
-            {coursePostStatus === "loading" ? "Añadiendo..." : "Añadir"}
+          <Button color="primary" onPress={onAccept} isDisabled={!canAddCourse || courseMutation.isPending}>
+            {courseMutation.isPending ? "Añadiendo..." : "Añadir"}
           </Button>
         </ModalFooter>
       </ModalContent>

@@ -2,37 +2,56 @@ import type { User } from "@/shared/interfaces"
 import type { AuthResponse, SignUpRequest } from "../interfaces"
 
 export async function userLogin(email: string, password: string) {
-  const response = await fetch("/api/auth/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  })
+  try {
+    const response = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    })
 
-  const data = await response.json() as AuthResponse
+    if (!response.ok) throw new Error("Failed to login")
 
-  return data
+    const data = await response.json() as AuthResponse
+
+    return data
+  } catch (error) {
+    console.error("Failed to login", error)
+    throw new Error("Failed to login")
+  }
 }
 
 export async function userSignup(user: SignUpRequest) {
-  const response = await fetch("/api/auth/signup", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(user),
-  })
+  try {
+    const response = await fetch("/api/auth/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(user),
+    })
 
-  if (!response.ok) throw new Error("Failed to sign up")
+    if (!response.ok) throw new Error("Failed to sign up")
 
-  const data = await response.json() as User
+    const data = await response.json() as User
 
-  return data
+    return data
+  } catch (error) {
+    console.error("Failed to sign up", error)
+    throw new Error("Failed to sign up")
+  }
 }
 
 export async function getUser(accessToken: string) {
-  const response = await fetch("/api/auth/profile", {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  })
+  try {
+    const response = await fetch("/api/auth/profile", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
 
-  const data = await response.json() as User
+    if (!response.ok) throw new Error("Failed to get user")
 
-  return data
+    const data = await response.json() as User
+
+    return data
+  } catch (error) {
+    console.error("Failed to get user", error)
+    throw new Error("Failed to get user")
+  }
 }

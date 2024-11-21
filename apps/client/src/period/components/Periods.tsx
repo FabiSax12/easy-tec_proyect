@@ -1,21 +1,26 @@
-import { useFetch } from "@/shared/hooks"
+import { useQuery } from "@tanstack/react-query"
 import { formatDate } from "@/shared/utils"
 import { Spinner } from "@/components"
 import { useAuthStore } from "@/auth/store"
+import { periodsByUserId } from "@/period/services/periods.service"
 import { PeriodButton, AddPeriodButton } from "@/period/components"
 
 import type { Period } from "@/shared/interfaces"
 
 export const Periods = () => {
   const { user } = useAuthStore()
-  const state = useFetch<Period[]>(`/api/periods/user/${user?.id}`, [user])
 
-  console.log("Render", state.status)
+  const periodsQuery = useQuery<Period[]>({
+    queryKey: ["periods"],
+    queryFn: () => periodsByUserId(user?.id),
+    enabled: !!user,
+  })
+
   return (
     <div className="grid grid-cols-2 lg:block">
-      {state.status === "loading" && <Spinner />}
-      {state.status === "error" && <p>{state.error?.message}</p>}
-      {state.status === "success" && state.data?.map(period => (
+      {periodsQuery.isFetching && <Spinner />}
+      {periodsQuery.isError && <p>{periodsQuery.error.message}</p>}
+      {periodsQuery.isSuccess && periodsQuery.data?.map(period => (
         <PeriodButton
           key={period.id}
           id={period.id}
