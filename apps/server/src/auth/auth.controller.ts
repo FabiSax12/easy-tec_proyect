@@ -6,25 +6,27 @@ import { User } from "@prisma/client"
 import { AuthGuard } from "./auth.guard"
 import { AuthService } from "./auth.service"
 import { CreateUserDto } from "./dto/create-user.dto"
-import { ResponseDto } from "src/types/shared/response.dto"
+import { SignInDto } from "./dto/sign-in.dto"
 
 @Controller("auth")
 export class AuthController {
   constructor(private authService: AuthService) { }
 
-  @HttpCode(HttpStatus.OK)
   @Post("login")
-  signIn(@Body() signInDto: { email: string, password: string }): Promise<ResponseDto<any>> {
+  @HttpCode(HttpStatus.OK)
+  signIn(@Body() signInDto: SignInDto) {
     return this.authService.signIn(signInDto.email, signInDto.password)
   }
 
   @Post("signup")
-  signUp(@Body() signUpDto: CreateUserDto): Promise<ResponseDto<any>> {
+  @HttpCode(HttpStatus.CREATED)
+  signUp(@Body() signUpDto: CreateUserDto) {
     return this.authService.signUp(signUpDto)
   }
 
   @Post("refresh")
-  async refresh(@Body("refresh_token") refreshToken: string): Promise<ResponseDto<any>> {
+  @HttpCode(HttpStatus.OK)
+  async refresh(@Body("refresh_token") refreshToken: string) {
     try {
       const payload = this.authService.verifyRefreshToken(refreshToken)
       const expiresAt = payload.exp * 1000
@@ -43,12 +45,8 @@ export class AuthController {
       }
 
       return {
-        statusCode: HttpStatus.OK,
-        message: "Access token refreshed",
-        data: {
-          access_token: newAccessToken,
-          ...(newRefreshToken && { refresh_token: newRefreshToken })
-        }
+        access_token: newAccessToken,
+        ...(newRefreshToken && { refresh_token: newRefreshToken })
       }
     } catch (e) {
       console.log(e)
@@ -57,13 +55,10 @@ export class AuthController {
   }
 
 
-  @UseGuards(AuthGuard)
   @Get("profile")
-  getProfile(@Request() req): ResponseDto<User> {
-    return {
-      statusCode: HttpStatus.OK,
-      message: "User profile",
-      data: req.user
-    }
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  getProfile(@Request() req): User {
+    return req.user
   }
 }

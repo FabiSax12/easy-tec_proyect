@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common"
 import { CreateTaskDto } from "./dto/create-task.dto"
 import { UpdateTaskDto } from "./dto/update-task.dto"
-import { ResponseDto } from "src/types/shared/response.dto"
 import { Task } from "@prisma/client"
 import { PrismaService } from "src/prisma/prisma.service"
 
@@ -9,16 +8,12 @@ import { PrismaService } from "src/prisma/prisma.service"
 export class TasksService {
   constructor(private readonly prismaService: PrismaService) { }
 
-  async create(createTaskDto: CreateTaskDto): Promise<ResponseDto<Task>> {
+  async create(createTaskDto: CreateTaskDto): Promise<Task> {
     const task = await this.prismaService.task.create({
       data: createTaskDto
     })
 
-    return {
-      statusCode: 201,
-      message: "Task created successfully",
-      data: task
-    }
+    return task
   }
 
   findAll() {
@@ -29,7 +24,7 @@ export class TasksService {
     return `This action returns a #${id} task`
   }
 
-  async update(id: number, updateTaskDto: UpdateTaskDto): Promise<ResponseDto<Task>> {
+  async update(id: number, updateTaskDto: UpdateTaskDto): Promise<Task> {
     const updatedTask = await this.prismaService.task.update({
       where: { id },
       data: updateTaskDto,
@@ -42,19 +37,14 @@ export class TasksService {
       }
     })
 
-    return {
-      statusCode: 200,
-      message: "Task updated successfully",
-      data: updatedTask
-    }
-
+    return updatedTask
   }
 
   remove(id: number) {
     return `This action removes a #${id} task`
   }
 
-  async findByUser(userId: number): Promise<ResponseDto<Task[]>> {
+  async findByUser(userId: number): Promise<Task[]> {
     const task = await this.prismaService.task.findMany({
       where: {
         userId
@@ -68,14 +58,10 @@ export class TasksService {
       }
     })
 
-    return {
-      statusCode: 200,
-      message: "Courses retrieved successfully",
-      data: task
-    }
+    return task
   }
 
-  async findByPeriod(period: string): Promise<ResponseDto<Task[]>> {
+  async findByPeriod(period: string): Promise<Task[]> {
     const courses = await this.prismaService.course.findMany({
       where: { period }
     })
@@ -95,14 +81,10 @@ export class TasksService {
       }
     })
 
-    return {
-      statusCode: 200,
-      message: "Courses retrieved successfully",
-      data: task
-    }
+    return task
   }
 
-  async findByUserAndPeriod(userId: number, period: string): Promise<ResponseDto<Task[]>> {
+  async findByUserAndPeriod(userId: number, period: string): Promise<Task[]> {
     const courses = await this.prismaService.course.findMany({
       where: { period }
     })
@@ -123,10 +105,6 @@ export class TasksService {
       }
     })
 
-    return {
-      statusCode: 200,
-      message: "Courses retrieved successfully",
-      data: task
-    }
+    return task
   }
 }

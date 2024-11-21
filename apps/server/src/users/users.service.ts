@@ -1,4 +1,4 @@
-import { ConflictException, HttpStatus, Injectable } from "@nestjs/common"
+import { ConflictException, Injectable } from "@nestjs/common"
 import { CreateUserDto } from "./dto/create-user.dto"
 import { UpdateUserDto } from "./dto/update-user.dto"
 import { PrismaService } from "src/prisma/prisma.service"
@@ -10,17 +10,14 @@ export class UsersService {
 
   async create(data: CreateUserDto) {
     const userExists = await this.findByEmail(data.email)
-    if (userExists) throw new ConflictException("User already exists: " + userExists)
+    if (userExists) throw new ConflictException("Email already exists: " + data.email)
 
     data.password = hashSync(data.password, 10)
     const createdUser = await this.prisma.user.create({ data })
 
-    if (!createdUser) throw new ConflictException("User not created")
+    if (!createdUser) throw new ConflictException("User could not be created")
 
-    return {
-      message: "User created successful",
-      statusCode: HttpStatus.CREATED
-    }
+    return createdUser
   }
 
   findAll() {

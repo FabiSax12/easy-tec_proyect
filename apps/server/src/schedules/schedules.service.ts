@@ -1,7 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from "@nestjs/common"
 import * as fs from "node:fs/promises"
 import * as puppeteer from "puppeteer"
-import { ResponseDto } from "src/types/shared/response.dto"
 
 interface Schedule {
   day: string;
@@ -85,7 +84,7 @@ export class ScheduleService {
     carrier: string,
     period: string,
     credentials: { email: string; password: string },
-  ): Promise<ResponseDto<Partial<ScheduleRow>[]>> {
+  ): Promise<Partial<ScheduleRow>[]> {
     const browser = await puppeteer.launch({
       headless: true,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
@@ -105,11 +104,7 @@ export class ScheduleService {
       await page.waitForSelector("table#tguiaHorario")
 
       const data = await this.extractTableData(page)
-      return {
-        statusCode: HttpStatus.OK,
-        message: "Schedules scrapped succesfully",
-        data: data,
-      }
+      return data
     } catch (error) {
       throw new HttpException("Error fetching schedule data", HttpStatus.INTERNAL_SERVER_ERROR)
     } finally {

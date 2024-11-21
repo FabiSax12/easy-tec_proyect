@@ -1,15 +1,10 @@
-import { HttpStatus, Injectable, UnauthorizedException } from "@nestjs/common"
+import { Injectable, UnauthorizedException } from "@nestjs/common"
 import { JwtService } from "@nestjs/jwt"
-import { UsersService } from "../users/users.service"
+import { User } from "@prisma/client"
 import { compareSync } from "bcryptjs"
-import { CreateUserDto } from "./dto/create-user.dto"
-import { ResponseDto } from "src/types/shared/response.dto"
 import { JwtPayload } from "jsonwebtoken"
-
-interface SignIn {
-  access_token: string
-  refresh_token: string
-}
+import { UsersService } from "../users/users.service"
+import { CreateUserDto } from "./dto/create-user.dto"
 
 const ACCESS_TOKEN_EXPIRATION = "15m"
 const REFRESH_TOKEN_EXPIRATION = "7d"
@@ -21,21 +16,15 @@ export class AuthService {
     private jwtService: JwtService
   ) { }
 
-  async signIn(email: string, pass: string): Promise<ResponseDto<SignIn>> {
+  async signIn(email: string, pass: string) {
     const user = await this.usersService.findByEmail(email)
 
     if (!user || !compareSync(pass, user.password)) {
-      return {
-        statusCode: HttpStatus.UNAUTHORIZED,
-        message: "Invalid email or password"
-      }
+      throw new UnauthorizedException("Invalid email or password")
     }
 
     if (!user.verified) {
-      return {
-        statusCode: HttpStatus.UNAUTHORIZED,
-        message: "User is not verified"
-      }
+      throw new UnauthorizedException("User is not verified")
     }
 
     const payload = {
@@ -63,14 +52,10 @@ export class AuthService {
       }
     )
 
-    return {
-      statusCode: HttpStatus.ACCEPTED,
-      message: "User authenticated",
-      data: { access_token, refresh_token }
-    }
+    return { access_token, refresh_token }
   }
 
-  async signUp(data: CreateUserDto): Promise<ResponseDto<null>> {
+  async signUp(data: CreateUserDto): Promise<User> {
     return await this.usersService.create(data)
   }
 
