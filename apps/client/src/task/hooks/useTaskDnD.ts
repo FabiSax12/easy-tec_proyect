@@ -1,10 +1,14 @@
 import { useState, useMemo, useEffect } from "react"
 import { toast } from "sonner"
-import { useAuth } from "@/shared/hooks"
-import { ApiResponse, Course, Task } from "@/shared/interfaces"
+import { useAuthStore } from "@/auth/store"
 import { defaultCols } from "@/task/data/trello-columns"
-import { DragEndEvent, DragOverEvent, DragStartEvent, PointerSensor, useSensor, useSensors } from "@dnd-kit/core"
+import {
+  DragEndEvent, DragOverEvent, DragStartEvent,
+  PointerSensor, useSensor, useSensors
+} from "@dnd-kit/core"
 import { arrayMove } from "@dnd-kit/sortable"
+
+import type { Course, Task } from "@/shared/interfaces"
 
 type TaskDBWithCourse = Task & { course: Pick<Course, "name"> }
 
@@ -16,17 +20,17 @@ async function updateTask(taskId: number, data: Partial<TaskDBWithCourse>) {
     },
     body: JSON.stringify(data)
   })
-  return await res.json() as ApiResponse<TaskDBWithCourse>
+  return await res.json() as TaskDBWithCourse
 }
 
 async function getTasksByPeriod(userId: number, period: string) {
   const res = await fetch(`/api/tasks?userId=${userId}&period=${period}`)
-  return await res.json() as ApiResponse<TaskDBWithCourse[]>
+  return await res.json() as TaskDBWithCourse[]
 }
 
 // async function appendCourseName(task: TaskDBWithCourse): Promise<TaskDBWithCourse> {
 //   const res = await fetch(`/api/courses/${task.courseId}`)
-//   const { data } = await res.json() as ApiResponse<Course>
+//   const data = await res.json() as Course
 
 //   return Object.assign(task, { course: { name: data?.name ?? "Sin Curso" } })
 // }
@@ -34,7 +38,7 @@ async function getTasksByPeriod(userId: number, period: string) {
 
 
 export function useTaskDnD(period: string) {
-  const { accessToken, user } = useAuth()
+  const { accessToken, user } = useAuthStore()
   const [tasks, setTasks] = useState<TaskDBWithCourse[]>([])
   const [activeTask, setActiveTask] = useState<TaskDBWithCourse | null>(null)
   const columns = useMemo(() => defaultCols, [])
@@ -51,8 +55,7 @@ export function useTaskDnD(period: string) {
   useEffect(() => {
     if (!accessToken || !user) return
 
-    getTasksByPeriod(user.id, period)
-      .then(res => setTasks(res.data ?? []))
+    getTasksByPeriod(user.id, period).then(data => setTasks(data ?? []))
   }, [accessToken, user, period])
 
   const onDragStart = (event: DragStartEvent) => {

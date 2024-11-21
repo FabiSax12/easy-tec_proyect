@@ -1,5 +1,7 @@
-import React, { createContext, useCallback, useEffect, useState } from "react"
-import type { ApiResponse, User } from "@/shared/interfaces"
+import { createContext, ReactNode, useCallback, useEffect, useState } from "react"
+import { getUser, userLogin, userSignup } from "@/auth/services/auth.service"
+
+import type { User } from "@/shared/interfaces"
 import type { SignUpRequest, AuthResponse } from "@/auth/interfaces"
 
 interface AuthContextProps {
@@ -13,7 +15,7 @@ interface AuthContextProps {
 
 export const AuthContext = createContext<AuthContextProps | undefined>(undefined)
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [accessToken, setAccessToken] = useState<string | null>(() => localStorage.getItem("access_token"))
   const [refreshToken, setRefreshToken] = useState<string | null>(() => localStorage.getItem("refresh_token"))
   const [user, setUser] = useState<User | null>(null)
@@ -25,7 +27,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const response = await fetch("/api/auth/profile", {
         headers: { Authorization: `Bearer ${accessToken}` },
       })
-      const { data } = await response.json() as ApiResponse<User>
+
+      const data = await response.json() as User
 
       if (data) setUser(data)
     } catch (error) {
@@ -36,30 +39,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signup = async (user: SignUpRequest) => {
     try {
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(user),
-      })
+      const res = await userSignup(user)
 
-      if (!res.ok) {
-        console.error("Error al registrarse", await res.json())
-        return
-      }
+      if (res.error) throw new Error(res.error)
 
     } catch (error) {
-      console.error("Error en la conexión", error)
+      console.error("Signup failed", error)
     }
   }
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      })
-      const { data } = await response.json() as ApiResponse<AuthResponse>
+      const { data } = await userLogin(email, password)
 
       if (data?.access_token) {
         localStorage.setItem("access_token", data.access_token)
@@ -93,7 +84,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         body: JSON.stringify({ refreshToken }),
       })
 
-      const { data } = await response.json() as ApiResponse<AuthResponse>
+      const data = await response.json() as AuthResponse
 
       if (data?.access_token) {
         localStorage.setItem("access_token", data.access_token)

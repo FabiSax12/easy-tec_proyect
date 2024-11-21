@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react"
+import { useLocation } from "react-router-dom"
 import { parseAbsoluteToLocal } from "@internationalized/date"
-import { useAuth } from "@/shared/hooks"
-import { ApiResponse, Course, Task } from "@/shared/interfaces"
+import { useAuthStore } from "@/auth/store"
 import { defaultCols } from "@/task/data/trello-columns"
 import {
   Modal, ModalContent, ModalHeader, ModalBody, ModalFooter,
   Input, Button, DatePicker, Textarea, Select, SelectItem
 } from "@nextui-org/react"
-import { useLocation } from "react-router-dom"
+
+import type { Course, Task } from "@/shared/interfaces"
 
 async function createTask(task: Omit<Task, "id" | "createdAt" | "updatedAt">) {
   const res = await fetch("/api/tasks", {
@@ -33,9 +34,9 @@ async function updateTask(taskId: number, data: Partial<Task>) {
 
 async function getUserCourses(userId: number, periodId: string) {
   const res = await fetch(`/api/courses?user=${userId}&period=${periodId}`)
-  const { data, error } = await res.json() as ApiResponse<Course[]>
+  const data = await res.json() as Course[]
 
-  if (error) throw new Error(error)
+  if (!res.ok) throw new Error("Error getting user courses")
 
   return data
 }
@@ -71,7 +72,7 @@ const defaultValues = {
 export const TaskModal = ({ isOpen, onOpenChange, handleTaskAction, mode, values = defaultValues }: Props) => {
   const periodId = useLocation().pathname.split("/")[3]
 
-  const { accessToken, user } = useAuth()
+  const { accessToken, user } = useAuthStore()
   const [loading, setLoading] = useState(false)
 
   const [courses, setCourses] = useState<Option[]>([])

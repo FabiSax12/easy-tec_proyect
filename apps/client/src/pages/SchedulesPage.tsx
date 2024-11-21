@@ -1,5 +1,4 @@
 import { useState } from "react"
-import type { ApiResponse } from "@/shared/interfaces"
 import { campusOptions, carriersOptions, periodsOptions, subjectsOptions } from "@/schedule/data/schedule-options"
 import { SchedulesProvider } from "@/schedule/context/schedule"
 import { SchedulesTable, ScheduleBoard } from "@/schedule/components"
@@ -46,8 +45,8 @@ export const SchedulesPage = () => {
     setIsLoading(true)
     try {
       const res = await fetch(`/api/schedules?campus=${campus}&carrier=${carrier}&period=${period}`)
-      const resJson = await res.json() as ApiResponse<ScheduleRow[]>
-      if (resJson.data) setSchedules(resJson.data)
+      const data = await res.json() as ScheduleRow[]
+      if (data) setSchedules(data)
     } catch {
       setSchedules([])
     } finally {
