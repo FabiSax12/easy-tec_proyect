@@ -1,11 +1,13 @@
-import { useAuth, useFetch } from "@/shared/hooks"
-import type { Period } from "@/shared/interfaces"
-import { formatDate } from "@/shared/utils/formatDate"
-import { PeriodButton, AddPeriodButton } from "@/period/components"
+import { useFetch } from "@/shared/hooks"
+import { formatDate } from "@/shared/utils"
 import { Spinner } from "@/components"
+import { useAuthStore } from "@/auth/store"
+import { PeriodButton, AddPeriodButton } from "@/period/components"
+
+import type { Period } from "@/shared/interfaces"
 
 export const Periods = () => {
-  const { user } = useAuth()
+  const { user } = useAuthStore()
   const state = useFetch<Period[]>(`/api/periods/user/${user?.id}`, [user])
 
   console.log("Render", state.status)

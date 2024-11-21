@@ -1,8 +1,11 @@
 import { useState, useEffect, ChangeEvent } from "react"
 import { useNavigate } from "react-router-dom"
-import { useAuth } from "@/shared/hooks"
+import { useAuthStore } from "@/auth/store"
 import { Select, NumberInput } from "@/components"
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react"
+import {
+  Modal, ModalContent, ModalHeader,
+  ModalBody, ModalFooter, Button, Input
+} from "@nextui-org/react"
 
 const options = [{ label: "Semestre", value: "S" }, { label: "Verano", value: "V" }]
 
@@ -37,7 +40,7 @@ export const AddPeriodModal = ({ isOpen, onOpenChange }: Props) => {
   const [endDate, setEndDate] = useState("")
   const [loading, setLoading] = useState(false)
 
-  const { user } = useAuth()
+  const { user } = useAuthStore()
 
   useEffect(() => {
     switch (modality) {

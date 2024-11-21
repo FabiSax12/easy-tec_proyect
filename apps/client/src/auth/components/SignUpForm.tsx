@@ -1,8 +1,10 @@
-import type { Dispatch, SetStateAction } from "react"
-import { useAuth } from "@/shared/hooks"
+import { useAuthStore } from "@/auth/store"
 import { SignUpInputs } from "@/auth/components"
-import type { AuthMode, FormData } from "@/auth/components"
+import { validateInputs } from "@/auth/utils"
 import { Button, Link } from "@nextui-org/react"
+
+import type { Dispatch, SetStateAction } from "react"
+import type { AuthMode, FormData } from "@/auth/components"
 
 interface Props {
   data: FormData
@@ -11,35 +13,13 @@ interface Props {
   setError: Dispatch<SetStateAction<string>>
 }
 
-function validateInputs(data: FormData) {
-  const { email, name, lastname, password } = data
-
-  if (!email.endsWith("@estudiantec.cr")) {
-    return "El correo debe ser @estudiantec.cr"
-  }
-  if (name.length < 2) {
-    return "El nombre debe tener al menos 2 caracteres"
-  }
-  if (lastname.length < 1) {
-    return "El Apellido debe tener al menos 1 caracter"
-  }
-  if (password.length < 8) {
-    return "La contraseña debe tener al menos 8 caracteres"
-  }
-  return null
-}
-
 export const SignUpForm = ({ data, handleInputChange, setSelected, setError }: Props) => {
-  const { signup } = useAuth()
-
-  // useEffect(() => {
-  //   if (status === "authenticated") setSelected("login")
-  //   if (status === "error") setError("Error al crear la cuenta")
-  // }, [status, setSelected, setError])
+  const { signup } = useAuthStore()
 
   const handleSubmit = async () => {
     const validationError = validateInputs(data)
     if (validationError) return setError(validationError)
+
     setError("")
     signup(data)
     setSelected("login")

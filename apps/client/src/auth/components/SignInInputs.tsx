@@ -1,5 +1,5 @@
 import { Input } from "@nextui-org/react"
-import type { FormData, InputProps } from "./types"
+import type { FormData, InputProps } from "../interfaces/components"
 
 interface Props {
   data: FormData

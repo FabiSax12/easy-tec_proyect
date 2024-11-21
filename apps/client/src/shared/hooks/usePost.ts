@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react"
-import { useAuth } from "@/shared/hooks"
+import { useAuthStore } from "@/auth/store"
 
 interface PostState {
   status: "idle" | "loading" | "success" | "error";
@@ -11,7 +11,7 @@ interface UsePostReturn<T> extends PostState {
 }
 
 export function usePost<T>(): UsePostReturn<T> {
-  const { accessToken } = useAuth()
+  const { accessToken } = useAuthStore()
   const [state, setState] = useState<PostState>({ status: "idle" })
 
   const postData = useCallback(async (url: string, data: T) => {

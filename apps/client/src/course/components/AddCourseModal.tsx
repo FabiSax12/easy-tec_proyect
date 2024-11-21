@@ -1,14 +1,15 @@
 import { useState, useEffect, useMemo } from "react"
-import { useNavigate } from "react-router-dom"
-import { useAuth, useFetch, usePost } from "@/shared/hooks"
-import type { Course, Period } from "@/shared/interfaces"
+import { useFetch, usePost } from "@/shared/hooks"
+import { periodLongToShort } from "@/shared/utils"
 import { Select } from "@/components"
+import { useAuthStore } from "@/auth/store"
 import {
   Modal, ModalContent, ModalHeader,
   ModalBody, ModalFooter, Button,
   Input, Chip, SelectItem, ChipProps,
 } from "@nextui-org/react"
-import { periodLongToShort } from "@/shared/utils"
+
+import type { Course, Period } from "@/shared/interfaces"
 
 const statusOptions = [
   { label: "Pendiente", value: "pendiente" },
@@ -28,8 +29,7 @@ interface Props {
 }
 
 export const AddCourseModal = ({ isOpen, onOpenChange }: Props) => {
-  const navigate = useNavigate()
-  const { user } = useAuth()
+  const { user } = useAuthStore()
 
   const { postData, status: coursePostStatus } = usePost<Omit<Course, "id">>()
   const periodsFetch = useFetch<Period[]>(user ? `/api/periods/user/${user?.id}` : null, [user])

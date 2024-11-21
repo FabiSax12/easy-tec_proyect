@@ -1,18 +1,14 @@
 import { Key, useCallback, useMemo, useState } from "react"
-import { useAuth, useFetch, usePagination } from "@/shared/hooks"
-import type { Course, ApiResponse } from "@/shared/interfaces"
-import { columns, statusOptions } from "./config"
+import { useFetch, usePagination } from "@/shared/hooks"
+import { useAuthStore } from "@/auth/store"
 import { TopContent, BottomContent, StatusChip, TableActions } from "@/course/components"
+import { columns, statusOptions } from "./config"
 import {
-  Table,
-  TableRow,
-  TableCell,
-  SortDescriptor,
-  Selection,
-  TableBody,
-  TableHeader,
-  TableColumn,
+  Table, TableRow, TableCell, SortDescriptor,
+  Selection, TableBody, TableHeader, TableColumn,
 } from "@nextui-org/react"
+
+import type { Course } from "@/shared/interfaces"
 
 const INITIAL_VISIBLE_COLUMNS = ["name", "credits", "period", "state", "actions"]
 
@@ -21,8 +17,8 @@ interface Props {
 }
 
 export const CoursesTable = ({ filter }: Props) => {
-  const { user } = useAuth()
-  const { status, data, error } = useFetch<ApiResponse<Course[]>>(user ? `/api/courses?user=${user?.id}` : null, [user])
+  const { user } = useAuthStore()
+  const { data } = useFetch<Course[]>(user ? `/api/courses?user=${user?.id}` : null, [user])
 
   const [filterValue, setFilterValue] = useState("")
   const [visibleColumns, setVisibleColumns] = useState<Selection>(new Set(INITIAL_VISIBLE_COLUMNS))
@@ -33,7 +29,7 @@ export const CoursesTable = ({ filter }: Props) => {
   })
 
   const { currentPage, rowsPerPage, totalPages, setPage } = usePagination({
-    totalItems: data?.data?.length || 0,
+    totalItems: data?.length || 0,
     initialRowsPerPage: 7,
   })
 
@@ -48,7 +44,7 @@ export const CoursesTable = ({ filter }: Props) => {
   )
 
   const filteredAndSortedItems = useMemo(() => {
-    let result = data?.data || []
+    let result = data || []
 
     if (hasSearchFilter) {
       result = result.filter((course) => course.name.toLowerCase().includes(filterValue.toLowerCase()))
@@ -142,7 +138,7 @@ export const CoursesTable = ({ filter }: Props) => {
           statusFilter={statusFilter}
           visibleColumns={visibleColumns}
           columns={columns}
-          courses={data?.data || []}
+          courses={data || []}
           statusOptions={statusOptions}
         />
       }

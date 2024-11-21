@@ -1,8 +1,8 @@
 import { NavLink } from "react-router-dom"
-import { useAuth } from "@/shared/hooks"
+import { useAuthStore } from "@/auth/store"
 
 export const NotFound = () => {
-  const { accessToken } = useAuth()
+  const { accessToken } = useAuthStore()
 
   return (
     <>

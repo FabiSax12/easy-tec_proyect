@@ -1,8 +1,8 @@
 import { useState } from "react"
 import { NavLink } from "react-router-dom"
-import { useAuth } from "@/shared/hooks"
 import { Logo } from "@/components"
 import { UserInfo } from "@/components/header"
+import { useAuthStore } from "@/auth/store"
 import { HiBars3 } from "react-icons/hi2"
 
 // const products = [
@@ -28,7 +28,7 @@ import { HiBars3 } from "react-icons/hi2"
 
 export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const { accessToken } = useAuth()
+  const { accessToken } = useAuthStore()
 
   return (
     <header className="bg-white border-b-1 border-b-default">
