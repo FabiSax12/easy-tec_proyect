@@ -6,8 +6,8 @@ import { Spinner } from "@nextui-org/react"
 
 export function DashboardPage() {
   return (
-    <div className="home-main_grid gap-10">
-      <SectionCard title="Semestres" className="h-min">
+    <div className="flex flex-col gap-6">
+      <SectionCard title="Semestres" className="h-min min-h-[204px]">
         <Suspense fallback={<Spinner />}>
           <Periods />
         </Suspense>

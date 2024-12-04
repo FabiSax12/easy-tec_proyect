@@ -43,6 +43,12 @@ const router = createBrowserRouter([
             element: <SchedulesPage />
           },
           {
+            path: "cursos",
+          },
+          {
+            path: "guias"
+          },
+          {
             path: "config",
           },
           {
