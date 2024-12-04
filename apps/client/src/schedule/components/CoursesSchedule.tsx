@@ -1,11 +1,13 @@
-import { useMemo } from "react"
+import { useMemo, useRef } from "react"
 import { useSchedule } from "@/schedule/hooks"
 import { ScheduleEvent } from "@/schedule/interfaces"
 import { getEventPosition, getOverlappingEvents } from "@/schedule/utils"
 import { CoursesScheduleEvent } from "./CoursesScheduleEvent"
+import { toPng } from "html-to-image"
+import { Button } from "@nextui-org/react"
 
 const HOURS_START = 7
-const HOURS_COUNT = 14
+const HOURS_COUNT = 16
 const CELL_HEIGHT = 50
 
 const ScheduleHeader = ({ days }: { days: string[] }) => (
@@ -19,7 +21,10 @@ const ScheduleHeader = ({ days }: { days: string[] }) => (
   </>
 )
 
-const getEventsForTimeSlot = (events: ScheduleEvent[], day: string, hour: number) => {
+const getEventsForTimeSlot = (events: ScheduleEvent[], day: string, hour: number): ({
+  event: ScheduleEvent;
+  style: React.CSSProperties;
+} | null)[] => {
   return events
     .filter((event) => event.day === day)
     .map((event) => {
@@ -39,10 +44,9 @@ const getEventsForTimeSlot = (events: ScheduleEvent[], day: string, hour: number
 
 const CoursesSchedule = () => {
   const { selectedSubjects } = useSchedule()
-  const hours = useMemo(() =>
-    Array.from({ length: HOURS_COUNT }, (_, i) => `${HOURS_START + i}:00`),
-    []
-  )
+  const scheduleRef = useRef<HTMLDivElement>(null)
+
+  const hours = useMemo(() => Array.from({ length: HOURS_COUNT }, (_, i) => `${HOURS_START + i}:00`), [])
   const days = useMemo(() => ["Lun", "Mar", "Mie", "Jue", "Vie"], [])
 
   const events = useMemo(() => {
@@ -65,33 +69,64 @@ const CoursesSchedule = () => {
     return newEvents
   }, [selectedSubjects, days])
 
+  const handleDownloadImage = () => {
+    if (scheduleRef.current) {
+      toPng(scheduleRef.current)
+        .then((dataUrl) => {
+          const link = document.createElement("a")
+          link.download = "horario.png"
+          link.href = dataUrl
+          link.click()
+        })
+        .catch((error) => {
+          console.error("Error al generar la imagen:", error)
+        })
+    }
+  }
+
   return (
-    <div className="grid grid-cols-6 text-sm h-[750px] rounded-lg border border-divider bg-content1 shadow-lg">
-      <ScheduleHeader days={days} />
+    <div>
+      <div className="text-right mb-4">
+        <Button
+          onClick={handleDownloadImage}
+          color="primary"
+          size="md"
+        >
+          Descargar Horario
+        </Button>
+      </div>
+      <div
+        ref={scheduleRef}
+        className="grid grid-cols-6 text-sm h-[850px] rounded-lg border border-divider bg-content1 shadow-lg"
+      >
+        <ScheduleHeader days={days} />
 
-      {hours.map((hour, hourIndex) => (
-        <div key={`row-${hourIndex}`} className="contents">
-          <div className="p-3 text-right bg-default-50 text-foreground-500 text-xs font-medium border-t border-divider" style={{ height: CELL_HEIGHT }}>
-            {hour}
-          </div>
-
-          {days.map((day) => (
-            <div
-              key={`${day}-${hour}`}
-              className="relative border-t border-l border-divider hover:bg-default-50 transition-colors"
-              style={{ height: CELL_HEIGHT }}
-            >
-              {getEventsForTimeSlot(events, day, parseInt(hour)).map(({ event, style }, idx) => (
-                <CoursesScheduleEvent
-                  key={`${event.title}-${idx}`}
-                  event={event}
-                  style={style}
-                />
-              ))}
+        {hours.map((hour, hourIndex) => (
+          <div key={`row-${hourIndex}`} className="contents">
+            <div className="p-3 text-right bg-default-50 text-foreground-500 text-xs font-medium border-t border-divider" style={{ height: CELL_HEIGHT }}>
+              {hour}
             </div>
-          ))}
-        </div>
-      ))}
+
+            {days.map((day) => (
+              <div
+                key={`${day}-${hour}`}
+                className="relative border-t border-l border-divider hover:bg-default-50 transition-colors"
+                style={{ height: CELL_HEIGHT }}
+              >
+                {getEventsForTimeSlot(events, day, parseInt(hour)).map((course, idx) => {
+                  if (!course) return null
+
+                  return <CoursesScheduleEvent
+                    key={`${course.event.title}-${idx}`}
+                    event={course.event}
+                    style={course.style}
+                  />
+                })}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
