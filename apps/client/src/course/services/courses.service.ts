@@ -18,3 +18,8 @@ export async function getUserCourses(userId: number) {
   const response = await fetch(`/api/courses?user=${userId}`)
   return response.json()
 }
+
+export async function getCoursesByPeriodId(periodId: number) {
+  const response = await fetch(`/api/courses?periodId=${periodId}`)
+  return response.json()
+}

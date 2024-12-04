@@ -5,6 +5,7 @@ import { SchedulesTable, ScheduleBoard } from "@/schedule/components"
 import { SectionCard, ExtendedSelect as Select } from "@/components"
 import { Button, Spinner } from "@nextui-org/react"
 import { BiSearchAlt } from "react-icons/bi"
+import CoursesSchedule from "@/schedule/components/CoursesSchedule"
 
 interface Schedule {
   day: string
@@ -108,7 +109,8 @@ export const SchedulesPage = () => {
             }
           </div>
           <SectionCard className="flex-1 overflow-y-scroll">
-            <ScheduleBoard />
+            {/* <ScheduleBoard /> */}
+            <CoursesSchedule />
           </SectionCard>
         </div>
       </section>

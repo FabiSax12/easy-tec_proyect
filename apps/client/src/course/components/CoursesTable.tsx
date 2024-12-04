@@ -8,6 +8,7 @@ import { columns, statusOptions } from "./config"
 import {
   Table, TableRow, TableCell, SortDescriptor,
   Selection, TableBody, TableHeader, TableColumn,
+  Spinner,
 } from "@nextui-org/react"
 
 import type { Course } from "@/shared/interfaces"
@@ -115,6 +116,8 @@ export const CoursesTable = ({ filter }: Props) => {
     }),
     []
   )
+
+  if (coursesQuery.isLoading || coursesQuery.isFetching) return <Spinner />
 
   return (
     <Table

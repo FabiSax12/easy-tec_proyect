@@ -35,6 +35,7 @@ const SchedulesProvider = ({ children }: { children: React.ReactNode }) => {
   const [selectedSubjects, setSelectedSubjects] = useState<ScheduleRow[]>([])
 
   const addSubject = (subject: ScheduleRow) => {
+    console.log("Añadiendo materia", subject)
     setSelectedSubjects((prev) => [...prev, subject])
   }
 
