@@ -15,13 +15,15 @@ export class CoursesController {
   @Get()
   async findAll(
     @Query("user") user: string,
-    @Query("period") period: string
+    @Query("period") period: string,
+    @Query("periodId") periodId: string
   ) {
-    if (!user && !period) return this.coursesService.findAll()
+    if (!user && !period && !periodId) return this.coursesService.findAll()
 
     if (user && period) return this.coursesService.findByUserAndPeriod(+user, period)
     if (user) return this.coursesService.findByUser(+user)
     if (period) return this.coursesService.findByPeriod(period)
+    if (periodId) return this.coursesService.findByPeriodId(+periodId)
   }
 
   @Get(":id")

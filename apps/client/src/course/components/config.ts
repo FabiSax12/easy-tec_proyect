@@ -12,3 +12,5 @@ export const statusOptions = [
   { name: "Cursando", uid: "cursando" },
   { name: "Aprobado", uid: "aprobado" }
 ]
+
+export const INITIAL_VISIBLE_COLUMNS = ["name", "credits", "period", "state", "actions"]

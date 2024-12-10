@@ -83,4 +83,12 @@ export class CoursesService {
 
     return course
   }
+
+  async findByPeriodId(periodId: number): Promise<Course[]> {
+    const course = await this.prismaService.course.findMany({
+      where: { academicPeriodId: periodId }
+    })
+
+    return course
+  }
 }

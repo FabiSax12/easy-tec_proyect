@@ -8,6 +8,7 @@ import { Button, ScrollShadow } from "@nextui-org/react"
 import { IoChevronForward, IoChevronBack } from "react-icons/io5"
 
 import type { Period } from "@/shared/interfaces"
+import { PeriodsSkeleton } from "./PeriodsSkeleton"
 
 export const Periods = () => {
   const { user } = useAuthStore()
@@ -17,6 +18,7 @@ export const Periods = () => {
     queryKey: ["periods"],
     queryFn: () => periodsByUserId(user?.id),
     enabled: !!user,
+    staleTime: 1000 * 60 * 5,
   })
 
   const scrollLeft = () => scrollContainerRef.current?.scrollBy({ left: -400, behavior: "smooth" })
@@ -47,7 +49,7 @@ export const Periods = () => {
 
       <ScrollShadow ref={scrollContainerRef} orientation="horizontal" hideScrollBar className="scroll-smooth">
         <div className="flex gap-6 scroll-smooth">
-          {periodsQuery.isFetching && <Spinner />}
+          {periodsQuery.isFetching && <PeriodsSkeleton />}
           {periodsQuery.isError && <p>{periodsQuery.error.message}</p>}
           {periodsQuery.isSuccess && !periodsQuery.isFetching &&
             periodsQuery.data?.map((period) => (
@@ -59,7 +61,8 @@ export const Periods = () => {
                 startDate={period.startDate}
                 endDate={period.endDate}
               />
-            ))}
+            ))
+          }
         </div>
       </ScrollShadow>
     </div>

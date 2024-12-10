@@ -5,6 +5,7 @@ import { NextUIProvider } from "@nextui-org/react"
 import App from "./App"
 import "./index.css"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
+import { Toaster } from "sonner"
 
 const queryClient = new QueryClient()
 
@@ -14,6 +15,7 @@ createRoot(document.getElementById("root")!).render(
       <NextUIProvider>
         <App />
         <ReactQueryDevtools />
+        <Toaster richColors closeButton />
       </NextUIProvider>
     </QueryClientProvider>
   </StrictMode>

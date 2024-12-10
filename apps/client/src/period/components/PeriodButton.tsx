@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom"
-import { PeriodMenu } from "@/period/components"
 import { FaArrowUpRightFromSquare } from "react-icons/fa6"
 import { Progress } from "@nextui-org/react"
 import { useQuery } from "@tanstack/react-query"
@@ -42,9 +41,14 @@ export const PeriodButton = ({ title, id, code, startDate, endDate }: Props) => 
   }, [endDate, startDate])
 
   return (
-    <div className="min-w-80 min-h-36 flex flex-col justify-between border-2 border-default-200 rounded-xl group cursor-pointer hover:border-primary transition-colors ease-in">
-      <Link
-        to={`/principal/periodo/${code}`}
+    <Link
+      to={`/principal/periodo/${code}`}
+      className="
+      min-w-80 min-h-36 flex flex-col justify-between border-2 border-default-200 rounded-xl
+      group cursor-pointer hover:border-primary transition-colors ease-in
+      "
+    >
+      <div
         className=" w-full px-4 py-2"
       >
         <h3 className="flex items-center gap-3 group-hover:text-primary transition-colors ease-in">
@@ -52,7 +56,7 @@ export const PeriodButton = ({ title, id, code, startDate, endDate }: Props) => 
           <FaArrowUpRightFromSquare className="text-[0.7rem] text-primary transition-all opacity-0 group-hover:opacity-100" />
         </h3>
         <p className="text-[0.7rem]">{`${formatDate(startDate.toString())} - ${formatDate(endDate.toString())}`}</p>
-      </Link>
+      </div>
       <div className="w-full px-4 py-2 flex flex-col gap-2">
         <div className="flex justify-between">
           <span className="text-xs">{totalCredits} Créditos</span>
@@ -62,6 +66,6 @@ export const PeriodButton = ({ title, id, code, startDate, endDate }: Props) => 
         <Progress value={timeElapsedPercentage} size="sm" />
       </div>
       {/* <PeriodMenu periodId={id} /> */}
-    </div>
+    </Link>
   )
 }

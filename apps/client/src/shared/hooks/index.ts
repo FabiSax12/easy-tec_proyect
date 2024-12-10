@@ -1,3 +1,5 @@
 export * from "./useFetch"
 export * from "./usePost"
 export * from "./usePagination"
+export * from "./useOptimisticDelete"
+export * from "./useOptimisticUpdate"

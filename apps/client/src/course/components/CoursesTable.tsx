@@ -1,33 +1,37 @@
-import { Key, useCallback, useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { toast } from "sonner"
 import { useQuery } from "@tanstack/react-query"
-import { usePagination } from "@/shared/hooks"
+import { useOptimisticDelete, usePagination } from "@/shared/hooks"
 import { useAuthStore } from "@/auth/store"
-import { getUserCourses } from "@/course/services/courses.service"
-import { TopContent, BottomContent, StatusChip, TableActions } from "@/course/components"
-import { columns, statusOptions } from "./config"
+import { getUserCourses, deleteCourse } from "@/course/services/courses.service"
+import { TopContent, BottomContent } from "@/course/components"
+import { useCoursesTable } from "../hooks/useCoursesTable"
+import { EditCourseDrawer } from "./EditCourseDrawer"
+import { CourseTableCell } from "./CourseTableCell"
+import { columns, INITIAL_VISIBLE_COLUMNS, statusOptions } from "./config"
 import {
-  Table, TableRow, TableCell, SortDescriptor,
-  Selection, TableBody, TableHeader, TableColumn,
-  Spinner,
+  Selection, Spinner, Table,
+  TableBody, TableCell, TableColumn,
+  TableHeader, TableRow
 } from "@nextui-org/react"
 
 import type { Course } from "@/shared/interfaces"
-
-const INITIAL_VISIBLE_COLUMNS = ["name", "credits", "period", "state", "actions"]
 
 interface Props {
   filter?: { period?: string; state?: string };
 }
 
 export const CoursesTable = ({ filter }: Props) => {
+  const navigate = useNavigate()
   const { user } = useAuthStore()
-  const [filterValue, setFilterValue] = useState("")
-  const [periodFilter] = useState(filter?.period || "")
-  const [statusFilter, setStatusFilter] = useState<Selection>(filter?.state ? new Set(filter.state) : "all")
   const [visibleColumns, setVisibleColumns] = useState<Selection>(new Set(INITIAL_VISIBLE_COLUMNS))
-  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
-    column: "age",
-    direction: "ascending",
+  const [editingCourse, setEditingCourse] = useState<Course | null>(null)
+
+  const { mutate: deleteCourseMutation } = useOptimisticDelete<Course>({
+    queryKey: ["courses"],
+    mutationFn: deleteCourse,
+    getUpdatedData: (oldData, id) => oldData.filter((item) => item.id !== id)
   })
 
   const coursesQuery = useQuery<Course[]>({
@@ -36,93 +40,65 @@ export const CoursesTable = ({ filter }: Props) => {
     enabled: !!user,
   })
 
+  const {
+    filterValue,
+    setFilterValue,
+    statusFilter,
+    setStatusFilter,
+    filteredAndSortedItems,
+    hasSearchFilter,
+    setSortDescriptor,
+    sortDescriptor
+  } = useCoursesTable(coursesQuery.data, filter)
+
   const { currentPage, rowsPerPage, totalPages, setPage } = usePagination({
     totalItems: coursesQuery.data?.length || 0,
     initialRowsPerPage: 7,
   })
-
-  const hasSearchFilter = Boolean(filterValue)
 
   const onSearchChange = useCallback(
     (value?: string) => {
       setFilterValue(value || "")
       setPage(1)
     },
-    [setPage]
+    [setPage, setFilterValue]
   )
 
-  const filteredAndSortedItems = useMemo(() => {
-    let result = coursesQuery.data || []
-
-    if (hasSearchFilter) {
-      result = result.filter((course) => course.name.toLowerCase().includes(filterValue.toLowerCase()))
-    }
-    if (periodFilter) {
-      result = result.filter((course) => course.period === periodFilter)
-    }
-    if (statusFilter !== "all") {
-      result = result.filter((course) => Array.from(statusFilter).includes(course.state))
-    }
-
-    if (sortDescriptor.column) {
-      result.sort((a, b) => {
-        const first = a[sortDescriptor.column as keyof Course] as number
-        const second = b[sortDescriptor.column as keyof Course] as number
-        return sortDescriptor.direction === "descending" ? second - first : first - second
-      })
-    }
-
-    return result
-  }, [filterValue, periodFilter, statusFilter, hasSearchFilter, sortDescriptor, coursesQuery])
-
-  const renderCell = useCallback(
-    (course: Course, columnKey: Key) => {
-      const cellValue = course[columnKey as keyof Course]
-      switch (columnKey) {
-        case "name":
-          return (
-            <>
-              <p className="text-bold text-small capitalize">{course.name}</p>
-              <p className="text-xs">{course.teacher}</p>
-            </>
-          )
-        case "state":
-          return <StatusChip status={course.state ?? "Sin estado"} />
-        case "actions":
-          return <TableActions courseId={course.id} />
-        default:
-          return cellValue
+  const onDeleteCourse = useCallback((course: Course) => {
+    toast.warning(`¿Seguro que desea eliminar el curso "${course.name}"?`, {
+      description: "Se eliminará permanentemente",
+      duration: 5000,
+      cancel: {
+        label: "Cancelar",
+        onClick: () => undefined
+      },
+      action: {
+        label: "Eliminar",
+        onClick: () => deleteCourseMutation(course.id)
       }
-    },
-    []
-  )
+    })
+  }, [deleteCourseMutation])
+
+  const onEditCourse = useCallback((courseId: string | number) => {
+    setEditingCourse(coursesQuery.data?.find(c => c.id == courseId) ?? null)
+  }, [coursesQuery.data])
+
+  const onOpenCourse = useCallback((courseId: string | number) => {
+    navigate(`/courses/${courseId}`)
+  }, [navigate])
 
   const headerColumns = useMemo(() => {
     if (visibleColumns === "all") return columns
     return columns.filter((column) => Array.from(visibleColumns).includes(column.uid))
   }, [visibleColumns])
 
-  const classNames = useMemo(
-    () => ({
-      wrapper: ["max-h-[382px]", "max-w-3xl"],
-      th: ["bg-transparent", "text-default-500", "border-b", "border-divider"],
-      td: [
-        "group-data-[first=true]:first:before:rounded-none",
-        "group-data-[first=true]:last:before:rounded-none",
-        "group-data-[middle=true]:before:rounded-none",
-        "group-data-[last=true]:first:before:rounded-none",
-        "group-data-[last=true]:last:before:rounded-none",
-      ],
-    }),
-    []
-  )
-
-  if (coursesQuery.isLoading || coursesQuery.isFetching) return <Spinner />
-
-  return (
+  return <>
     <Table
       isCompact
       removeWrapper
+      sortDescriptor={sortDescriptor}
+      onSortChange={setSortDescriptor}
+      topContentPlacement="outside"
       bottomContentPlacement="outside"
       bottomContent={
         <BottomContent
@@ -132,14 +108,6 @@ export const CoursesTable = ({ filter }: Props) => {
           setPage={setPage}
         />
       }
-      checkboxesProps={{
-        classNames: {
-          wrapper: "after:bg-foreground after:text-background text-background",
-        },
-      }}
-      classNames={classNames}
-      sortDescriptor={sortDescriptor}
-      topContentPlacement="outside"
       topContent={
         <TopContent
           filterValue={filterValue}
@@ -155,7 +123,6 @@ export const CoursesTable = ({ filter }: Props) => {
           statusOptions={statusOptions}
         />
       }
-      onSortChange={setSortDescriptor}
     >
       <TableHeader columns={headerColumns}>
         {(column) => (
@@ -168,13 +135,33 @@ export const CoursesTable = ({ filter }: Props) => {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody emptyContent="No courses found" items={filteredAndSortedItems}>
-        {(item) => (
+      <TableBody
+        emptyContent="No se encontraron cursos"
+        items={filteredAndSortedItems}
+        loadingContent={<Spinner />}
+        isLoading={coursesQuery.isLoading}
+      >
+        {item => (
           <TableRow key={item.id}>
-            {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
+            {columnKey => <TableCell>
+              <CourseTableCell
+                course={item}
+                columnKey={columnKey}
+                onDeleteCourse={onDeleteCourse}
+                onEditCourse={onEditCourse}
+                onOpenCourse={onOpenCourse}
+              />
+            </TableCell>}
           </TableRow>
         )}
       </TableBody>
     </Table>
-  )
+    {
+      !!editingCourse && <EditCourseDrawer
+        courseData={editingCourse}
+        isOpen={true}
+        onClose={() => setEditingCourse(null)}
+      />
+    }
+  </>
 }
