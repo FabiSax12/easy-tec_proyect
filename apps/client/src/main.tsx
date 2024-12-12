@@ -1,22 +1,16 @@
 import { StrictMode } from "react"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { createRoot } from "react-dom/client"
-import { NextUIProvider } from "@nextui-org/react"
+import { BrowserRouter } from "react-router-dom"
+import { Providers } from "./Providers"
 import App from "./App"
 import "./index.css"
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
-import { Toaster } from "sonner"
-
-const queryClient = new QueryClient()
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <NextUIProvider>
+    <BrowserRouter>
+      <Providers>
         <App />
-        <ReactQueryDevtools />
-        <Toaster richColors closeButton />
-      </NextUIProvider>
-    </QueryClientProvider>
+      </Providers>
+    </BrowserRouter>
   </StrictMode>
 )
