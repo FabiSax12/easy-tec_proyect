@@ -1,7 +1,0 @@
-export * from "./courses/actions"
-export * from "./period/actions"
-export { getSchedules } from "./schedule/actions"
-export * from "./seed/actions"
-export * from "./task/actions"
-export { changeCarrier, changeName, changePassword, updateUserData, verifyPassword } from "./user/actions"
-export { getCloudinarySignature } from "./cloudinary/actions"

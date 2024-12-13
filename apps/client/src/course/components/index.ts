@@ -1,0 +1,7 @@
+export * from "./BottomContent"
+export * from "./config"
+export * from "./CoursesTable"
+export * from "./StatusChip"
+export * from "./TableActions"
+export * from "./TopContent"
+export * from "./AddCourseModal"
