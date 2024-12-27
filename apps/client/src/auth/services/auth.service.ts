@@ -9,14 +9,16 @@ export async function userLogin(email: string, password: string) {
       body: JSON.stringify({ email, password }),
     })
 
-    if (!response.ok) throw new Error("Failed to login")
+    if (response.status === 401) throw new Error("El usuario no existe o no se ha verificado")
+
+    if (!response.ok) throw new Error("Error al iniciar sesión")
 
     const data = await response.json() as AuthResponse
 
     return data
   } catch (error) {
-    console.error("Failed to login", error)
-    throw new Error("Failed to login")
+    console.error("Error al iniciar sesión", error)
+    throw error
   }
 }
 
@@ -55,3 +57,11 @@ export async function getUser(accessToken: string) {
     throw new Error("Failed to get user")
   }
 }
+
+export const requestVerificationEmail = (email: string) => fetch("/api/auth/request-verification-email", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ email }),
+})

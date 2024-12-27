@@ -20,4 +20,5 @@ export interface InputProps {
   placeholder: string;
   type: string;
   value: keyof FormData;
+  autoComplete?: string;
 }

@@ -9,7 +9,7 @@ interface AuthState {
     user: User | null;
     accessToken: string | null;
     refreshToken: string | null;
-    signup: (user: SignUpRequest) => Promise<void>;
+    signup: (user: SignUpRequest) => Promise<User>;
     login: (email: string, password: string) => Promise<void>;
     logout: () => void;
     refreshAccessToken: () => Promise<string | null>;
@@ -25,15 +25,21 @@ export const useAuthStore = create(
 
             signup: async (user: SignUpRequest) => {
                 try {
-                    await userSignup(user)
+                    const createdUser = await userSignup(user)
+                    console.log("User signed up", createdUser)
+                    set({ user: createdUser })
+                    return createdUser
                 } catch (error) {
                     console.error("Signup failed", error)
+                    throw error
                 }
             },
 
             login: async (email: string, password: string) => {
                 try {
                     const data = await userLogin(email, password)
+
+                    console.log("User logged in")
 
                     if (data?.access_token) {
                         localStorage.setItem("access_token", data.access_token)
@@ -45,9 +51,10 @@ export const useAuthStore = create(
                         set({ refreshToken: data.refresh_token })
                     }
 
-                    await get().initializeUser()
+                    get().initializeUser()
                 } catch (error) {
                     console.error("Login failed", error)
+                    throw error
                 }
             },
 
