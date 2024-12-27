@@ -1,6 +1,6 @@
 import {
   Body, Controller, Get, HttpCode, HttpStatus,
-  Post, Request, UnauthorizedException, UseGuards
+  Post, Query, Request, UnauthorizedException, UseGuards
 } from "@nestjs/common"
 import { User } from "@prisma/client"
 import { AuthGuard } from "./auth.guard"
@@ -10,7 +10,9 @@ import { SignInDto } from "./dto/sign-in.dto"
 
 @Controller("auth")
 export class AuthController {
-  constructor(private authService: AuthService) { }
+  constructor(
+    private authService: AuthService,
+  ) { }
 
   @Post("login")
   @HttpCode(HttpStatus.OK)
@@ -60,5 +62,17 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   getProfile(@Request() req): User {
     return req.user
+  }
+
+  @Post("request-verification-email")
+  @HttpCode(HttpStatus.OK)
+  async requestVerificationEmail(@Body("email") email: string) {
+    return this.authService.requestVerificationEmail(email)
+  }
+
+  @Get("verify")
+  @HttpCode(HttpStatus.OK)
+  async verify(@Query("token") token: string) {
+    return this.authService.verifyMagicLink(token)
   }
 }

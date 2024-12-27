@@ -39,4 +39,8 @@ export class UsersService {
   remove(id: number) {
     return this.prisma.user.delete({ where: { id } })
   }
+
+  verify(id: number) {
+    return this.prisma.user.update({ where: { id }, data: { verified: true } })
+  }
 }

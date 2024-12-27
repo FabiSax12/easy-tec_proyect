@@ -8,15 +8,19 @@ import {
   MindMappingGuidePage, MnemotecniaGuidePage, SMARTGoals, SQ3RGuidePage
 } from "./guides/components"
 import "./App.css"
+import { VerifyMagicLinkPage } from "./pages/VerifyMagicLinkPage"
+import { CreatedAccountPage } from "./pages/CreatedAccountPage"
 
 function App() {
   return <Routes>
 
     <Route path="/auth" element={<AuthLayout />}>
-      <Route path="" element={<AuthPage />} />
+      <Route index element={<AuthPage />} />
+      <Route path="created-account" element={<CreatedAccountPage />} />
+      <Route path="verify" element={<VerifyMagicLinkPage />} />
     </Route>
 
-    <Route path="/" element={<Navigate to="/principal/dashboard" replace />} />
+    <Route index element={<Navigate to="/principal/dashboard" replace />} />
 
     <Route path="/principal" element={<ProtectedPage />}>
       <Route path="" element={<DashboadLayout />}>

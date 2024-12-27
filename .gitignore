@@ -46,3 +46,6 @@ next-env.d.ts
 
 # Credentials
 cookies.json
+
+# todo
+todo.md

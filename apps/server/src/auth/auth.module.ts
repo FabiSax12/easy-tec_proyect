@@ -1,8 +1,11 @@
 import { Module } from "@nestjs/common"
+import { MailerModule } from "@nestjs-modules/mailer"
 import { AuthService } from "./auth.service"
 import { UsersModule } from "../users/users.module"
 import { JwtModule, JwtService } from "@nestjs/jwt"
 import { AuthController } from "./auth.controller"
+import { UsersService } from "src/users/users.service"
+import { PrismaService } from "src/prisma/prisma.service"
 
 @Module({
   imports: [
@@ -12,8 +15,9 @@ import { AuthController } from "./auth.controller"
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: "15min" },
     }),
+    MailerModule
   ],
-  providers: [AuthService, JwtService],
+  providers: [AuthService, JwtService, UsersService, PrismaService],
   controllers: [AuthController],
   exports: [AuthService],
 })
