@@ -36,9 +36,9 @@ const serveClient = ServeStaticModule.forRoot({
           port: configService.get("MAILER_PORT"),
           secure: true,
           auth: {
-            user: "vargasarayafabian11@gmail.com",
-            pass: "yezqigojzhmbftrj",
-          },
+            user: configService.get("MAILER_USER"),
+            pass: configService.get("MAILER_PASSWORD")
+          }
         },
         defaults: {
           from: `\"No Reply\" <${configService.get("MAILER_EMAIL")}>`,
