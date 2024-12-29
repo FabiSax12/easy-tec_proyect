@@ -19,3 +19,11 @@ export async function periodById(periodId: number) {
   const response = await fetch(`/api/periods/${periodId}`)
   return response.json()
 }
+
+export async function createPeriod(period: Period) {
+  const response = await fetch("/api/periods", {
+    method: "POST",
+    body: JSON.stringify(period),
+  })
+  return response.json()
+}

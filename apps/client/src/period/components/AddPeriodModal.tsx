@@ -33,40 +33,50 @@ function addPeriod(userId: number, periodData: PeriodData) {
 
 export const AddPeriodModal = ({ isOpen, onOpenChange }: Props) => {
   const navigate = useNavigate()
-  const [modality, setModality] = useState("")
-  const [title, setTitle] = useState("")
-  const [id, setId] = useState(0)
-  const [startDate, setStartDate] = useState("")
-  const [endDate, setEndDate] = useState("")
-  const [loading, setLoading] = useState(false)
-
   const { user } = useAuthStore()
+  const [formState, setFormState] = useState({
+    modality: "",
+    title: "",
+    id: 0,
+    startDate: "",
+    endDate: "",
+    loading: false
+  })
 
   useEffect(() => {
-    switch (modality) {
+    switch (formState.modality) {
       case "S":
-        setTitle("Semestre")
-        setId(1)
+        setFormState(prev => ({
+          ...prev,
+          title: "Semestre",
+          id: 1
+        }))
         break
       case "V":
-        setTitle("Verano")
-        setId(2024)
+        setFormState(prev => ({
+          ...prev,
+          title: "Verano",
+          id: 2024
+        }))
         break
       default:
-        setTitle("")
-        setId(0)
+        setFormState(prev => ({
+          ...prev,
+          title: "",
+          id: 0
+        }))
         break
     }
-  }, [modality])
+  }, [formState.modality])
 
   const onAccept = async () => {
-    setLoading(true)
+    setFormState(prev => ({ ...prev, loading: true }))
 
     const semesterData = {
-      type: title,
-      typeId: id,
-      startDate: new Date(startDate),
-      endDate: new Date(endDate),
+      type: formState.title,
+      typeId: formState.id,
+      startDate: new Date(formState.startDate),
+      endDate: new Date(formState.endDate),
     }
 
     try {
@@ -74,9 +84,12 @@ export const AddPeriodModal = ({ isOpen, onOpenChange }: Props) => {
       const data = await res.json()
 
       if (res.ok) {
-        setModality("")
-        setStartDate("")
-        setEndDate("")
+        setFormState(prev => ({
+          ...prev,
+          modality: "",
+          startDate: "",
+          endDate: ""
+        }))
         onOpenChange()
         navigate(0)
       } else {
@@ -85,37 +98,17 @@ export const AddPeriodModal = ({ isOpen, onOpenChange }: Props) => {
     } catch (error) {
       console.error("Error al añadir semestre:", error)
     } finally {
-      setLoading(false)
+      setFormState(prev => ({ ...prev, loading: false }))
     }
   }
 
-  const canAddSemester = title && startDate && endDate
+  const canAddSemester = formState.title && formState.startDate && formState.endDate
 
   return (
     <Modal
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       backdrop="opaque"
-      motionProps={{
-        variants: {
-          enter: {
-            y: 0,
-            opacity: 1,
-            transition: {
-              duration: 0.3,
-              ease: "easeOut",
-            },
-          },
-          exit: {
-            y: -20,
-            opacity: 0,
-            transition: {
-              duration: 0.2,
-              ease: "easeIn",
-            },
-          },
-        },
-      }}
     >
       <ModalContent>
         {(onClose) => (
@@ -130,16 +123,18 @@ export const AddPeriodModal = ({ isOpen, onOpenChange }: Props) => {
                   label="Título"
                   placeholder="Modalidad"
                   variant="bordered"
-                  value={modality}
-                  onChange={(e: ChangeEvent<HTMLSelectElement>) => setModality(e.target.value)}
+                  value={formState.modality}
+                  onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                    setFormState(prev => ({ ...prev, modality: e.target.value }))
+                  }
                 />
                 <NumberInput
-                  label={modality === "S" ? "Semestre" : "Año"}
+                  label={formState.modality === "S" ? "Semestre" : "Año"}
                   className="flex-[1] w-full"
-                  value={id}
-                  setValue={setId}
+                  value={formState.id}
+                  setValue={(value: number) => setFormState(prev => ({ ...prev, id: value }))}
                   min={1}
-                  disabled={!modality}
+                  disabled={!formState.modality}
                 />
               </div>
               <Input
@@ -147,24 +142,28 @@ export const AddPeriodModal = ({ isOpen, onOpenChange }: Props) => {
                 placeholder="Fecha Inicial"
                 type="date"
                 variant="bordered"
-                value={startDate}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setStartDate(e.target.value)}
+                value={formState.startDate}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setFormState(prev => ({ ...prev, startDate: e.target.value }))
+                }
               />
               <Input
                 label="Fecha de finalización"
                 placeholder="Fecha final"
                 type="date"
                 variant="bordered"
-                value={endDate}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setEndDate(e.target.value)}
+                value={formState.endDate}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setFormState(prev => ({ ...prev, endDate: e.target.value }))
+                }
               />
             </ModalBody>
             <ModalFooter>
               <Button color="danger" variant="flat" onPress={onClose}>
                 Cancelar
               </Button>
-              <Button color="primary" onPress={onAccept} isDisabled={!canAddSemester || loading}>
-                {loading ? "Añadiendo..." : "Añadir"}
+              <Button color="primary" onPress={onAccept} isDisabled={!canAddSemester || formState.loading}>
+                {formState.loading ? "Añadiendo..." : "Añadir"}
               </Button>
             </ModalFooter>
           </>
