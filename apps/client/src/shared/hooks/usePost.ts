@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react"
-import { useAuthStore } from "@/auth/store"
+import { useAuthStore } from "@/modules/auth/store/auth.store"
 
 interface PostState {
   status: "idle" | "loading" | "success" | "error";

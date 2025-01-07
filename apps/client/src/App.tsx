@@ -1,15 +1,19 @@
 import { Routes, Route, Navigate } from "react-router-dom"
 import { DashboadLayout, AuthLayout } from "@/layouts"
-import { AuthPage, DashboardPage, NotFound, Period, ProtectedPage, SchedulesPage, GuidesPage } from "@/pages"
-import { ComingSoon } from "@/components/ComingSoon"
+import {
+  AuthPage, DashboardPage, NotFound,
+  Period, ProtectedPage, SchedulesPage,
+  GuidesPage, CreatedAccountPage, VerifyMagicLinkPage
+} from "@/pages"
+
 import {
   PomodoroGuidePage, ActiveRecallGuidePage, SpacedRepetitionGuidePage,
   FeynmanMethodGuidePage, CornellMethodGuidePage, GTDWorkFlow,
   MindMappingGuidePage, MnemotecniaGuidePage, SMARTGoals, SQ3RGuidePage
-} from "./guides/components"
+} from "./modules/guides/components"
+import { ComingSoon } from "@/shared/components/ComingSoon"
+
 import "./App.css"
-import { VerifyMagicLinkPage } from "./pages/VerifyMagicLinkPage"
-import { CreatedAccountPage } from "./pages/CreatedAccountPage"
 
 function App() {
   return <Routes>

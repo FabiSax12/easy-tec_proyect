@@ -1,6 +1,6 @@
-import { SectionCard } from "@/components"
-import { CoursesTable } from "@/course/components"
-import { Periods } from "@/period/components"
+import { SectionCard } from "@/shared/components"
+import { CoursesTable } from "@/modules/course/components"
+import { Periods } from "@/modules/period/components"
 
 export function DashboardPage() {
   return (

@@ -1,11 +1,11 @@
 import { useState } from "react"
-import { campusOptions, carriersOptions, periodsOptions, subjectsOptions } from "@/schedule/data/schedule-options"
-import { SchedulesProvider } from "@/schedule/context/schedule"
-import { SchedulesTable, ScheduleBoard } from "@/schedule/components"
-import { SectionCard, ExtendedSelect as Select } from "@/components"
+import { campusOptions, carriersOptions, periodsOptions, subjectsOptions } from "@/modules/schedule/data/schedule-options"
+import { SchedulesProvider } from "@/modules/schedule/context/schedule"
+import { SchedulesTable } from "@/modules/schedule/components"
+import { SectionCard, ExtendedSelect as Select } from "@/shared/components"
 import { Button, Spinner } from "@nextui-org/react"
 import { BiSearchAlt } from "react-icons/bi"
-import CoursesSchedule from "@/schedule/components/CoursesSchedule"
+import CoursesSchedule from "@/modules/schedule/components/CoursesSchedule"
 
 interface Schedule {
   day: string

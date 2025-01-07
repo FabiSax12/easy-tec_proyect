@@ -1,8 +1,8 @@
 import { Suspense } from "react"
 import { useParams } from "react-router-dom"
-import { SectionCard, Spinner } from "@/components"
-import { CoursesTable } from "@/course/components"
-import { Trello } from "@/task/components"
+import { SectionCard, Spinner } from "@/shared/components"
+import { CoursesTable } from "@/modules/course/components"
+import { Trello } from "@/modules/task/components"
 
 export const Period = () => {
   const { id } = useParams()
