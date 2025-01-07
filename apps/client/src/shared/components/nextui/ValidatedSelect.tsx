@@ -13,7 +13,7 @@ interface Props extends Omit<SelectProps, "children"> {
   onValueChange?: (value: string | null) => void
 }
 
-export const Select = (props: Props) => {
+export const ValidatedSelect = (props: Props) => {
   const { options, errorMessage, onValueChange, ...otherProps } = props
   const [currentSelection, setCurrentSelection] = useState<Selection>(new Set())
   const [touched, setTouched] = useState<boolean>(false)

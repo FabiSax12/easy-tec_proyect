@@ -1,5 +1,5 @@
 import type { FormData, InputProps } from "@/modules/auth/components"
-import { PasswordInput } from "@/shared/components/PasswordInput"
+import { PasswordInput } from "@/shared/components/nextui/PasswordInput"
 import { Input } from "@nextui-org/react"
 
 interface Props {

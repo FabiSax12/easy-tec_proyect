@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react"
-import { PasswordInput } from "@/shared/components/PasswordInput"
+import { PasswordInput } from "@/shared/components/nextui/PasswordInput"
 import { useAuthStore } from "@/modules/auth/store/auth.store"
 import { Modal, Button, Input, ModalHeader, ModalBody, ModalFooter, ModalContent, Tabs, Tab, Image } from "@nextui-org/react"
 import { updateUser } from "@/modules/user/services/user.service"
