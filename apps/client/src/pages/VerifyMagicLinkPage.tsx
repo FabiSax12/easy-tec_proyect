@@ -1,4 +1,4 @@
-import { Spinner } from "@/components"
+import { Spinner } from "@/shared/components"
 import { Button, Card, CardBody, CardFooter, CardHeader } from "@nextui-org/react"
 import { useCallback, useEffect, useState } from "react"
 import { BiCheckCircle, BiXCircle } from "react-icons/bi"

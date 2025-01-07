@@ -1,7 +1,7 @@
 import { Suspense } from "react"
 import { Navigate, Outlet, useLocation } from "react-router-dom"
-import { Sidebar } from "@/components/sidebar"
-import { Header } from "@/components/header"
+import { Sidebar } from "@/shared/components/sidebar"
+import { Header } from "@/shared/components/header"
 import { Spinner } from "@nextui-org/react"
 
 export function DashboadLayout() {

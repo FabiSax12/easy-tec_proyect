@@ -1,5 +1,5 @@
 import { Suspense } from "react"
-import { AuthFormTabs } from "@/auth/components"
+import { AuthFormTabs } from "@/modules/auth/components"
 import { Card, CardBody } from "@nextui-org/react"
 
 export const AuthPage = () => {

@@ -1,6 +1,6 @@
-import { useAuthStore } from "@/auth/store"
 import { useEffect } from "react"
 import { useNavigate, Outlet } from "react-router-dom"
+import { useAuthStore } from "@/modules/auth/store/auth.store"
 
 export const AuthLayout = () => {
   const { accessToken } = useAuthStore()
