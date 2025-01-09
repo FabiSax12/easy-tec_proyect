@@ -1,6 +1,6 @@
 export * from "./TaskCard"
 export * from "./TaskCardInfo"
-export * from "./TaskModal"
+export * from "./AddTaskModal"
 export * from "./Trello"
 export * from "./TrelloColumn"
 export * from "./TrelloColumnFooter"

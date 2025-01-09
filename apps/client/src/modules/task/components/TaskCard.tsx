@@ -1,29 +1,23 @@
 import { useState, useMemo } from "react"
-import { toast } from "sonner"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { Chip, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Tooltip } from "@nextui-org/react"
-import { TaskModal, TaskCardInfo } from "@/modules/task/components"
-import { IoEllipsisVerticalSharp, IoOpen, IoPencil, IoTrash } from "react-icons/io5"
-import { createTask, deleteTask } from "../services/tasks.service"
+import { Chip } from "@nextui-org/react"
+import { EditTaskDrawer } from "./EditTaskDrawer"
 import { FaClock } from "react-icons/fa6"
 
-import type { Task } from "@/shared/types/entities/Task"
+import type { TaskWithCourseName } from "@/shared/types/entities/Task"
 
 interface Props {
-  task: Task & { course: { name: string } };
-  handleTaskUpdate: (task: Task) => void;
-  handleTaskDelete: (taskId: number) => void;
-  handleTaskAdd: (task: Task) => void;
+  task: TaskWithCourseName;
 }
 
-export function TaskCard({ task, handleTaskUpdate, handleTaskDelete, handleTaskAdd }: Props) {
+export function TaskCard({ task }: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isCardOpen, setIsCardOpen] = useState(false)
+
   const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
     id: task.id,
     data: { type: "Task", task },
-    disabled: isCardOpen || isModalOpen
+    disabled: isModalOpen
   })
 
   const style = useMemo(() => ({
@@ -43,31 +37,6 @@ export function TaskCard({ task, handleTaskUpdate, handleTaskDelete, handleTaskA
     return { daysLeft, hoursLeft, minutesLeft }
   }, [task.date])
 
-  const onDeleteTask = async () => {
-    toast.promise(() => deleteTask(task.id), {
-      loading: "Eliminando tarea...",
-      success: (data) => {
-        handleTaskDelete(data.id)
-        return `Tarea "${data.name}" eliminada exitosamente`
-      },
-      error: (error) => `Error al eliminar la tarea: ${error}`,
-      action: {
-        label: "Deshacer",
-        onClick: () => toast.promise(() => {
-          const { id, course, ...taskCreationFields } = task
-          return createTask(taskCreationFields)
-        }, {
-          loading: "Restaurando tarea...",
-          success: (data) => {
-            handleTaskAdd(data)
-            return `Tarea "${data.name}" restaurada`
-          },
-          error: (error) => `Error al restaurar la tarea: ${error}`
-        })
-      }
-    })
-  }
-
   return (
     <div
       ref={setNodeRef}
@@ -75,10 +44,12 @@ export function TaskCard({ task, handleTaskUpdate, handleTaskDelete, handleTaskA
       {...attributes}
       {...listeners}
       className={`
-        bg-white p-2 h-16 min-h-[64px] flex text-left rounded-xl cursor-grab relative group ring-default ring-1 active:cursor-grabbing
+        bg-white p-2 h-16 min-h-[64px] flex text-left rounded-xl cursor-grab relative
+        group ring-default ring-1 active:cursor-grabbing select-none hover:cursor-pointer
         ${isDragging ? "opacity-30 ring-default cursor-grabbing" : "opacity-100"}
         ${timeLeft.daysLeft > 3 ? "hover:ring-primary" : timeLeft.daysLeft > 0 ? "hover:ring-warning" : "hover:ring-danger"}
       `}
+      onClick={() => setIsModalOpen(true)}
     >
       <span>
         <p className="text-xs font-bold w-full whitespace-pre-wrap">{task.name}</p>
@@ -87,34 +58,6 @@ export function TaskCard({ task, handleTaskUpdate, handleTaskDelete, handleTaskA
           {new Date(task.date).toLocaleDateString("es-ES", { day: "numeric", month: "short" })}
         </p>
       </span>
-
-      <Dropdown size="sm" placement="left-start" offset={-35}
-        classNames={{
-          trigger: "p-1 rounded-full bg-default-100 text-default-500",
-          content: "flex max-w-min min-w-min p-0"
-        }}
-      >
-        <DropdownTrigger className="absolute bottom-2 right-2">
-          <button><IoEllipsisVerticalSharp size={15} className="cursor-pointer text-default-500" /></button>
-        </DropdownTrigger>
-        <DropdownMenu classNames={{ list: "flex-row text-xs" }}>
-          <DropdownItem onPress={() => setIsCardOpen(true)}>
-            <Tooltip content="Abrir">
-              <span><IoOpen /></span>
-            </Tooltip>
-          </DropdownItem>
-          <DropdownItem onPress={() => setIsModalOpen(true)}>
-            <Tooltip content="Editar">
-              <span><IoPencil /></span>
-            </Tooltip>
-          </DropdownItem>
-          <DropdownItem onPress={onDeleteTask}>
-            <Tooltip content="Eliminar">
-              <span><IoTrash /></span>
-            </Tooltip>
-          </DropdownItem>
-        </DropdownMenu>
-      </Dropdown>
 
       <Chip
         variant="solid"
@@ -133,20 +76,12 @@ export function TaskCard({ task, handleTaskUpdate, handleTaskDelete, handleTaskA
         }
       </Chip>
 
-      {isCardOpen && <TaskCardInfo task={task} isCardOpen={isCardOpen} setIsCardOpen={setIsCardOpen} />}
-      {isModalOpen && <TaskModal
-        mode="update"
-        handleTaskAction={handleTaskUpdate}
+      {<EditTaskDrawer
         isOpen={isModalOpen}
-        onOpenChange={() => setIsModalOpen((prev) => !prev)}
-        values={{
-          id: task.id,
-          taskName: task.name,
-          selectedCourse: task.courseId.toString(),
-          state: task.state,
-          date: new Date(task.date),
-          description: task.description
-        }}
+        task={task}
+        timeLeft={timeLeft}
+        onClose={() => setIsModalOpen(false)}
+        onOpenChange={() => setIsModalOpen(prev => !prev)}
       />}
     </div>
   )

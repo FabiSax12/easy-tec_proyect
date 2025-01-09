@@ -17,12 +17,13 @@ export class TasksController {
     @Query("userId", ParseIntPipe) userId: number,
     @Query("period") period: string
   ) {
-    if (!userId && !period) return this.tasksService.findAll()
+    if (!userId && !period) return this.tasksService.findAllWithCourseName()
 
     if (userId && period) return this.tasksService.findByUserAndPeriod(userId, period)
     if (userId) return this.tasksService.findByUser(userId)
     if (period) return this.tasksService.findByPeriod(period)
-    return this.tasksService.findAll()
+
+    return this.tasksService.findAllWithCourseName()
   }
 
   @Get(":id")

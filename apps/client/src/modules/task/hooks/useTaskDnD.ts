@@ -1,48 +1,21 @@
-import { useState, useMemo, useEffect } from "react"
-import { toast } from "sonner"
-import { useAuthStore } from "@/modules/auth/store/auth.store"
-import { defaultCols } from "@/modules/task/data/trello-columns"
+import { useState, useMemo } from "react"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   DragEndEvent, DragOverEvent, DragStartEvent,
   PointerSensor, useSensor, useSensors
 } from "@dnd-kit/core"
 import { arrayMove } from "@dnd-kit/sortable"
+import { useAuthStore } from "@/modules/auth/store/auth.store"
+import { defaultCols } from "@/modules/task/data/trello-columns"
+import { getTasksByPeriodId } from "../services/tasks.service"
+import { useUpdateTask } from "./useUpdateTask"
 
-import type { Course } from "@/shared/types/entities/Course"
-import type { Task } from "@/shared/types/entities/Task"
-
-
-type TaskDBWithCourse = Task & { course: Pick<Course, "name"> }
-
-async function updateTask(taskId: number, data: Partial<TaskDBWithCourse>) {
-  const res = await fetch(`/api/tasks/${taskId}`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data)
-  })
-  return await res.json() as TaskDBWithCourse
-}
-
-async function getTasksByPeriod(userId: number, period: string) {
-  const res = await fetch(`/api/tasks?userId=${userId}&period=${period}`)
-  return await res.json() as TaskDBWithCourse[]
-}
-
-// async function appendCourseName(task: TaskDBWithCourse): Promise<TaskDBWithCourse> {
-//   const res = await fetch(`/api/courses/${task.courseId}`)
-//   const data = await res.json() as Course
-
-//   return Object.assign(task, { course: { name: data?.name ?? "Sin Curso" } })
-// }
-
-
+import type { TaskWithCourseName } from "@/shared/types/entities/Task"
 
 export function useTaskDnD(period: string) {
   const { accessToken, user } = useAuthStore()
-  const [tasks, setTasks] = useState<TaskDBWithCourse[]>([])
-  const [activeTask, setActiveTask] = useState<TaskDBWithCourse | null>(null)
+
+  const [activeTask, setActiveTask] = useState<TaskWithCourseName | null>(null)
   const columns = useMemo(() => defaultCols, [])
   const columnsId = useMemo(() => columns.map((col) => col.id), [columns])
 
@@ -54,11 +27,15 @@ export function useTaskDnD(period: string) {
     })
   )
 
-  useEffect(() => {
-    if (!accessToken || !user) return
+  const queryClient = useQueryClient()
 
-    getTasksByPeriod(user.id, period).then(data => setTasks(data ?? []))
-  }, [accessToken, user, period])
+  const { data: tasks = [], isLoading: loadingTasks, } = useQuery<TaskWithCourseName[]>({
+    queryKey: ["tasks"],
+    queryFn: () => getTasksByPeriodId(user!.id, period),
+    enabled: !!user?.id && !!period && !!accessToken,
+  })
+
+  const updateTaskMutation = useUpdateTask()
 
   const onDragStart = (event: DragStartEvent) => {
     if (event.active.data.current?.type === "Task") {
@@ -80,25 +57,32 @@ export function useTaskDnD(period: string) {
     const overTask = tasks.find((t) => t.id === overId)
 
     if (activeTask && overTask && activeTask.state !== overTask.state) {
-      setTasks((tasks) => {
-        const updatedTasks = [...tasks]
-        const activeIndex = updatedTasks.findIndex((t) => t.id === activeId)
-        const overIndex = updatedTasks.findIndex((t) => t.id === overId)
+      queryClient.setQueryData(["tasks"], (tasks: TaskWithCourseName[]) => {
+        const activeIndex = tasks.findIndex((t: TaskWithCourseName) => t.id === activeId)
+        const overIndex = tasks.findIndex((t: TaskWithCourseName) => t.id === overId)
 
-        updatedTasks[activeIndex].state = overTask.state
-        return arrayMove(updatedTasks, activeIndex, overIndex)
+        return arrayMove(tasks.map((t: TaskWithCourseName, index: number) => {
+          if (index === activeIndex) {
+            return { ...t, state: overTask.state }
+          }
+          return t
+        }), activeIndex, overIndex)
       })
+
     }
 
     const isOverAColumn = over.data.current?.type === "Column"
 
     // Im dropping a Task over a column
     if (isActiveATask && isOverAColumn) {
-      setTasks((tasks) => {
-        const activeIndex = tasks.findIndex((t) => t.id === activeId)
-
-        tasks[activeIndex].state = overId as string
-        return arrayMove(tasks, activeIndex, activeIndex)
+      queryClient.setQueryData(["tasks"], (tasks: TaskWithCourseName[]) => {
+        const activeIndex = tasks.findIndex((t: TaskWithCourseName) => t.id === activeId)
+        return tasks.map((t: TaskWithCourseName, index: number) => {
+          if (index === activeIndex) {
+            return { ...t, state: overId as string }
+          }
+          return t
+        })
       })
     }
   }
@@ -117,40 +101,21 @@ export function useTaskDnD(period: string) {
 
     if (taskActive.state != taskOver.state || active.data.current?.task.state !== activeTask?.state) {
       const taskId = parseInt(activeId as string)
-      toast.promise(updateTask(taskId, { state: taskOver.state }), {
-        loading: "Moviendo tarea...",
-        success: (data) => `Tarea "${data.name}" movida correctamente`,
-        error: "Error al mover la tarea",
-        action: {
-          label: "Deshacer",
-          onClick: async () => await updateTask(taskId, { state: activeTask?.state }),
-          type: "undo"
-        }
-      })
+      updateTaskMutation.mutate({ id: taskId, updates: { state: taskOver.state } })
     }
 
     setActiveTask(null)
   }
 
-  const onTaskUpdate = (task: Task) => {
-    console.log("Task updated")
-    // appendCourseName(task)
-    //   .then(newTask => setTasks((tasks) => tasks.map((t) => (t.id === newTask.id ? newTask : t))))
-  }
-
-  const onTaskDelete = (taskId: number) => {
-    console.log("Task deleted")
-    setTasks((tasks) => tasks.filter((t) => t.id !== taskId))
-  }
-
-  const onTaskAdd = async (task: Task) => {
-    console.log("Task added")
-    // appendCourseName(task)
-    //   .then(newTask => setTasks((tasks) => [...tasks, newTask]))
-  }
-
   return {
-    tasks, activeTask, columns, columnsId, sensors,
-    onDragStart, onDragOver, onDragEnd, onTaskUpdate, onTaskDelete, onTaskAdd
+    tasks,
+    activeTask,
+    columns,
+    columnsId,
+    sensors,
+    loadingTasks,
+    onDragStart,
+    onDragOver,
+    onDragEnd
   }
 }

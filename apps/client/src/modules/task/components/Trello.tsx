@@ -1,9 +1,9 @@
 import { useState } from "react"
 import { createPortal } from "react-dom"
-import { useTaskDnD } from "@/modules/task/hooks/useTaskDnD"
 import { SortableContext } from "@dnd-kit/sortable"
 import { DndContext, DragOverlay } from "@dnd-kit/core"
-import { TrelloColumn, TaskCard, TaskModal } from "@/modules/task/components"
+import { useTaskDnD } from "@/modules/task/hooks/useTaskDnD"
+import { TrelloColumn, TaskCard, AddTaskModal } from "@/modules/task/components"
 import { ScrollShadow } from "@nextui-org/react"
 
 interface Props {
@@ -14,8 +14,8 @@ export const Trello = ({ period }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const {
-    columns, columnsId, activeTask, tasks, sensors,
-    onDragEnd, onDragOver, onDragStart, onTaskAdd, onTaskDelete, onTaskUpdate
+    columns, columnsId, activeTask, tasks, loadingTasks, sensors,
+    onDragEnd, onDragOver, onDragStart
   } = useTaskDnD(period)
 
   return (
@@ -33,12 +33,10 @@ export const Trello = ({ period }: Props) => {
                 {columns.map(col => (
                   <TrelloColumn
                     key={col.id}
+                    isLoading={loadingTasks}
                     column={col}
                     tasks={tasks.filter((task) => task.state === col.id)}
                     toggleModal={() => setIsModalOpen(prev => !prev)}
-                    handleTaskUpdate={onTaskUpdate}
-                    handleTaskDelete={onTaskDelete}
-                    handleTaskAdd={onTaskAdd}
                   />
                 ))}
               </SortableContext>
@@ -49,23 +47,14 @@ export const Trello = ({ period }: Props) => {
         {/* object document sometimes are undefined */}
         {typeof document !== "undefined" && createPortal(
           <DragOverlay>
-            {activeTask && (
-              <TaskCard
-                task={activeTask}
-                handleTaskUpdate={() => { }}
-                handleTaskDelete={() => { }}
-                handleTaskAdd={() => { }}
-              />
-            )}
+            {activeTask && <TaskCard task={activeTask} />}
           </DragOverlay>,
           document.body
         )}
       </DndContext>
-      <TaskModal
-        mode="add"
+      <AddTaskModal
         isOpen={isModalOpen}
         onOpenChange={() => setIsModalOpen(prev => !prev)}
-        handleTaskAction={onTaskAdd}
       />
     </div>
   )

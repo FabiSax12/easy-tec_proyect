@@ -10,11 +10,11 @@ export function IsTaskState(validationOptions?: ValidationOptions) {
       options: validationOptions,
       validator: {
         validate(value: any) {
-          const states = ["todo", "delivered", "in_progress", "done"]
+          const states = ["todo", "delivered", "doing", "done"]
           return states.includes(value.toLowerCase())
         },
         defaultMessage() {
-          return "State must be TODO, IN_PROGRESS or DONE"
+          return "State must be todo, doing, delivered, or, done"
         }
       }
     })

@@ -33,6 +33,7 @@ export function Select(props: Props) {
   )
 
   return <SelectUI
+    className="items-center ps-2"
     {...props}
   >
     {props.children

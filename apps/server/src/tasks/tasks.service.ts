@@ -17,11 +17,25 @@ export class TasksService {
   }
 
   findAll() {
-    return "This action returns all tasks"
+    return this.prismaService.task.findMany()
+  }
+
+  findAllWithCourseName() {
+    return this.prismaService.task.findMany({
+      include: {
+        course: {
+          select: {
+            name: true
+          }
+        }
+      }
+    })
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} task`
+    return this.prismaService.task.findUnique({
+      where: { id }
+    })
   }
 
   async update(id: number, updateTaskDto: UpdateTaskDto): Promise<Task> {
@@ -41,7 +55,9 @@ export class TasksService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} task`
+    return this.prismaService.task.delete({
+      where: { id }
+    })
   }
 
   async findByUser(userId: number): Promise<Task[]> {

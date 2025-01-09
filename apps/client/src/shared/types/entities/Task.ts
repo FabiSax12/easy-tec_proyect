@@ -1,3 +1,10 @@
+export enum TaskState {
+  TODO = "Sin hacer",
+  DOING = "En proceso",
+  DONE = "Hecho",
+  DELIVERED = "Entregado",
+}
+
 export interface Task {
   id: number
   name: string
@@ -8,6 +15,12 @@ export interface Task {
   updatedAt: Date
   userId: number
   courseId: number
+}
+
+export interface TaskWithCourseName extends Task {
+  course: {
+    name: string
+  }
 }
 
 export interface CreateTaskDto {

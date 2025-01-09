@@ -20,7 +20,7 @@
     "lint:client": "npm --workspace=apps/client run lint"
   },
   "dependencies": {
-    "@internationalized/date": "3.5.4",
+    "@internationalized/date": "^3.6.0",
     "dayjs": "1.11.11"
   },
   "devDependencies": {
