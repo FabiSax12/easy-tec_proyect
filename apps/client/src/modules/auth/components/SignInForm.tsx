@@ -35,7 +35,7 @@ export const SignInForm = ({ setSelected }: Props) => {
     toast.promise(login(formData.email, formData.password), {
       loading: "Iniciando sesión...",
       success: () => {
-        navigate("/principal")
+        navigate("/dashboard")
         return "Sesión iniciada correctamente. Bienvenido/a "
       },
       error: (error) => error.message,

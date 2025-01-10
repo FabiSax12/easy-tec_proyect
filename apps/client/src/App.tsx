@@ -24,12 +24,12 @@ function App() {
       <Route path="verify" element={<VerifyMagicLinkPage />} />
     </Route>
 
-    <Route index element={<Navigate to="/principal/dashboard" replace />} />
+    <Route index element={<Navigate to="/dashboard/overview" replace />} />
 
-    <Route path="/principal" element={<ProtectedPage />}>
+    <Route path="/dashboard" element={<ProtectedPage />}>
       <Route path="" element={<DashboadLayout />}>
 
-        <Route path="dashboard" element={<DashboardPage />} />
+        <Route path="overview" element={<DashboardPage />} />
         <Route path="periodo/:id" element={<Period />} />
 
         <Route path="horario" element={<SchedulesPage />} />

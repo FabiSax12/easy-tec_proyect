@@ -20,7 +20,7 @@ export const GuidesPage = () => {
           <CardBody>
             <p>{guide.description}</p>
             <RouterLink
-              to={`/principal/guias/${guide.slug}`}
+              to={`/dashboard/guias/${guide.slug}`}
               className="mt-4 inline-block text-blue-600 hover:text-blue-800"
             >
               Leer más →

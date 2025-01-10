@@ -40,7 +40,7 @@ export const GuideTemplate = ({ title, subtitle, description, steps, sections, e
           </p>
         </span>
 
-        <RouterLink to="/principal/guias" className="text-blue-600 flex items-center hover:text-blue-800">
+        <RouterLink to="/dashboard/guias" className="text-blue-600 flex items-center hover:text-blue-800">
           <LuArrowLeft className="mr-2" />
           Volver a las guías
         </RouterLink>

@@ -7,7 +7,7 @@ import { Spinner } from "@nextui-org/react"
 export function DashboadLayout() {
   const location = useLocation()
 
-  if (location.pathname === "/principal") return <Navigate to="/principal/dashboard" replace />
+  if (location.pathname === "/dashboard") return <Navigate to="/dashboard/overview" replace />
 
   return <div className="flex relative">
     <Sidebar />

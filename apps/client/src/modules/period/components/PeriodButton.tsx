@@ -42,7 +42,7 @@ export const PeriodButton = ({ title, id, code, startDate, endDate }: Props) => 
 
   return (
     <Link
-      to={`/principal/periodo/${code}`}
+      to={`/dashboard/periodo/${code}`}
       className="
       min-w-80 min-h-36 flex flex-col justify-between border-2 border-default-200 rounded-xl
       group cursor-pointer hover:border-primary transition-colors ease-in
