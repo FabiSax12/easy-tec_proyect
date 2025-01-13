@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common"
+import { Injectable, UnauthorizedException } from "@nestjs/common"
 import { CreatePeriodDto } from "./dto/create-period.dto"
 import { UpdatePeriodDto } from "./dto/update-period.dto"
 import { PrismaService } from "src/prisma/prisma.service"
@@ -8,26 +8,55 @@ export class PeriodsService {
   constructor(private prisma: PrismaService) { }
 
   create(data: CreatePeriodDto) {
-    return this.prisma.academicPeriod.create({ data })
+    throw new UnauthorizedException("You can not CREATE a period") // Only admin can create periods
+
+    // Todo: Implement the logic to able admin to create periods
+
+    return this.prisma.period.create({
+      data: {
+        ...data,
+        code: `${data.type}-${data.number}-${data.year}`
+      }
+    })
   }
 
   findAll() {
-    return this.prisma.academicPeriod.findMany()
+    return this.prisma.period.findMany({
+      orderBy: {
+        startDate: "desc"
+      }
+    })
   }
 
   findOne(id: number) {
-    return this.prisma.academicPeriod.findUnique({ where: { id } })
+    return this.prisma.period.findUnique({ where: { id } })
   }
 
   update(id: number, data: UpdatePeriodDto) {
-    return this.prisma.academicPeriod.update({ where: { id }, data })
+    throw new UnauthorizedException("You can not UPDATE a period") // Only admin can update periods
+
+    // Todo: Implement the logic to able admin to update periods
+
+    return this.prisma.period.update({ where: { id }, data })
   }
 
   remove(id: number) {
-    return this.prisma.academicPeriod.delete({ where: { id } })
+    throw new UnauthorizedException("You can not DELETE a period") // Only admin can delete periods
+
+    // Todo: Implement the logic to able admin to delete periods
+
+    return this.prisma.period.delete({ where: { id } })
   }
 
   findByUser(userId: number) {
-    return this.prisma.academicPeriod.findMany({ where: { userId } })
+    return this.prisma.period.findMany({
+      where: {
+        users: {
+          some: {
+            id: userId
+          }
+        }
+      }
+    })
   }
 }

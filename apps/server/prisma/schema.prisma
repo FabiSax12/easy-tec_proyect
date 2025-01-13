@@ -15,44 +15,45 @@ datasource db {
 }
 
 model User {
-  id              Int              @id @default(autoincrement())
-  email           String           @unique
-  password        String
-  name            String
-  lastname        String
-  carrier         String?
-  avatar          String           @default("https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png")
-  verified        Boolean          @default(false)
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  academicPeriods AcademicPeriod[]
-  task            Task[]
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  lastname  String
+  carrier   String?
+  avatar    String   @default("https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png")
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  periods   Period[] @relation("UserPeriods")
+  task      Task[]
 }
 
-model AcademicPeriod {
+model Period {
   id        Int      @id @default(autoincrement())
   type      String
-  typeId    Int
+  number    Int
+  year      Int
+  code      String
   startDate DateTime
   endDate   DateTime
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id])
   courses   Course[]
+  users     User[]   @relation("UserPeriods")
 }
 
 model Course {
-  id               Int            @id @default(autoincrement())
-  name             String
-  codex            String
-  period           String
-  state            String
-  teacher          String
-  credits          Int
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
-  academicPeriodId Int
-  academicPeriod   AcademicPeriod @relation(fields: [academicPeriodId], references: [id])
-  tasks            Task[]
+  id         Int      @id @default(autoincrement())
+  name       String
+  code       String
+  periodCode String
+  state      String
+  teacher    String
+  credits    Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  periodId   Int
+  period     Period   @relation(fields: [periodId], references: [id])
+  tasks      Task[]
 }
 
 model Task {

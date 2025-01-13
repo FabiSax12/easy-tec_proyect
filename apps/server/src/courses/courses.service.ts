@@ -48,13 +48,13 @@ export class CoursesService {
   }
 
   async findByUser(userId: number): Promise<Course[]> {
-    const { academicPeriods } = await this.prismaService.user.findUnique({
+    const { periods } = await this.prismaService.user.findUnique({
       where: { id: userId },
-      select: { academicPeriods: true }
+      select: { periods: true }
     })
 
     const course = await this.prismaService.course.findMany({
-      where: { academicPeriodId: { in: academicPeriods.map(ap => ap.id) } }
+      where: { periodId: { in: periods.map(period => period.id) } }
     })
 
     return course
@@ -62,22 +62,22 @@ export class CoursesService {
 
   async findByPeriod(period: string): Promise<Course[]> {
     const course = await this.prismaService.course.findMany({
-      where: { period }
+      where: { periodCode: period }
     })
 
     return course
   }
 
   async findByUserAndPeriod(userId: number, period: string): Promise<Course[]> {
-    const { academicPeriods } = await this.prismaService.user.findUnique({
+    const { periods } = await this.prismaService.user.findUnique({
       where: { id: userId },
-      select: { academicPeriods: true }
+      select: { periods: true }
     })
 
     const course = await this.prismaService.course.findMany({
       where: {
-        academicPeriodId: { in: academicPeriods.map(ap => ap.id) },
-        period: period
+        periodId: { in: periods.map(ap => ap.id) },
+        periodCode: period
       }
     })
 
@@ -86,7 +86,7 @@ export class CoursesService {
 
   async findByPeriodId(periodId: number): Promise<Course[]> {
     const course = await this.prismaService.course.findMany({
-      where: { academicPeriodId: periodId }
+      where: { periodId: periodId }
     })
 
     return course

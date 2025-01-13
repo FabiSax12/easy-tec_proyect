@@ -5,10 +5,10 @@ export class CreateCourseDto {
   name: string
 
   @IsString()
-  codex: string
+  code: string
 
   @IsString()
-  period: string
+  periodCode: string
 
   @IsString()
   state: string
@@ -20,5 +20,5 @@ export class CreateCourseDto {
   credits: number
 
   @IsNumber()
-  academicPeriodId: number
+  periodId: number
 }

@@ -7,14 +7,14 @@ export class CreatePeriodDto {
   type: string
 
   @IsNumber()
-  typeId: number
+  number: number
+
+  @IsNumber()
+  year: number
 
   @IsDateString()
   startDate: Date
 
   @IsDateString()
   endDate: Date
-
-  @IsNumber()
-  userId: number
 }
