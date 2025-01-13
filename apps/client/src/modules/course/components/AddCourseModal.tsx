@@ -8,7 +8,7 @@ import {
   ModalBody, ModalFooter, Button,
 } from "@nextui-org/react"
 
-import type { Course } from "@/shared/types/entities/Course"
+import type { Course, CreateCourseDto } from "@/shared/types/entities/Course"
 
 interface Props {
   isOpen: boolean;
@@ -24,14 +24,14 @@ export const AddCourseModal = ({ isOpen, onOpenChange }: Props) => {
     mutationFn: ({ data }) => createUserCourse(data),
     onSuccess: () => {
       toast.success("Curso añadido correctamente")
-      queryClient.invalidateQueries({ queryKey: ["courses"] })
+      queryClient.invalidateQueries({ queryKey: ["courses", user?.id] })
     },
     onError: () => {
       toast.error("Error al añadir el curso")
     }
   })
 
-  const onAccept = async (courseData: Course) => {
+  const onAccept = async (courseData: CreateCourseDto) => {
     if (!user) return
     await courseMutation.mutateAsync({ data: courseData })
     onOpenChange()

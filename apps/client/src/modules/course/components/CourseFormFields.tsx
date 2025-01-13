@@ -1,35 +1,35 @@
 import { FormEvent, useMemo, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
-import { periodLongToShort } from "@/shared/utils"
+import { periodToString } from "@/shared/utils"
 import { useAuthStore } from "@/modules/auth/store/auth.store"
-import { periodsByUserId } from "@/modules/period/services/periods.service"
+import { getPeriodsByUserId } from "@/modules/period/services/periods.service"
 import { Chip, Form, Input, Select, SelectItem } from "@nextui-org/react"
 import { courseInputs, statusColorMap, statusOptions } from "./constants"
 
-import type { Course } from "@/shared/types/entities/Course"
+import type { Course, CreateCourseDto } from "@/shared/types/entities/Course"
 import type { Period } from "@/shared/types/entities/Period"
 
 interface Props {
-  onSubmit: (data: Course) => void;
+  onSubmit: (data: CreateCourseDto) => void;
   courseData?: Course;
 }
 
 export const CourseFormFields = ({ onSubmit, courseData }: Props) => {
   const { user } = useAuthStore()
 
-  const [defaultSelectedPeriod] = useState(new Set([courseData?.academicPeriodId.toString() ?? ""]))
+  const [defaultSelectedPeriod] = useState(new Set([courseData?.periodId.toString() ?? ""]))
   const [defaultSelectedStatus] = useState(new Set([courseData?.state ?? ""]))
 
   const periodsQuery = useQuery<Period[]>({
     queryKey: ["userPeriods"],
-    queryFn: () => periodsByUserId(user!.id),
+    queryFn: () => getPeriodsByUserId(user!.id),
     enabled: !!user
   })
 
   const periods = useMemo(() => {
     if (periodsQuery.data) {
       return periodsQuery.data?.map(p => ({
-        label: `${p.type} ${p.typeId}`,
+        label: periodToString(p),
         value: p.id.toString(),
       }))
     }
@@ -40,15 +40,16 @@ export const CourseFormFields = ({ onSubmit, courseData }: Props) => {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const formData = new FormData(event.target as HTMLFormElement)
-    const periodId = formData.get("academicPeriodId")?.toString()
+    const periodId = formData.get("periodId")?.toString()
     const period = periodsQuery.data?.find(p => p.id.toString() === periodId)
     const newCourseData = {
       ...courseData,
       ...Object.fromEntries(formData),
       credits: Number(formData.get("credits")),
-      academicPeriodId: Number(formData.get("academicPeriodId")),
-      period: period ? periodLongToShort(`${period.type} ${period.typeId}`) : ""
-    } as Course
+      periodId: Number(formData.get("periodId")),
+      periodCode: period?.code ?? ""
+    } as CreateCourseDto
+
     onSubmit(newCourseData)
   }
 
@@ -79,7 +80,7 @@ export const CourseFormFields = ({ onSubmit, courseData }: Props) => {
       isRequired
       label="Periodo"
       labelPlacement="outside"
-      name="academicPeriodId"
+      name="periodId"
       placeholder="Periodo"
       items={periods}
       defaultSelectedKeys={defaultSelectedPeriod}

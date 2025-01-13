@@ -6,7 +6,7 @@ import {
   DrawerFooter, DrawerHeader
 } from "@nextui-org/react"
 
-import type { Course } from "@/shared/types/entities/Course"
+import type { Course, CreateCourseDto } from "@/shared/types/entities/Course"
 
 interface Props {
   isOpen: boolean;
@@ -16,12 +16,12 @@ interface Props {
 
 export const EditCourseDrawer = ({ isOpen, onClose, courseData }: Props) => {
 
-  const { mutate: updateCourseMutation } = useOptimisticUpdate<Course>({
+  const { mutate: updateCourseMutation } = useOptimisticUpdate<CreateCourseDto>({
     queryKey: ["courses"],
     mutationFn: (data) => updateCourse(courseData.id, data)
   })
 
-  const onSubmit = (data: Course) => {
+  const onSubmit = (data: CreateCourseDto) => {
     updateCourseMutation(data)
     onClose()
   }

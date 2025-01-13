@@ -41,7 +41,7 @@ export const TopContent = ({
             base: "w-full sm:max-w-[44%]",
             inputWrapper: "border-1",
           }}
-          placeholder="Search by name..."
+          placeholder="Buscar por nombre..."
           size="sm"
           startContent={<LuSearch className="text-default-300" />}
           value={filterValue}
@@ -57,7 +57,7 @@ export const TopContent = ({
                 size="sm"
                 variant="flat"
               >
-                Status
+                Estado
               </Button>
             </DropdownTrigger>
             <DropdownMenu
@@ -82,7 +82,7 @@ export const TopContent = ({
                 size="sm"
                 variant="flat"
               >
-                Columns
+                Columnas
               </Button>
             </DropdownTrigger>
             <DropdownMenu
@@ -113,7 +113,7 @@ export const TopContent = ({
       <div className="flex justify-between items-center">
         <span className="text-default-400 text-small">Total {courses.length} cursos</span>
         <label className="flex items-center text-default-400 text-small">
-          Rows per page: {rowsPerPage}
+          Filas por página: {rowsPerPage}
         </label>
       </div>
       <AddCourseModal isOpen={isModalOpen} onOpenChange={() => setIsModalOpen(prev => !prev)} />

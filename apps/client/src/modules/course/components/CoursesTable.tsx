@@ -35,7 +35,7 @@ export const CoursesTable = ({ filter }: Props) => {
   })
 
   const coursesQuery = useQuery<Course[]>({
-    queryKey: ["courses"],
+    queryKey: ["courses", user?.id],
     queryFn: async () => getUserCourses(user!.id),
     enabled: !!user,
   })

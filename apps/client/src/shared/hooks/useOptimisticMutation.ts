@@ -77,9 +77,9 @@ export function useOptimisticMutation<TData, TError, TVariables>({
         },
       })
     },
-    throwOnError: true,
     onSettled: () => {
       // Refetch queries to sync state
+      console.log("Refetching queries")
       queryClient.invalidateQueries({ queryKey: mutationKey })
     },
   })

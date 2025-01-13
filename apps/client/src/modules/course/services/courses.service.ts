@@ -1,4 +1,4 @@
-import { Course } from "@/shared/types/entities/Course"
+import { Course, CreateCourseDto } from "@/shared/types/entities/Course"
 
 export async function createUserCourse(data: Omit<Course, "id">) {
   const response = await fetch("/api/courses", {
@@ -33,7 +33,7 @@ export async function getCoursesByPeriodId(periodId: number) {
   return response.json()
 }
 
-export async function updateCourse(courseId: number, newData: Course) {
+export async function updateCourse(courseId: number, newData: CreateCourseDto) {
   const response = await fetch(`/api/courses/${courseId}`, {
     method: "PATCH",
     headers: {

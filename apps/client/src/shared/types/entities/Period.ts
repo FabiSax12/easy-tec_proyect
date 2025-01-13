@@ -1,9 +1,12 @@
 export interface Period {
   readonly id: number;
+  readonly startDate: Date;
+  readonly endDate: Date;
+
   type: string;
-  typeId: number;
-  startDate: Date;
-  endDate: Date;
+  number: number;
+  year: number;
+  code: string;
 }
 
 export interface CreatePeriodDto {

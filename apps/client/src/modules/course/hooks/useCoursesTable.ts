@@ -21,7 +21,7 @@ export const useCoursesTable = (courses: Course[] | undefined, initialFilter?: {
     }
 
     if (periodFilter) {
-      result = result.filter((course) => course.period === periodFilter)
+      result = result.filter((course) => course.periodCode === periodFilter)
     }
 
     if (statusFilter !== "all") {

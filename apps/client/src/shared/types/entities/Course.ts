@@ -7,30 +7,30 @@ export enum CourseState {
 export interface Course {
   readonly id: number,
   name: string,
-  codex: string,
+  code: string,
   teacher: string,
   credits: number,
-  academicPeriodId: number,
+  periodId: number,
   state: CourseState,
-  period: string
+  periodCode: string
 }
 
 export interface CreateCourseDto {
   name: string,
-  codex: string,
+  code: string,
   teacher: string,
   credits: number,
-  academicPeriodId: number,
+  periodId: number,
   state: CourseState,
-  period: string
+  periodCode: string
 }
 
 export interface UpdateCourseDto {
   name?: string,
-  codex?: string,
+  code?: string,
   teacher?: string,
   credits?: number,
-  academicPeriodId?: number,
+  periodId?: number,
   state?: CourseState,
-  period?: string
+  periodCode?: string
 }

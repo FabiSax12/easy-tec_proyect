@@ -22,6 +22,8 @@ export const CourseTableCell = ({ course, columnKey, onDeleteCourse, onEditCours
           <p className="text-xs">{course.teacher}</p>
         </>
       )
+    case "periodCode":
+      return <p className="text-xs">{course.periodCode.replace("_", " ")}</p>
     case "state":
       return <StatusChip status={course.state ?? "Sin estado"} />
     case "actions":

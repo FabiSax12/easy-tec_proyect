@@ -2,7 +2,7 @@ import { ChipProps } from "@nextui-org/react"
 
 export const courseInputs = [
   { label: "Nombre", key: "name", type: "text" },
-  { label: "Código", key: "codex", type: "text" },
+  { label: "Código", key: "code", type: "text" },
   { label: "Créditos", key: "credits", type: "number", min: 0 },
   { label: "Profesor", key: "teacher", type: "text" },
 ]
