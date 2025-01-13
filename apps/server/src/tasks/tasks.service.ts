@@ -79,7 +79,7 @@ export class TasksService {
 
   async findByPeriod(period: string): Promise<Task[]> {
     const courses = await this.prismaService.course.findMany({
-      where: { period }
+      where: { periodCode: period }
     })
 
     const task = await this.prismaService.task.findMany({
@@ -102,7 +102,7 @@ export class TasksService {
 
   async findByUserAndPeriod(userId: number, period: string): Promise<Task[]> {
     const courses = await this.prismaService.course.findMany({
-      where: { period }
+      where: { periodCode: period }
     })
 
     const task = await this.prismaService.task.findMany({

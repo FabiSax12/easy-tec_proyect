@@ -10,6 +10,8 @@ import { AuthModule } from "./auth/auth.module"
 import { SchedulesModule } from "./schedules/schedules.module"
 import { ConfigModule, ConfigService } from "@nestjs/config"
 import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter"
+import { PrismaModule } from "./prisma/prisma.module"
+import { UserPeriodsModule } from './user-periods/user-periods.module';
 
 const serveClient = ServeStaticModule.forRoot({
   rootPath: join(__dirname, "../..", "client/dist")
@@ -18,6 +20,7 @@ const serveClient = ServeStaticModule.forRoot({
 @Module({
   imports: [
     serveClient,
+    PrismaModule,
     UsersModule,
     PeriodsModule,
     CoursesModule,
@@ -51,7 +54,8 @@ const serveClient = ServeStaticModule.forRoot({
           }
         }
       })
-    })
+    }),
+    UserPeriodsModule
   ]
 })
 export class AppModule { }
