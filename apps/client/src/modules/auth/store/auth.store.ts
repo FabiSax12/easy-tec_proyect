@@ -38,8 +38,6 @@ export const useAuthStore = create(
                 try {
                     const data = await userLogin(email, password)
 
-                    console.log("User logged in")
-
                     if (data?.access_token) {
                         localStorage.setItem("access_token", data.access_token)
                         set({ accessToken: data.access_token })
@@ -50,7 +48,7 @@ export const useAuthStore = create(
                         set({ refreshToken: data.refresh_token })
                     }
 
-                    get().initializeUser()
+                    await get().initializeUser()
                 } catch (error) {
                     console.error("Login failed", error)
                     throw error

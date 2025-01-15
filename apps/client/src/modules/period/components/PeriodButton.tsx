@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom"
 import { FaArrowUpRightFromSquare } from "react-icons/fa6"
 import { Progress } from "@nextui-org/react"
-import { useQuery } from "@tanstack/react-query"
-import { getCoursesByPeriodId } from "@/modules/course/services/courses.service"
+import { useQueryClient } from "@tanstack/react-query"
 import { Course } from "@/shared/types/entities/Course"
 import { formatDate } from "@/shared/utils"
 import { useMemo } from "react"
+import { useAuthStore } from "@/modules/auth/store/auth.store"
 
 interface Props {
   title: string
@@ -16,15 +16,21 @@ interface Props {
 }
 
 export const PeriodButton = ({ title, id, code, startDate, endDate }: Props) => {
-  const coursesQuery = useQuery({
-    queryKey: ["courses", `periodId=${id}`],
-    queryFn: () => getCoursesByPeriodId(id),
-    enabled: !!id,
-    staleTime: 1000 * 60 * 60 * 12, // 12 hours
-  })
+  const userId = useAuthStore(state => state.user?.id)
+  const queryClient = useQueryClient()
 
-  const totalCredits = coursesQuery.data?.reduce((acc: number, course: Course) => acc + course.credits, 0)
-  const totalCourses = coursesQuery.data?.length
+  // const coursesQuery = useQuery({
+  //   queryKey: ["courses", `periodId=${id}`],
+  //   queryFn: () => getCoursesByPeriodId(id),
+  //   enabled: !!id,
+  //   staleTime: 1000 * 60 * 60 * 12, // 12 hours
+  // })
+
+  const allCourses = queryClient.getQueryData<Course[]>(["courses", userId])
+  const periodCourses = allCourses?.filter(course => course.periodId === id)
+
+  const totalCredits = periodCourses?.reduce((acc: number, course: Course) => acc + course.credits, 0)
+  const totalCourses = periodCourses?.length
   const timeElapsedPercentage = useMemo(() => {
     const start = new Date(startDate).getTime()
     const end = new Date(endDate).getTime()

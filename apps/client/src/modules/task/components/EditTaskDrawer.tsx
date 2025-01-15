@@ -37,18 +37,19 @@ interface Props {
 export const EditTaskDrawer = ({ isOpen, onClose, task, timeLeft }: Props) => {
 
   const user = useAuthStore(state => state.user)
-  const { id } = useParams()
+  const { id: periodCode } = useParams()
 
-  const updateTaskMutation = useUpdateTask()
-  const deleteTaskMutation = useDeleteTask()
+  const updateTaskMutation = useUpdateTask(periodCode!)
+  const deleteTaskMutation = useDeleteTask(periodCode!)
 
   const [isEditing, setIsEditing] = useState(false)
   const [updatedTask, setUpdatedTask] = useState<UpdateTaskDto>(task)
 
   const courses = useQuery({
-    queryKey: ["courses", user!.id, id],
-    queryFn: () => getUserCoursesByPeriodId(user!.id, id!),
-    enabled: !!user && !!id,
+    queryKey: ["courses", user?.id, periodCode],
+    queryFn: () => getUserCoursesByPeriodId(user!.id, periodCode!),
+    enabled: !!user && !!periodCode,
+    staleTime: Infinity
   })
 
   const toggleEditMode = () => setIsEditing(prev => !prev)

@@ -80,7 +80,7 @@ export const AddPeriodModal = ({ isOpen, onOpenChange }: Props) => {
     }
 
     try {
-      const res = await addPeriod(user!.id, semesterData)
+      const res = await addPeriod(user?.id, semesterData)
       const data = await res.json()
 
       if (res.ok) {

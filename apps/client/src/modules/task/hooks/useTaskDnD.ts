@@ -30,12 +30,13 @@ export function useTaskDnD(period: string) {
   const queryClient = useQueryClient()
 
   const { data: tasks = [], isLoading: loadingTasks, } = useQuery<TaskWithCourseName[]>({
-    queryKey: ["tasks"],
+    queryKey: ["tasks", user?.id, period],
     queryFn: () => getTasksByPeriodId(user!.id, period),
     enabled: !!user?.id && !!period && !!accessToken,
+    staleTime: Infinity
   })
 
-  const updateTaskMutation = useUpdateTask()
+  const updateTaskMutation = useUpdateTask(period)
 
   const onDragStart = (event: DragStartEvent) => {
     if (event.active.data.current?.type === "Task") {
@@ -57,7 +58,7 @@ export function useTaskDnD(period: string) {
     const overTask = tasks.find((t) => t.id === overId)
 
     if (activeTask && overTask && activeTask.state !== overTask.state) {
-      queryClient.setQueryData(["tasks"], (tasks: TaskWithCourseName[]) => {
+      queryClient.setQueryData(["tasks", user?.id, period], (tasks: TaskWithCourseName[]) => {
         const activeIndex = tasks.findIndex((t: TaskWithCourseName) => t.id === activeId)
         const overIndex = tasks.findIndex((t: TaskWithCourseName) => t.id === overId)
 
@@ -75,7 +76,7 @@ export function useTaskDnD(period: string) {
 
     // Im dropping a Task over a column
     if (isActiveATask && isOverAColumn) {
-      queryClient.setQueryData(["tasks"], (tasks: TaskWithCourseName[]) => {
+      queryClient.setQueryData(["tasks", user?.id, period], (tasks: TaskWithCourseName[]) => {
         const activeIndex = tasks.findIndex((t: TaskWithCourseName) => t.id === activeId)
         return tasks.map((t: TaskWithCourseName, index: number) => {
           if (index === activeIndex) {

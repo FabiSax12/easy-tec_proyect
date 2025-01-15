@@ -23,7 +23,7 @@ export const Periods = () => {
     queryKey: ["periods", user?.id],
     queryFn: () => getPeriodsByUserId(user?.id),
     enabled: !!user,
-    staleTime: 1000 * 60 * 5,
+    staleTime: Infinity,
   })
 
   const scrollLeft = () => scrollContainerRef.current?.scrollBy({ left: -400, behavior: "smooth" })

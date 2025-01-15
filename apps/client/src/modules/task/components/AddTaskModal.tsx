@@ -1,23 +1,18 @@
-import { useState, useEffect } from "react"
-import { useLocation, useParams } from "react-router-dom"
+import { useState } from "react"
+import { useParams } from "react-router-dom"
+import { useQueryClient } from "@tanstack/react-query"
 import { parseAbsoluteToLocal } from "@internationalized/date"
-import { useAuthStore } from "@/modules/auth/store/auth.store"
-import { getUserCoursesByPeriodId } from "@/modules/course/services/courses.service"
-import { defaultCols } from "@/modules/task/data/trello-columns"
+import { Course } from "@/shared/types/entities/Course"
 import { CustomModal } from "@/shared/components/nextui/Modal"
+import { useAuthStore } from "@/modules/auth/store/auth.store"
+import { defaultCols } from "@/modules/task/data/trello-columns"
+import { useAddTask } from "../hooks/useAddTask"
 import {
   ModalContent, ModalHeader, ModalBody, ModalFooter,
   Input, Button, DatePicker, Textarea, Select, SelectItem,
 } from "@nextui-org/react"
 
 import type { CreateTaskDto } from "@/shared/types/entities/Task"
-import { useAddTask } from "../hooks/useAddTask"
-import { useQuery } from "@tanstack/react-query"
-
-interface Option {
-  label: string
-  value: string
-}
 
 const defaultValues = {
   name: "",
@@ -33,17 +28,18 @@ interface Props {
 }
 
 export const AddTaskModal = ({ isOpen, onOpenChange }: Props) => {
-  const { id: periodId } = useParams() as { id: string }
+  const { id: periodCode } = useParams() as { id: string }
   const { user } = useAuthStore()
+  const queryClient = useQueryClient()
 
-  const addTaskMutation = useAddTask()
+  const addTaskMutation = useAddTask(periodCode)
   const [formData, setFormData] = useState<CreateTaskDto>(defaultValues)
 
-  const { data: courses } = useQuery({
-    queryKey: ["courses", user?.id, periodId],
-    queryFn: () => getUserCoursesByPeriodId(user!.id, periodId),
-    enabled: !!user
-  })
+  const courses = queryClient.getQueryData<Course[]>(
+    ["courses", user?.id]
+  )?.filter(
+    (course) => course.periodCode === periodCode
+  )
 
   const handleSubmit = async () => {
     onOpenChange()

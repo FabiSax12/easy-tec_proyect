@@ -24,14 +24,15 @@ export const AddAvailablePeriodModal = (props: Props) => {
   const availablePeriodsQuery = useQuery<Period[]>({
     queryKey: ["availablePeriods"],
     queryFn: getPeriods,
+    enabled: props.isOpen,
     staleTime: 1000 * 60 * 5,
   })
 
   const userAssignedPeriodsQuery = useQuery<Period[]>({
-    queryKey: ["periods", user!.id],
-    queryFn: () => getPeriodsByUserId(user!.id),
+    queryKey: ["periods", user?.id],
+    queryFn: () => getPeriodsByUserId(user?.id),
     enabled: !!user,
-    staleTime: 1000 * 60 * 5,
+    staleTime: Infinity,
   })
 
   const sections = useMemo(
@@ -69,7 +70,7 @@ export const AddAvailablePeriodModal = (props: Props) => {
   }
 
   const assingPeriodToUserMutation = useOptimisticMutation<Period, Error, { userId: number, periodId: number }>({
-    mutationKey: ["periods", user!.id],
+    mutationKey: ["periods", user?.id],
     mutationFn: (data) => handleAddPeriod(data.userId, data.periodId),
     onMutateOptimistic: ({ periodId }, previousPeriods) => {
       const newPeriod = availablePeriodsQuery.data?.find(period => period.id === periodId) as Period
@@ -80,7 +81,7 @@ export const AddAvailablePeriodModal = (props: Props) => {
       ]
     },
     rollbackOptimistic: (previousTasks) => {
-      queryClient.setQueryData(["periods", user!.id], previousTasks)
+      queryClient.setQueryData(["periods", user?.id], previousTasks)
     },
     onSuccessMessage: (data) => `Periodo "${periodToString(data)}" añadido correctamente`,
     onErrorMessage: () => "Error al añadir el periodo"
@@ -144,7 +145,7 @@ export const AddAvailablePeriodModal = (props: Props) => {
           color="primary"
           onPress={() => {
             props.onOpenChange()
-            assingPeriodToUserMutation.mutate({ userId: user!.id, periodId: Number(selectedPeriod) })
+            assingPeriodToUserMutation.mutate({ userId: user?.id, periodId: Number(selectedPeriod) })
           }}
         >
           Guardar

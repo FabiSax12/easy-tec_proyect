@@ -21,9 +21,10 @@ export const CourseFormFields = ({ onSubmit, courseData }: Props) => {
   const [defaultSelectedStatus] = useState(new Set([courseData?.state ?? ""]))
 
   const periodsQuery = useQuery<Period[]>({
-    queryKey: ["userPeriods"],
-    queryFn: () => getPeriodsByUserId(user!.id),
-    enabled: !!user
+    queryKey: ["periods", user?.id],
+    queryFn: () => getPeriodsByUserId(user?.id),
+    enabled: !!user,
+    staleTime: Infinity
   })
 
   const periods = useMemo(() => {

@@ -38,6 +38,7 @@ export const CoursesTable = ({ filter }: Props) => {
     queryKey: ["courses", user?.id],
     queryFn: async () => getUserCourses(user!.id),
     enabled: !!user,
+    staleTime: Infinity
   })
 
   const {

@@ -23,10 +23,10 @@ export const RemovePeriodModal = (props: Props) => {
   const [selectedPeriod, setSelectedPeriod] = useState("")
 
   const userAssignedPeriodsQuery = useQuery<Period[]>({
-    queryKey: ["periods", user!.id],
-    queryFn: () => getPeriodsByUserId(user!.id),
+    queryKey: ["periods", user?.id],
+    queryFn: () => getPeriodsByUserId(user?.id),
     enabled: !!user,
-    staleTime: 1000 * 60 * 5,
+    staleTime: Infinity,
   })
 
   const periodsOptions = useMemo(
@@ -38,7 +38,7 @@ export const RemovePeriodModal = (props: Props) => {
   )
 
   const removePeriodToUserMutation = useOptimisticMutation<Period, Error, { userId: number, periodId: number }>({
-    mutationKey: ["periods", user!.id],
+    mutationKey: ["periods", user?.id],
     mutationFn: (data) => deleteUserPeriod(data.userId, data.periodId),
     onMutateOptimistic: ({ periodId }, previousPeriods) => {
 
@@ -50,7 +50,7 @@ export const RemovePeriodModal = (props: Props) => {
       return previousPeriods.filter(period => period.id !== periodId)
     },
     rollbackOptimistic: (previousTasks) => {
-      queryClient.setQueryData(["periods", user!.id], previousTasks)
+      queryClient.setQueryData(["periods", user?.id], previousTasks)
     },
     onSuccessMessage: (data) => `Periodo "${periodToString(data)}" eliminado correctamente`,
     onErrorMessage: () => "Error al eliminar el periodo"
@@ -97,7 +97,7 @@ export const RemovePeriodModal = (props: Props) => {
           color="primary"
           onPress={() => {
             props.onOpenChange()
-            removePeriodToUserMutation.mutate({ userId: user!.id, periodId: Number(selectedPeriod) })
+            removePeriodToUserMutation.mutate({ userId: user?.id, periodId: Number(selectedPeriod) })
           }}
         >
           Eliminar

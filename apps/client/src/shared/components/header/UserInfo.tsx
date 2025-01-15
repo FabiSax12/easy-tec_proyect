@@ -6,13 +6,16 @@ import {
 } from "@nextui-org/react"
 import { IoEllipsisVerticalSharp } from "react-icons/io5"
 import { MdLogout } from "react-icons/md"
+import { useQueryClient } from "@tanstack/react-query"
 
 export const UserInfo = () => {
   const nav = useNavigate()
+  const queryClient = useQueryClient()
   const { logout, user } = useAuthStore()
 
   const signOut = () => {
     logout()
+    queryClient.clear()
     nav("/auth", { replace: true })
   }
 
