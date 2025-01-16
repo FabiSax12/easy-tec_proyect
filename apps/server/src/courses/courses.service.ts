@@ -68,16 +68,10 @@ export class CoursesService {
     return course
   }
 
-  async findByUserAndPeriod(userId: number, period: string): Promise<Course[]> {
-    const { periods } = await this.prismaService.user.findUnique({
-      where: { id: userId },
-      select: { periods: true }
-    })
-
+  async findByUserAndPeriod(userId: number, periodId: number): Promise<Course[]> {
     const course = await this.prismaService.course.findMany({
       where: {
-        periodId: { in: periods.map(ap => ap.id) },
-        periodCode: period
+        periodId: periodId
       }
     })
 

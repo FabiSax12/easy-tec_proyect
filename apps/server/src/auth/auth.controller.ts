@@ -1,12 +1,12 @@
 import {
   Body, Controller, Get, HttpCode, HttpStatus,
-  Post, Query, Request, UnauthorizedException, UseGuards
+  Post, Query, Request, UnauthorizedException
 } from "@nestjs/common"
 import { User } from "@prisma/client"
-import { AuthGuard } from "./auth.guard"
 import { AuthService } from "./auth.service"
 import { CreateUserDto } from "./dto/create-user.dto"
 import { SignInDto } from "./dto/sign-in.dto"
+import { Public } from "src/shared/decorators/publicEndpoint.decorator"
 
 @Controller("auth")
 export class AuthController {
@@ -15,18 +15,21 @@ export class AuthController {
   ) { }
 
   @Post("login")
+  @Public()
   @HttpCode(HttpStatus.OK)
   signIn(@Body() signInDto: SignInDto) {
     return this.authService.signIn(signInDto.email, signInDto.password)
   }
 
   @Post("signup")
+  @Public()
   @HttpCode(HttpStatus.CREATED)
   signUp(@Body() signUpDto: CreateUserDto) {
     return this.authService.signUp(signUpDto)
   }
 
   @Post("refresh")
+  @Public()
   @HttpCode(HttpStatus.OK)
   async refresh(@Body("refresh_token") refreshToken: string) {
     try {
@@ -58,19 +61,20 @@ export class AuthController {
 
 
   @Get("profile")
-  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   getProfile(@Request() req): User {
     return req.user
   }
 
   @Post("request-verification-email")
+  @Public()
   @HttpCode(HttpStatus.OK)
   async requestVerificationEmail(@Body("email") email: string) {
     return this.authService.requestVerificationEmail(email)
   }
 
   @Get("verify")
+  @Public()
   @HttpCode(HttpStatus.OK)
   async verify(@Query("token") token: string) {
     return this.authService.verifyMagicLink(token)

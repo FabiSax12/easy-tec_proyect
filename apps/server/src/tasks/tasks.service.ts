@@ -10,17 +10,20 @@ export class TasksService {
 
   async create(createTaskDto: CreateTaskDto): Promise<Task> {
     const task = await this.prismaService.task.create({
-      data: createTaskDto
+      data: createTaskDto,
+      include: {
+        course: {
+          select: {
+            name: true
+          }
+        }
+      }
     })
 
     return task
   }
 
   findAll() {
-    return this.prismaService.task.findMany()
-  }
-
-  findAllWithCourseName() {
     return this.prismaService.task.findMany({
       include: {
         course: {
@@ -34,7 +37,14 @@ export class TasksService {
 
   findOne(id: number) {
     return this.prismaService.task.findUnique({
-      where: { id }
+      where: { id },
+      include: {
+        course: {
+          select: {
+            name: true
+          }
+        }
+      }
     })
   }
 
@@ -56,7 +66,14 @@ export class TasksService {
 
   remove(id: number) {
     return this.prismaService.task.delete({
-      where: { id }
+      where: { id },
+      include: {
+        course: {
+          select: {
+            name: true
+          }
+        }
+      }
     })
   }
 
@@ -77,9 +94,9 @@ export class TasksService {
     return task
   }
 
-  async findByPeriod(period: string): Promise<Task[]> {
+  async findByPeriod(periodId: number): Promise<Task[]> {
     const courses = await this.prismaService.course.findMany({
-      where: { periodCode: period }
+      where: { periodId }
     })
 
     const task = await this.prismaService.task.findMany({
@@ -100,9 +117,9 @@ export class TasksService {
     return task
   }
 
-  async findByUserAndPeriod(userId: number, period: string): Promise<Task[]> {
+  async findByUserAndPeriod(userId: number, periodId: number): Promise<Task[]> {
     const courses = await this.prismaService.course.findMany({
-      where: { periodCode: period }
+      where: { periodId }
     })
 
     const task = await this.prismaService.task.findMany({

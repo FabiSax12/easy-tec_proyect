@@ -1,5 +1,5 @@
 import { join } from "path"
-import { Module } from "@nestjs/common"
+import { MiddlewareConsumer, Module } from "@nestjs/common"
 import { ServeStaticModule } from "@nestjs/serve-static"
 import { MailerModule } from "@nestjs-modules/mailer"
 import { UsersModule } from "./users/users.module"
@@ -11,7 +11,10 @@ import { SchedulesModule } from "./schedules/schedules.module"
 import { ConfigModule, ConfigService } from "@nestjs/config"
 import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter"
 import { PrismaModule } from "./prisma/prisma.module"
-import { UserPeriodsModule } from './user-periods/user-periods.module';
+import { UserPeriodsModule } from "./user-periods/user-periods.module"
+import { AuthMiddleware } from "./shared/middlewares/auth.middleware"
+import { LoggerMiddleware } from "./shared/middlewares/logger.middleware"
+import { RateLimitMiddleware } from "./shared/middlewares/rateLimit.middleware"
 
 const serveClient = ServeStaticModule.forRoot({
   rootPath: join(__dirname, "../..", "client/dist")
@@ -27,6 +30,7 @@ const serveClient = ServeStaticModule.forRoot({
     TasksModule,
     AuthModule,
     SchedulesModule,
+    UserPeriodsModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ".env"
@@ -54,8 +58,16 @@ const serveClient = ServeStaticModule.forRoot({
           }
         }
       })
-    }),
-    UserPeriodsModule
+    })
   ]
 })
-export class AppModule { }
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(LoggerMiddleware, RateLimitMiddleware)
+      .forRoutes("*")
+      .apply(AuthMiddleware)
+      .exclude("auth/*")
+      .forRoutes("*")
+  }
+}

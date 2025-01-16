@@ -1,45 +1,74 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from "@nestjs/common"
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseGuards,
+  Request,
+  ParseIntPipe,
+  ParseBoolPipe,
+} from "@nestjs/common"
 import { PeriodsService } from "./periods.service"
 import { CreatePeriodDto } from "./dto/create-period.dto"
 import { UpdatePeriodDto } from "./dto/update-period.dto"
-import { PeriodFilterDto } from "./dto/period-filter.dto"
-import { AuthGuard } from "src/auth/auth.guard"
+import { AuthGuard } from "src/shared/guards/auth.guard"
+import { ValidateOwnership } from "src/shared/decorators/validateOwnership.decorator"
+import { AdminGuard } from "src/shared/guards/admin.guard"
 
 @Controller("periods")
 export class PeriodsController {
   constructor(private readonly periodsService: PeriodsService) { }
 
+  /**
+   * For Admins Only
+   */
   @Post()
-  @UseGuards(AuthGuard)
-  create(@Body() createAcademicPeriodDto: CreatePeriodDto) {
-    return this.periodsService.create(createAcademicPeriodDto)
+  @UseGuards(AdminGuard)
+  async create(@Body() createPeriodDto: CreatePeriodDto) {
+    return this.periodsService.create(createPeriodDto)
   }
 
+  @Patch(":id")
+  @UseGuards(AdminGuard)
+  async update(
+    @Param("id", ParseIntPipe) id: number,
+    @Body() updatePeriodDto: UpdatePeriodDto
+  ) {
+    return this.periodsService.update(id, updatePeriodDto)
+  }
+
+  @Delete(":id")
+  @UseGuards(AdminGuard)
+  async remove(@Param("id", ParseIntPipe) id: number) {
+    return this.periodsService.remove(id)
+  }
+
+  /**
+   * For All Users
+   */
   @Get()
-  findAll(@Query() query: PeriodFilterDto) {
-    if (query.userId) return this.periodsService.findByUser(query.userId)
+  @UseGuards(AuthGuard)
+  async findAll(
+    @Request() req,
+    @Query("filterByUser", ParseBoolPipe) filterByUser?: boolean
+  ) {
+    const userId = req.user.id
+
+    if (filterByUser) {
+      return this.periodsService.findByUser(userId)
+    }
+
     return this.periodsService.findAll()
   }
 
   @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.periodsService.findOne(+id)
-  }
-
-  @Patch(":id")
   @UseGuards(AuthGuard)
-  update(@Param("id") id: string, @Body() updateAcademicPeriodDto: UpdatePeriodDto) {
-    return this.periodsService.update(+id, updateAcademicPeriodDto)
-  }
-
-  @Delete(":id")
-  @UseGuards(AuthGuard)
-  remove(@Param("id") id: string) {
-    return this.periodsService.remove(+id)
-  }
-
-  @Get("user/:id")
-  findByUser(@Param("id") id: string) {
-    return this.periodsService.findByUser(+id)
+  @ValidateOwnership({ type: "period", idParam: "id" })
+  async findOne(@Param("id", ParseIntPipe) id: number) {
+    return this.periodsService.findOne(id)
   }
 }
