@@ -1,82 +1,109 @@
 import {
-  Body, Controller, Get, HttpCode, HttpStatus,
-  Post, Query, Request, UnauthorizedException
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Query,
+  Req,
+  Res,
+  UnauthorizedException,
+  UseGuards,
 } from "@nestjs/common"
 import { User } from "@prisma/client"
 import { AuthService } from "./auth.service"
 import { CreateUserDto } from "./dto/create-user.dto"
 import { SignInDto } from "./dto/sign-in.dto"
-import { Public } from "src/shared/decorators/publicEndpoint.decorator"
+import { AuthGuard } from "src/shared/guards/auth.guard"
+import { Response, Request } from "express"
 
 @Controller("auth")
 export class AuthController {
-  constructor(
-    private authService: AuthService,
-  ) { }
+  constructor(private readonly authService: AuthService) { }
 
+  /**
+   * Login endpoint: Authenticates the user and sets refresh token in a secure cookie.
+   */
   @Post("login")
-  @Public()
   @HttpCode(HttpStatus.OK)
-  signIn(@Body() signInDto: SignInDto) {
-    return this.authService.signIn(signInDto.email, signInDto.password)
+  async signIn(@Body() signInDto: SignInDto, @Res() res: Response) {
+    const { access_token, refresh_token } = await this.authService.signIn(
+      signInDto.email,
+      signInDto.password,
+    )
+
+    this.setRefreshTokenCookie(res, refresh_token)
+    res.json({ access_token })
   }
 
+  /**
+   * Signup endpoint: Registers a new user.
+   */
   @Post("signup")
-  @Public()
   @HttpCode(HttpStatus.CREATED)
-  signUp(@Body() signUpDto: CreateUserDto) {
+  async signUp(@Body() signUpDto: CreateUserDto) {
     return this.authService.signUp(signUpDto)
   }
 
+  /**
+   * Refresh token endpoint: Issues a new access token and optionally rotates the refresh token.
+   */
   @Post("refresh")
-  @Public()
   @HttpCode(HttpStatus.OK)
-  async refresh(@Body("refresh_token") refreshToken: string) {
-    try {
-      const payload = this.authService.verifyRefreshToken(refreshToken)
-      const expiresAt = payload.exp * 1000
-      const currentTime = Date.now()
-      const timeRemaining = expiresAt - currentTime
+  async refresh(@Req() req: Request, @Res() res: Response) {
+    const refreshToken = req.cookies["refresh_token"]
 
-      const refreshThreshold = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
-
-      const newAccessToken = await this.authService.generateAccessToken(payload)
-
-      let newRefreshToken: string | undefined
-
-      // If the refresh token is about to expire, generate a new one
-      if (timeRemaining < refreshThreshold) {
-        newRefreshToken = await this.authService.generateRefreshToken(payload)
-      }
-
-      return {
-        access_token: newAccessToken,
-        ...(newRefreshToken && { refresh_token: newRefreshToken })
-      }
-    } catch (e) {
-      console.log(e)
-      throw new UnauthorizedException("Invalid or expired refresh token")
+    if (!refreshToken) {
+      throw new UnauthorizedException("Refresh token is missing")
     }
+
+    const { newAccessToken, newRefreshToken } = await this.authService.handleTokenRefresh(refreshToken)
+
+    if (newRefreshToken) {
+      this.setRefreshTokenCookie(res, newRefreshToken)
+    }
+
+    res.json({ access_token: newAccessToken })
   }
 
-
+  /**
+   * Protected endpoint: Retrieves the authenticated user's profile.
+   */
   @Get("profile")
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  getProfile(@Request() req): User {
+  getProfile(@Req() req): User {
     return req.user
   }
 
+  /**
+   * Request email verification endpoint: Sends a verification email to the user.
+   */
   @Post("request-verification-email")
-  @Public()
   @HttpCode(HttpStatus.OK)
   async requestVerificationEmail(@Body("email") email: string) {
     return this.authService.requestVerificationEmail(email)
   }
 
+  /**
+   * Verify magic link endpoint: Verifies the email confirmation token.
+   */
   @Get("verify")
-  @Public()
   @HttpCode(HttpStatus.OK)
   async verify(@Query("token") token: string) {
     return this.authService.verifyMagicLink(token)
+  }
+
+  /**
+   * Helper method: Sets a secure cookie for the refresh token.
+   */
+  private setRefreshTokenCookie(res: Response, refreshToken: string) {
+    res.cookie("refresh_token", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+    })
   }
 }

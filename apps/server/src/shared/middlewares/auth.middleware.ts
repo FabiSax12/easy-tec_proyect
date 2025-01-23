@@ -1,6 +1,7 @@
 import { Injectable, NestMiddleware, UnauthorizedException } from "@nestjs/common"
 import { ConfigService } from "@nestjs/config"
 import { JwtService } from "@nestjs/jwt"
+import { Response } from "express"
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
@@ -9,17 +10,25 @@ export class AuthMiddleware implements NestMiddleware {
     private readonly configService: ConfigService
   ) { }
 
-  use(req: any, res: any, next: () => void) {
+  use(req: any, res: Response, next: () => void) {
     const authHeader = req.headers.authorization
 
+    if (req.baseUrl === "/api/auth/refresh") {
+      return next()
+    }
+
     if (!authHeader) {
-      throw new UnauthorizedException("Authorization header not found")
+      // throw new UnauthorizedException("Authorization header not found")
+      req.isAuthenticated = false
+      return next()
     }
 
     const [type, token] = authHeader.split(" ") ?? []
 
     if (type !== "Bearer") {
-      throw new UnauthorizedException("Invalid token type")
+      // throw new UnauthorizedException("Invalid token type")
+      req.isAuthenticated = false
+      return next()
     }
 
     try {
