@@ -1,5 +1,5 @@
 import { join } from "path"
-import { MiddlewareConsumer, Module } from "@nestjs/common"
+import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common"
 import { ServeStaticModule } from "@nestjs/serve-static"
 import { MailerModule } from "@nestjs-modules/mailer"
 import { UsersModule } from "./users/users.module"
@@ -13,8 +13,6 @@ import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handleba
 import { PrismaModule } from "./prisma/prisma.module"
 import { UserPeriodsModule } from "./user-periods/user-periods.module"
 import { AuthMiddleware } from "./shared/middlewares/auth.middleware"
-import { LoggerMiddleware } from "./shared/middlewares/logger.middleware"
-import { RateLimitMiddleware } from "./shared/middlewares/rateLimit.middleware"
 
 const serveClient = ServeStaticModule.forRoot({
   rootPath: join(__dirname, "../..", "client/dist")
@@ -61,13 +59,8 @@ const serveClient = ServeStaticModule.forRoot({
     })
   ]
 })
-export class AppModule {
+export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(LoggerMiddleware, RateLimitMiddleware)
-      .forRoutes("*")
-      .apply(AuthMiddleware)
-      .exclude("auth/*")
-      .forRoutes("*")
+    consumer.apply(AuthMiddleware).forRoutes("*")
   }
 }
