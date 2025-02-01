@@ -14,6 +14,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new LoggerInterceptor())
   app.useGlobalPipes(new ValidationPipe({ transform: true }))
 
+  app.enableCors()
   await app.listen(3000)
 }
 bootstrap()

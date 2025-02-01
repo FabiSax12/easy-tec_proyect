@@ -49,7 +49,7 @@ const serveClient = ServeStaticModule.forRoot({
           from: `\"No Reply\" <${configService.get("MAILER_EMAIL")}>`,
         },
         template: {
-          dir: process.cwd() + "/templates",
+          dir: process.cwd() + "/src/auth/templates",
           adapter: new HandlebarsAdapter(),
           options: {
             strict: true,
