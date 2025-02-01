@@ -74,7 +74,8 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   getProfile(@Req() req): User {
-    return req.user
+    const { exp, iat, isAdmin, ...user } = req.user
+    return user as User
   }
 
   /**

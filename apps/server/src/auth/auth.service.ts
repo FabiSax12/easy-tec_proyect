@@ -51,7 +51,7 @@ export class AuthService {
   /**
    * User registration.
    */
-  async signUp(data: CreateUserDto): Promise<User> {
+  async signUp(data: CreateUserDto): Promise<void> {
     return this.usersService.create(data)
   }
 
@@ -157,7 +157,8 @@ export class AuthService {
       name: user.name,
       lastname: user.lastname,
       avatar: user.avatar,
-      verified: user.verified,
+      carrier: user.carrier,
+      verified: user.verified
     }
   }
 
