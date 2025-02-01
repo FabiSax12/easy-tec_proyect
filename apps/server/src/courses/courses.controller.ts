@@ -11,7 +11,8 @@ import {
   Request,
   ParseBoolPipe,
   ParseIntPipe,
-  UnauthorizedException,
+  DefaultValuePipe,
+  ForbiddenException
 } from "@nestjs/common"
 import { CoursesService } from "./courses.service"
 import { CreateCourseDto } from "./dto/create-course.dto"
@@ -21,6 +22,7 @@ import { ValidateOwnership } from "src/shared/decorators/validateOwnership.decor
 import { UsersService } from "src/users/users.service"
 
 @Controller("courses")
+@UseGuards(AuthGuard)  // Apply the AuthGuard to all routes in this controller
 export class CoursesController {
   constructor(
     private readonly coursesService: CoursesService,
@@ -28,45 +30,38 @@ export class CoursesController {
   ) { }
 
   @Post()
-  @UseGuards(AuthGuard)
   @ValidateOwnership({ type: "period", idBody: "periodId" })
   async create(@Body() createCourseDto: CreateCourseDto) {
     return this.coursesService.create(createCourseDto)
   }
 
   @Get()
-  @UseGuards(AuthGuard)
   async findAll(
     @Request() req,
-    @Query("filterByUser", ParseBoolPipe) filterByUser?: boolean,
-    @Query("periodId", ParseIntPipe) periodId?: number
+    @Query("filterByUser", new DefaultValuePipe(false), ParseBoolPipe) filterByUser?: boolean,
+    @Query("periodId") periodId?: string
   ) {
     const userId = req.user.id
 
     if (filterByUser) {
-      return this.coursesService.findByUser(userId)
+      return this.coursesService.findCourses({ userId })
     }
 
     if (periodId) {
-      const hasAccess = await this.usersService.isUserPeriod(userId, periodId)
-      if (!hasAccess) {
-        throw new UnauthorizedException("User does not have access to this period")
-      }
-      return this.coursesService.findByPeriodId(periodId)
+      await this.ensureUserHasAccessToPeriod(userId, +periodId)
+      return this.coursesService.findCourses({ periodId: +periodId })
     }
 
     return this.coursesService.findAll()
   }
 
   @Get(":id")
-  @UseGuards(AuthGuard)
   @ValidateOwnership({ type: "course", idParam: "id" })
   async findOne(@Param("id", ParseIntPipe) id: number) {
     return this.coursesService.findOne(id)
   }
 
   @Patch(":id")
-  @UseGuards(AuthGuard)
   @ValidateOwnership({ type: "course", idParam: "id" })
   async update(
     @Param("id", ParseIntPipe) id: number,
@@ -76,9 +71,15 @@ export class CoursesController {
   }
 
   @Delete(":id")
-  @UseGuards(AuthGuard)
   @ValidateOwnership({ type: "course", idParam: "id" })
   async remove(@Param("id", ParseIntPipe) id: number) {
     return this.coursesService.remove(id)
+  }
+
+  private async ensureUserHasAccessToPeriod(userId: number, periodId: number) {
+    const hasAccess = await this.usersService.isUserPeriod(userId, periodId)
+    if (!hasAccess) {
+      throw new ForbiddenException("User does not have access to this period")
+    }
   }
 }
