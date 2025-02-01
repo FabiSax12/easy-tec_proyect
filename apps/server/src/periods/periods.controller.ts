@@ -11,6 +11,7 @@ import {
   Request,
   ParseIntPipe,
   ParseBoolPipe,
+  DefaultValuePipe,
 } from "@nestjs/common"
 import { PeriodsService } from "./periods.service"
 import { CreatePeriodDto } from "./dto/create-period.dto"
@@ -24,7 +25,7 @@ export class PeriodsController {
   constructor(private readonly periodsService: PeriodsService) { }
 
   /**
-   * For Admins Only
+   * Admins Only: Create a new period
    */
   @Post()
   @UseGuards(AdminGuard)
@@ -32,6 +33,9 @@ export class PeriodsController {
     return this.periodsService.create(createPeriodDto)
   }
 
+  /**
+   * Admins Only: Update an existing period
+   */
   @Patch(":id")
   @UseGuards(AdminGuard)
   async update(
@@ -41,6 +45,9 @@ export class PeriodsController {
     return this.periodsService.update(id, updatePeriodDto)
   }
 
+  /**
+   * Admins Only: Remove a period
+   */
   @Delete(":id")
   @UseGuards(AdminGuard)
   async remove(@Param("id", ParseIntPipe) id: number) {
@@ -48,13 +55,13 @@ export class PeriodsController {
   }
 
   /**
-   * For All Users
+   * Public: Get all periods or filter by user
    */
   @Get()
   @UseGuards(AuthGuard)
   async findAll(
     @Request() req,
-    @Query("filterByUser", ParseBoolPipe) filterByUser?: boolean
+    @Query("filterByUser", new DefaultValuePipe(false), ParseBoolPipe) filterByUser?: boolean
   ) {
     const userId = req.user.id
 
@@ -65,6 +72,9 @@ export class PeriodsController {
     return this.periodsService.findAll()
   }
 
+  /**
+   * Public: Get a single period by ID, ensuring ownership if necessary
+   */
   @Get(":id")
   @UseGuards(AuthGuard)
   @ValidateOwnership({ type: "period", idParam: "id" })
