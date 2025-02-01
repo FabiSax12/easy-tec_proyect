@@ -10,7 +10,6 @@ import {
   UseGuards,
   Request,
   UnauthorizedException,
-  ParseBoolPipe,
   Query,
 } from "@nestjs/common"
 import { TasksService } from "./tasks.service"
@@ -18,6 +17,7 @@ import { CreateTaskDto } from "./dto/create-task.dto"
 import { UpdateTaskDto } from "./dto/update-task.dto"
 import { AuthGuard } from "src/shared/guards/auth.guard"
 import { ValidateOwnership } from "src/shared/decorators/validateOwnership.decorator"
+import { TaskQueryDto } from "./dto/task-query.dto"
 
 @Controller("tasks")
 export class TasksController {
@@ -37,20 +37,21 @@ export class TasksController {
 
   @Get()
   @UseGuards(AuthGuard)
-  @ValidateOwnership({ type: "period", idParam: "periodId" })
   async findAll(
     @Request() req,
-    @Query("filterByUser", ParseBoolPipe) filterByUser: boolean,
-    @Query("periodId", ParseIntPipe) periodId: number,
+    @Query() query: TaskQueryDto,
   ) {
     const userId = req.user.id
-
-    if (filterByUser) {
+    if (query.filterByUser) {
       return this.tasksService.findByUser(userId)
     }
 
-    if (periodId) {
-      return this.tasksService.findByPeriod(periodId)
+    if (query.periodCode) {
+      return this.tasksService.findByPeriodCode(query.periodCode)
+    }
+
+    if (query.periodId) {
+      return this.tasksService.findByPeriod(+query.periodId)
     }
 
     if (req.user.isAdmin) {

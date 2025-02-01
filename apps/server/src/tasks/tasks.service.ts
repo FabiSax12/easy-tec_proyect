@@ -8,136 +8,97 @@ import { PrismaService } from "src/prisma/prisma.service"
 export class TasksService {
   constructor(private readonly prismaService: PrismaService) { }
 
+  // Función reutilizable para incluir el nombre del curso
+  private courseSelect = {
+    course: {
+      select: {
+        name: true,
+      },
+    },
+  }
+
   async create(createTaskDto: CreateTaskDto): Promise<Task> {
-    const task = await this.prismaService.task.create({
+    return this.prismaService.task.create({
       data: createTaskDto,
-      include: {
-        course: {
-          select: {
-            name: true
-          }
-        }
-      }
+      include: this.courseSelect,
     })
-
-    return task
   }
 
-  findAll() {
+  async findAll(): Promise<Task[]> {
     return this.prismaService.task.findMany({
-      include: {
-        course: {
-          select: {
-            name: true
-          }
-        }
-      }
+      include: this.courseSelect,
     })
   }
 
-  findOne(id: number) {
+  async findOne(id: number): Promise<Task | null> {
     return this.prismaService.task.findUnique({
       where: { id },
-      include: {
-        course: {
-          select: {
-            name: true
-          }
-        }
-      }
+      include: this.courseSelect,
     })
   }
 
   async update(id: number, updateTaskDto: UpdateTaskDto): Promise<Task> {
-    const updatedTask = await this.prismaService.task.update({
+    return this.prismaService.task.update({
       where: { id },
       data: updateTaskDto,
-      include: {
-        course: {
-          select: {
-            name: true
-          }
-        }
-      }
+      include: this.courseSelect,
     })
-
-    return updatedTask
   }
 
-  remove(id: number) {
+  async remove(id: number): Promise<Task> {
     return this.prismaService.task.delete({
       where: { id },
-      include: {
-        course: {
-          select: {
-            name: true
-          }
-        }
-      }
+      include: this.courseSelect,
     })
   }
 
+  // Método para encontrar tareas por usuario
   async findByUser(userId: number): Promise<Task[]> {
-    const task = await this.prismaService.task.findMany({
-      where: {
-        userId
-      },
-      include: {
-        course: {
-          select: {
-            name: true
-          }
-        }
-      }
+    return this.prismaService.task.findMany({
+      where: { userId },
+      include: this.courseSelect,
     })
-
-    return task
   }
 
+  // Método genérico para encontrar tareas por período
+  private async findTasksByPeriodCondition(whereCondition: any): Promise<Task[]> {
+    return this.prismaService.task.findMany({
+      where: whereCondition,
+      include: this.courseSelect,
+    })
+  }
+
+  // Método para encontrar tareas por período ID
   async findByPeriod(periodId: number): Promise<Task[]> {
     const courses = await this.prismaService.course.findMany({
-      where: { periodId }
+      where: { periodId },
     })
-
-    const task = await this.prismaService.task.findMany({
-      where: {
-        courseId: {
-          in: courses.map(course => course.id)
-        }
-      },
-      include: {
-        course: {
-          select: {
-            name: true
-          }
-        }
-      }
+    const courseIds = courses.map(course => course.id)
+    return this.findTasksByPeriodCondition({
+      courseId: { in: courseIds },
     })
-
-    return task
   }
 
+  // Método para encontrar tareas por código de período
+  async findByPeriodCode(periodCode: string): Promise<Task[]> {
+    return this.findTasksByPeriodCondition({
+      course: {
+        period: {
+          code: periodCode,
+        },
+      },
+    })
+  }
+
+  // Método para encontrar tareas por usuario y período
   async findByUserAndPeriod(userId: number, periodId: number): Promise<Task[]> {
     const courses = await this.prismaService.course.findMany({
-      where: { periodId }
+      where: { periodId },
     })
-
-    const task = await this.prismaService.task.findMany({
-      where: {
-        userId,
-        courseId: {
-          in: courses.map(course => course.id)
-        }
-      },
-      include: {
-        course: {
-          select: {
-            name: true
-          }
-        }
-      }
+    const courseIds = courses.map(course => course.id)
+    return this.findTasksByPeriodCondition({
+      userId,
+      courseId: { in: courseIds },
     })
-
-    return task
   }
 }
