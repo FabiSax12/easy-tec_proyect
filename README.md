@@ -12,13 +12,17 @@ Mi objetivo con Easy TEC es proporcionar a todos los estudiantes del TEC una her
 
 ¡Bienvenido a Easy TEC! Con esta aplicación, podrás simplificar tu vida estudiantil y maximizar tu rendimiento académico.
 
-## Para Desarrolladores
+## Para Contribuir
 
-Si estás interesado en contribuir al desarrollo de Easy TEC, sigue los pasos:
+Si estás interesado en contribuir al desarrollo de **Easy TEC**, sigue los pasos a continuación para configurar tu entorno de desarrollo correctamente.
 
-### Configuración del Entorno de Desarrollo
+---
 
-1. **Clona el Repositorio**
+### **Configuración del Entorno de Desarrollo**
+
+#### 1. Clona el Repositorio
+
+Primero, clona el repositorio del proyecto en tu máquina local utilizando el siguiente comando:  
 
 ```bash
 git clone https://github.com/FabiSax12/easy-tec.git
@@ -26,41 +30,54 @@ git clone https://github.com/FabiSax12/easy-tec.git
 
 2. **Instala las Dependencias:**
 Antes de continuar, asegúrate de tener Node.js y npm instalados en tu sistema. Si aún no los tienes, puedes descargarlos e instalarlos desde [Node.js](https://nodejs.org/).
-Una vez que Node.js y npm estén instalados, ejecuta el siguiente comando en el directorio del proyecto para instalar las dependencias necesarias:
+Una vez que Node.js y npm estén instalados, ejecuta el siguiente comando en el directorio del proyecto para instalar las dependencias necesarias
 
 ```bash
 npm install
 ```
 
-3. **Configura el Entorno:**
-Copia el archivo `.env.example` y renómbralo a `.env`. Aquí puedes configurar variables de entorno como la clave secreta, la URL de la base de datos, etc.
-Necesitaras un token secreto para el `NEXTAUTH_SECRET`, puedes ejecutar `openssl rand -base64 32` en tu terminal para obtener un token nuevo.
+3. **Configura el servidor:**
 
-4. **Levantar la Base de Datos en un Contenedor de Docker:**
-Para facilitar el desarrollo, utilizamos Docker para ejecutar la base de datos en un contenedor. Ejecuta el siguiente comando para construir y levantar el contenedor de la base de datos PostgreSQL:
+- 1. **Configura el Entorno:**
+  - Copia el archivo `.env.example` y renómbralo a `.env`. 
+  
+  - Edita el archivo `.env` con tus credenciales y variables de entorno específicas. En el archivo se detallan las instrucciones para configurar correctamente cada variable.
+
+- 2. **Levanta la Base de Datos:**
+Utilizamos Docker para gestionar la base de datos. Construye y ejecuta el contenedor con el siguiente comando:
 
 ```bash
 docker-compose -f docker-compose.dev.yml up -d --build
 ```
 
-5. **Sincroniza la Base de Datos con el Esquema de Prisma:**
-Una vez que la base de datos esté en funcionamiento, ejecuta el siguiente comando para sincronizar el esquema de la base de datos con Prisma:
+- 3. **Sincroniza la Base de Datos con el Schema de Prisma:**
+Una vez que la base de datos esté en funcionamiento, ejecuta el siguiente comando para sincronizar el esquema de la base de datos con el ORM Prisma:
 
 ```bash
-npx prisma migrate dev
+npx prisma db push
 ```
 
-6. **Activar la Semilla de Datos:**
-Si deseas llenar la base de datos con alguna información de ejemplo para el desarollo, puedes acceder a [http://localhost:3000/api/seed](http://localhost:3000/api/seed). Esto creará algunos usuarios, periodos acádemicos y cursos.
-
-7. **Inicia el Servidor de Desarrollo:**
-Una vez que todas las dependencias estén instaladas y el entorno esté configurado, puedes iniciar el servidor de desarrollo:
+- 4. **Inicia el Servidor de Desarrollo:**
+Navega al directorio del backend y levanta el servidor:
 
 ```bash
+cd ./apps/server
 npm run dev
 ```
 
-Esto iniciará el servidor de desarrollo y podrás acceder a la aplicación en [http://localhost:3000](http://localhost:3000)
+Esto iniciará el servidor de desarrollo y podrás acceder a la API en [http://localhost:3000](http://localhost:3000)
+
+- 5. **Activar la Semilla de Datos: (opcional)**
+SSi deseas llenar la base de datos con datos de ejemplo, accede a: 
+[http://localhost:3000/api/seed](http://localhost:3000/api/seed). 
+Esto generará datos iniciales como usuarios, periodos y cursos.
+
+4. **Configura el cliente**
+- a. **Levantar el cliente en desarrollo:**
+Una vez que todas las dependencias estén instaladas y el entorno esté configurado, puedes iniciar el cliente en desarrollo:
+```bash
+npm run dev
+```
 
 ### Contribuye
 

@@ -1,0 +1,10 @@
+{
+  "name": "Easy TEC",
+  "short_name": "easy-tec",
+  "theme_color": "#a4a4a4",
+  "background_color": "#0e1e2a",
+  "display": "standalone",
+  "orientation": "landscape",
+  "scope": "/",
+  "start_url": "/"
+}
