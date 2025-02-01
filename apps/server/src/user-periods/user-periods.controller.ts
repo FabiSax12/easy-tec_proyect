@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Delete, UseGuards, Request, Param, ParseIntPipe } from "@nestjs/common"
+import { Controller, Post, Body, Delete, UseGuards, Request, Param, ParseIntPipe, ForbiddenException, BadRequestException } from "@nestjs/common"
 import { UserPeriodsService } from "./user-periods.service"
 import { CreateUserPeriodDto } from "./dto/create-user-period.dto"
 import { AuthGuard } from "src/shared/guards/auth.guard"
@@ -15,11 +15,11 @@ export class UserPeriodsController {
   ) {
     const userId = req.user.id
 
-    if (createUserPeriodDto.userId && createUserPeriodDto.userId !== userId) {
-      throw new Error("You can't assign a period to another user")
+    if (!userId) {
+      throw new BadRequestException("User id not found")
     }
 
-    return this.userPeriodsService.assign(createUserPeriodDto)
+    return this.userPeriodsService.assign(userId, createUserPeriodDto.periodId)
   }
 
   @Delete(":id")

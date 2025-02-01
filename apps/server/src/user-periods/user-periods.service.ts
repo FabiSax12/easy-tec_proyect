@@ -1,17 +1,16 @@
 import { Injectable } from "@nestjs/common"
-import { CreateUserPeriodDto } from "./dto/create-user-period.dto"
 import { PrismaService } from "src/prisma/prisma.service"
 
 @Injectable()
 export class UserPeriodsService {
   constructor(private readonly prismaService: PrismaService) { }
 
-  async assign(createUserPeriodDto: CreateUserPeriodDto) {
+  async assign(userId: number, periodId: number) {
     return await this.prismaService.period.update({
-      where: { id: createUserPeriodDto.periodId },
+      where: { id: periodId },
       data: {
         users: {
-          connect: { id: createUserPeriodDto.userId }
+          connect: { id: userId }
         }
       }
     })
