@@ -16,8 +16,6 @@ export class UsersService {
     const createdUser = await this.prismaService.user.create({ data })
 
     if (!createdUser) throw new ConflictException("User could not be created")
-
-    return createdUser
   }
 
   findAll() {
@@ -33,6 +31,9 @@ export class UsersService {
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
+    if (updateUserDto.password) {
+      updateUserDto.password = hashSync(updateUserDto.password, 10)
+    }
     return this.prismaService.user.update({ where: { id }, data: updateUserDto })
   }
 
@@ -42,17 +43,6 @@ export class UsersService {
 
   verify(id: number) {
     return this.prismaService.user.update({ where: { id }, data: { verified: true } })
-  }
-
-  changePassword(userId: number, newPassword: string) {
-    this.prismaService.user.update({
-      where: {
-        id: userId
-      },
-      data: {
-        password: newPassword
-      }
-    })
   }
 
   async isUserPeriod(userId: number, periodId: number) {
