@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-default-100;
+  @apply p-1;
+  @apply sm:p-6;
+}
