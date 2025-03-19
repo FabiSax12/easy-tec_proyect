@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Select as SelectUI, SelectItem, Selection, SelectProps } from "@nextui-org/react"
+import { Select as SelectUI, SelectItem, Selection, SelectProps } from "@heroui/react"
 
 interface Props extends Omit<SelectProps, "children"> {
   label?: string

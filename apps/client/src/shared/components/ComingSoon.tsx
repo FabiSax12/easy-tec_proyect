@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { Button, Image } from "@nextui-org/react"
+import { Button, Image } from "@heroui/react"
 import { LuArrowLeft, LuConstruction } from "react-icons/lu"
 
 export const ComingSoon = () => {

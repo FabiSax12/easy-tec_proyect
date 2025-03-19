@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react"
 import { PasswordInput } from "@/shared/components/nextui/PasswordInput"
-import { Modal, Button, Input, ModalHeader, ModalBody, ModalFooter, ModalContent, Tabs, Tab, Image, Form } from "@nextui-org/react"
+import { Modal, Button, Input, ModalHeader, ModalBody, ModalFooter, ModalContent, Tabs, Tab, Image, Form } from "@heroui/react"
 import { updateUser } from "@/modules/user/services/user.service"
 import { toast } from "sonner"
 import { FaSave } from "react-icons/fa"

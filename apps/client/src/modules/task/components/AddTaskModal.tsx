@@ -10,7 +10,7 @@ import { useAddTask } from "../hooks/useAddTask"
 import {
   ModalContent, ModalHeader, ModalBody, ModalFooter,
   Input, Button, DatePicker, Textarea, Select, SelectItem,
-} from "@nextui-org/react"
+} from "@heroui/react"
 
 import type { CreateTaskDto } from "@/shared/types/entities/Task"
 

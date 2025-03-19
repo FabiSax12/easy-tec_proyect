@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Select as SelectUI, SelectItem, Selection, SelectProps, SelectSection } from "@nextui-org/react"
+import { Select as SelectUI, SelectItem, Selection, SelectProps, SelectSection } from "@heroui/react"
 
 interface Option {
   label: string

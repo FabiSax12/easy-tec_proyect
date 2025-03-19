@@ -12,7 +12,7 @@ import {
   DrawerHeader,
   Input,
   Textarea,
-} from "@nextui-org/react"
+} from "@heroui/react"
 import { Select } from "@/shared/components"
 import { getUserCoursesByPeriodId } from "@/modules/course/services/courses.service"
 import { useAuthStore } from "@/modules/auth/store/auth.store"

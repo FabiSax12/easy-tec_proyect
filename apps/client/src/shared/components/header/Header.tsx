@@ -1,14 +1,12 @@
-import { useNavigate, useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import { SectionCard } from "../SectionCard"
 import { UserInfo } from "./UserInfo"
-import { Badge, BreadcrumbItem, Breadcrumbs } from "@nextui-org/react"
-import { AiFillBell } from "react-icons/ai"
+import { BreadcrumbItem, Breadcrumbs } from "@heroui/react"
 import { FaGear } from "react-icons/fa6"
 import { ConfigModal } from "@/modules/user-config/components/ConfigModal"
 import { useState } from "react"
 
 export const Header = () => {
-  const navigate = useNavigate()
   const { pathname } = useLocation()
   const [isOpen, setIsOpen] = useState(false)
 

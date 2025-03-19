@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom"
-import { Button, Image, Input, Modal, ModalHeader, ModalContent, useDisclosure, Textarea, Form, ModalBody } from "@nextui-org/react"
+import { Button, Image, Input, Modal, ModalHeader, ModalContent, useDisclosure, Textarea, Form, ModalBody } from "@heroui/react"
 import { LuHome, LuArrowLeft, LuMail, LuGithub } from "react-icons/lu"
 import { GoReport } from "react-icons/go"
 

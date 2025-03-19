@@ -1,6 +1,6 @@
 import { Course } from "@/shared/types/entities/Course"
-import { Chip } from "@nextui-org/react"
-import { ChipProps } from "@nextui-org/react"
+import { Chip } from "@heroui/react"
+import { ChipProps } from "@heroui/react"
 
 type StateColorMap = Record<Course["state"], ChipProps["color"]>
 

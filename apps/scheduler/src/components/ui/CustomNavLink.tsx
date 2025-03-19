@@ -1,4 +1,4 @@
-import {NavLink, NavLinkProps} from "react-router";
+import {NavLink, NavLinkProps} from "react-router"
 
 export const CustomNavLink = (props: NavLinkProps) => {
     return <NavLink

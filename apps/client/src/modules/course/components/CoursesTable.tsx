@@ -14,7 +14,7 @@ import {
   Selection, Spinner, Table,
   TableBody, TableCell, TableColumn,
   TableHeader, TableRow
-} from "@nextui-org/react"
+} from "@heroui/react"
 
 import type { Course } from "@/shared/types/entities/Course"
 

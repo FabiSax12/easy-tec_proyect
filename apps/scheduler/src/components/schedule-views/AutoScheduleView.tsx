@@ -1,13 +1,13 @@
-import { useRef } from "react";
-import { Button, ButtonGroup, Tooltip } from "@heroui/react";
-import { ScheduleEvent } from "@/interfaces/courses-schedule.ts";
-import { SimpleCourseRow } from "@/interfaces/courses-schedule.ts";
-import { IoIosDownload } from "react-icons/io";
-import { IoArrowBack, IoArrowForward } from "react-icons/io5";
-import { ScheduleView } from "./ScheduleView";
-import { toPng } from "html-to-image";
-import { LuCheckCheck } from "react-icons/lu";
-import { useSchedule } from "@/hooks/useSchedules";
+import { useRef } from "react"
+import { Button, ButtonGroup, Tooltip } from "@heroui/react"
+import { ScheduleEvent } from "@/interfaces/courses-schedule.ts"
+import { SimpleCourseRow } from "@/interfaces/courses-schedule.ts"
+import { IoIosDownload } from "react-icons/io"
+import { IoArrowBack, IoArrowForward } from "react-icons/io5"
+import { ScheduleView } from "./ScheduleView"
+import { toPng } from "html-to-image"
+import { LuCheckCheck } from "react-icons/lu"
+import { useSchedule } from "@/hooks/useSchedules"
 
 interface AutoScheduleViewProps {
   scheduleCombinations: SimpleCourseRow[][];
@@ -28,7 +28,7 @@ export const AutoScheduleView: React.FC<AutoScheduleViewProps> = ({
   const scheduleRef = useRef<HTMLDivElement>(null)
 
   const events: ScheduleEvent[] = scheduleCombinations[currentCombination]?.map((course) => {
-    const eventsPerCourse: ScheduleEvent[] = [];
+    const eventsPerCourse: ScheduleEvent[] = []
     course.schedules.forEach((schedule) => {
       eventsPerCourse.push({
         id: course.code,
@@ -38,10 +38,10 @@ export const AutoScheduleView: React.FC<AutoScheduleViewProps> = ({
         end: schedule.end,
         group: course.group,
         color: course.color,
-      });
-    });
-    return eventsPerCourse;
-  }).flat() || [];
+      })
+    })
+    return eventsPerCourse
+  }).flat() || []
 
   const handleDownloadImage = async () => {
     if (scheduleRef.current) {
@@ -98,5 +98,5 @@ export const AutoScheduleView: React.FC<AutoScheduleViewProps> = ({
         <ScheduleView events={events} ref={scheduleRef} eventsDeleteable={false} />
       </div>
     </div>
-  );
-};
+  )
+}

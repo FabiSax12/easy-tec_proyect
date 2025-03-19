@@ -4,7 +4,7 @@ import { SectionCard, Spinner } from "@/shared/components"
 import { CoursesTable } from "@/modules/course/components"
 import { Trello } from "@/modules/task/components"
 import { TasksTable } from "@/modules/task/components/TasksTable"
-import { Tab, Tabs } from "@nextui-org/react"
+import { Tab, Tabs } from "@heroui/react"
 import { LuKanban, LuTableProperties } from "react-icons/lu"
 
 export const Period = () => {

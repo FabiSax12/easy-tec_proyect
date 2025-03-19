@@ -1,8 +1,8 @@
-import React from "react";
-import { Button, Select, SelectItem } from "@heroui/react";
-import { IoTrashBin } from "react-icons/io5";
-import { CourseNameAndCode } from "@/interfaces/courses-schedule.ts";
-import { campusOptions } from "@/data/schedule-options";
+import React from "react"
+import { Button, Select, SelectItem } from "@heroui/react"
+import { IoTrashBin } from "react-icons/io5"
+import { CourseNameAndCode } from "@/interfaces/courses-schedule.ts"
+import { campusOptions } from "@/data/schedule-options"
 
 export interface Campus {
   name: string;
@@ -113,5 +113,5 @@ export const SelectedCoursesList: React.FC<SelectedCoursesListProps> = ({
         Añadir Curso
       </Button>
     </div>
-  );
-};
+  )
+}

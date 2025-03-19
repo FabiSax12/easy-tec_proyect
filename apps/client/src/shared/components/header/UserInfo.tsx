@@ -3,7 +3,7 @@ import { useAuthStore } from "@/modules/auth/store/auth.store"
 import {
   Button, Dropdown, DropdownItem,
   DropdownMenu, DropdownTrigger, Skeleton, User
-} from "@nextui-org/react"
+} from "@heroui/react"
 import { IoEllipsisVerticalSharp } from "react-icons/io5"
 import { MdLogout } from "react-icons/md"
 import { useQueryClient } from "@tanstack/react-query"

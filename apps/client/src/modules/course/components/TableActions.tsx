@@ -1,5 +1,5 @@
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react"
-import { FaArrowUpRightFromSquare, FaPen, FaTrashCan } from "react-icons/fa6"
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react"
+import { FaPen, FaTrashCan } from "react-icons/fa6"
 import { HiDotsVertical } from "react-icons/hi"
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
   onOpenCourse: () => void
 }
 
-export function TableActions({ onDeleteCourse, onEditCourse, onOpenCourse }: Props) {
+export function TableActions({ onDeleteCourse, onEditCourse }: Props) {
   return (
     <div className="relative flex justify-end items-center gap-2">
       <span className="hidden w-full lg:flex lg:items-center lg:justify-evenly">

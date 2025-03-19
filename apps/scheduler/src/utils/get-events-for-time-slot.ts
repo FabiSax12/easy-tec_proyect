@@ -1,6 +1,6 @@
-import { ScheduleEvent } from "@/interfaces/courses-schedule";
-import { getEventPosition } from "./get-event-position";
-import { getOverlappingEvents } from "./get-overlaping-events";
+import { ScheduleEvent } from "@/interfaces/courses-schedule"
+import { getEventPosition } from "./get-event-position"
+import { getOverlappingEvents } from "./get-overlaping-events"
 
 export const getEventsForTimeSlot = (events: ScheduleEvent[], day: string, hour: number): ({
   event: ScheduleEvent;

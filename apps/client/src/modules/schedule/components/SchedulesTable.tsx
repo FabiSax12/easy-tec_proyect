@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react"
 import { useSchedule } from "@/modules/schedule/hooks/useSchedules"
-import { Selection, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react"
+import { Selection, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react"
 
 const columns = [
   { key: "code", label: "CÓDIGO" },

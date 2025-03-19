@@ -1,6 +1,6 @@
 import { Key, useMemo } from "react"
 import { TaskState, TaskWithCourseName, TaskStateSpanish, TimeRemaining } from "@/shared/types/entities/Task"
-import { ChipProps, Chip, Tooltip } from "@nextui-org/react"
+import { ChipProps, Chip, Tooltip } from "@heroui/react"
 import { LuPencil, LuTrash2 } from "react-icons/lu"
 
 const STATE_COLOR_MAP: Record<TaskState, ChipProps["color"]> = {

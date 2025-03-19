@@ -1,6 +1,6 @@
 import {HttpException, HttpStatus, Injectable, NotFoundException} from "@nestjs/common"
 import {JSDOM} from "jsdom"
-import {Agent} from "node:https";
+import {Agent} from "node:https"
 import {CompleteCourseRow, MergedCourseRow, ScheduleRow, SimpleCourseRow} from "../types/schedules"
 
 @Injectable()
@@ -135,42 +135,42 @@ export class ScheduleService {
   }
 
   async getScheduleByStudentId(studentId: string) {
-    const courses = await this.fetchScheduleByStudentId(studentId);
+    const courses = await this.fetchScheduleByStudentId(studentId)
     return this.getUniqueCourses(courses)
   }
 
   private async getUniqueCourses(data: CompleteCourseRow[]) {
-    const cursosMap = new Map();
+    const cursosMap = new Map()
 
     data.forEach(curso => {
-      const code = curso.IDE_MATERIA;
-      const name = curso.DSC_MATERIA;
+      const code = curso.IDE_MATERIA
+      const name = curso.DSC_MATERIA
 
       if (!cursosMap.has(code)) {
-        cursosMap.set(code, name);
+        cursosMap.set(code, name)
       }
-    });
+    })
 
-    return Array.from(cursosMap, ([code, name]) => ({ code, name }));
+    return Array.from(cursosMap, ([code, name]) => ({ code, name }))
   }
 
   async fetchScheduleByStudentId(studentId: string): Promise<CompleteCourseRow[]> {
     const response = await fetch("https://tec-appsext.itcr.ac.cr/guiahorarios/estudiante.aspx/getdatos", {
       method: "POST",
-      headers: { 'Content-Type': 'application/json' },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ carnet: studentId }),
       agent: new Agent({ rejectUnauthorized: false })
-    } as any);
+    } as any)
 
-    const data = await response.json();
-    return JSON.parse(data.d);
+    const data = await response.json()
+    return JSON.parse(data.d)
   }
 
   async getSpecificitiesSchedules(
       studentId: string,
       requestedCourses: { code: string; campus: { name: string; typeOfGroup: string }[] }[]
   ): Promise<SimpleCourseRow[]> {
-    const allCourses = await this.fetchScheduleByStudentId(studentId);
+    const allCourses = await this.fetchScheduleByStudentId(studentId)
 
     const filteredCourses = allCourses.filter(course =>
         requestedCourses.some(req =>
@@ -180,34 +180,34 @@ export class ScheduleService {
                 course.TIPO_CURSO === c.typeOfGroup
             )
         )
-    );
+    )
 
-    const mergedCourses = this.mergeCourseGroups(filteredCourses);
+    const mergedCourses = this.mergeCourseGroups(filteredCourses)
 
-    return mergedCourses.map(this.completeToSimpleCourseRow);
+    return mergedCourses.map(this.completeToSimpleCourseRow)
   }
 
   private mergeCourseGroups(courses: CompleteCourseRow[]): MergedCourseRow[] {
-    const mergedMap = new Map<string, MergedCourseRow>();
+    const mergedMap = new Map<string, MergedCourseRow>()
 
     courses.forEach(course => {
-      const key = `${course.IDE_MATERIA}-${course.IDE_GRUPO}-${course.DSC_SEDE}`;
+      const key = `${course.IDE_MATERIA}-${course.IDE_GRUPO}-${course.DSC_SEDE}`
 
       if (!mergedMap.has(key)) {
         mergedMap.set(key, {
           ...course,
           HORARIOS: []
-        });
+        })
       }
 
       mergedMap.get(key).HORARIOS.push({
         day: course.NOM_DIA,
         start: course.HINICIO,
         end: course.HFIN
-      });
-    });
+      })
+    })
 
-    return Array.from(mergedMap.values());
+    return Array.from(mergedMap.values())
   }
 
   private completeToSimpleCourseRow(course: MergedCourseRow): SimpleCourseRow {
@@ -223,6 +223,6 @@ export class ScheduleService {
       type: course.TIPO_CURSO,
       teacher: course.NOM_PROFESOR,
       schedules: course.HORARIOS
-    };
+    }
   }
 }

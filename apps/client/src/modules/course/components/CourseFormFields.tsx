@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query"
 import { periodToString } from "@/shared/utils"
 import { useAuthStore } from "@/modules/auth/store/auth.store"
 import { getPeriodsByUserId } from "@/modules/period/services/periods.service"
-import { Chip, Form, Input, Select, SelectItem } from "@nextui-org/react"
+import { Chip, Form, Input, Select, SelectItem } from "@heroui/react"
 import { courseInputs, statusColorMap, statusOptions } from "./constants"
 
 import type { Course, CreateCourseDto } from "@/shared/types/entities/Course"

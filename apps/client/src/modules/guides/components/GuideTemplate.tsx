@@ -1,6 +1,6 @@
 import { Link as RouterLink } from "react-router-dom"
 import { LuArrowLeft } from "react-icons/lu"
-import { Divider } from "@nextui-org/react"
+import { Divider } from "@heroui/react"
 
 interface Step {
   icon: React.ReactNode

@@ -1,8 +1,8 @@
-import {Route, Routes, useHref, useNavigate} from 'react-router';
-import {Alert, HeroUIProvider} from '@heroui/react'
-import { SchedulesPage } from '@/pages/SchedulesPage'
-import { AutoSchedulesPage } from "@/pages/AutoSchedulesPage";
-import {CustomNavLink} from "@/components/ui/CustomNavLink.tsx";
+import {Route, Routes, useHref, useNavigate} from "react-router"
+import {Alert, HeroUIProvider} from "@heroui/react"
+import { SchedulesPage } from "@/pages/SchedulesPage"
+import { AutoSchedulesPage } from "@/pages/AutoSchedulesPage"
+import {CustomNavLink} from "@/components/ui/CustomNavLink.tsx"
 
 function App() {
 
@@ -24,8 +24,8 @@ function App() {
       </Alert>
 
         <div className="mb-4 flex gap-2">
-            <CustomNavLink to={'/'}>Manual</CustomNavLink>
-            <CustomNavLink to={'/auto'}>Automático</CustomNavLink>
+            <CustomNavLink to={"/"}>Manual</CustomNavLink>
+            <CustomNavLink to={"/auto"}>Automático</CustomNavLink>
         </div>
 
       <Routes>

@@ -1,4 +1,4 @@
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react"
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react"
 import { IoEllipsisVerticalSharp } from "react-icons/io5"
 import { MdLogout } from "react-icons/md"
 
@@ -48,9 +48,6 @@ export const UserInfo = ({ userSession, expanded }: Props) => {
           variant="flat"
           classNames={{ base: "w-30", }}
           itemClasses={{ base: "text-sm" }}
-          onAction={key => {
-            // if (key === "signout") signOut({ callbackUrl: "/auth" })
-          }}
         >
           <DropdownItem
             key="signout"

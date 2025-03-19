@@ -1,6 +1,6 @@
 import { axiosClient } from "@/api/axios.config"
 import { Spinner } from "@/shared/components"
-import { Button, Card, CardBody, CardFooter, CardHeader } from "@nextui-org/react"
+import { Button, Card, CardBody, CardFooter, CardHeader } from "@heroui/react"
 import { useCallback, useEffect, useState } from "react"
 import { BiCheckCircle, BiXCircle } from "react-icons/bi"
 import { useNavigate, useSearchParams } from "react-router-dom"

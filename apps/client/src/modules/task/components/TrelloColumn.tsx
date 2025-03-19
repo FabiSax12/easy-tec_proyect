@@ -3,7 +3,7 @@ import { CSS } from "@dnd-kit/utilities"
 import { SortableContext, useSortable } from "@dnd-kit/sortable"
 import { Column } from "@/modules/task/data/trello-columns"
 import { TrelloColumnHeader, TrelloColumnFooter, TaskCard } from "@/modules/task/components"
-import { ScrollShadow, Skeleton } from "@nextui-org/react"
+import { ScrollShadow, Skeleton } from "@heroui/react"
 
 import type { TaskWithCourseName } from "@/shared/types/entities/Task"
 

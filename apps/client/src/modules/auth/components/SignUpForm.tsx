@@ -5,7 +5,7 @@ import { useAuthStore } from "@/modules/auth/store/auth.store"
 import { SignUpInputs } from "@/modules/auth/components"
 import { validateInputs } from "@/modules/auth/utils/validate-inputs"
 import { requestVerificationEmail } from "../services/auth.service"
-import { Button, Link } from "@nextui-org/react"
+import { Button, Link } from "@heroui/react"
 
 import type { AuthMode, FormData } from "@/modules/auth/components"
 

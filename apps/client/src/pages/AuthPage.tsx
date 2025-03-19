@@ -1,6 +1,6 @@
 import { Suspense } from "react"
 import { AuthFormTabs } from "@/modules/auth/components"
-import { Card, CardBody } from "@nextui-org/react"
+import { Card, CardBody } from "@heroui/react"
 
 export const AuthPage = () => {
   return (

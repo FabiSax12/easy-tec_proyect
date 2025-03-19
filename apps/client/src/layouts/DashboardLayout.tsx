@@ -2,7 +2,7 @@ import { Suspense } from "react"
 import { Navigate, Outlet, useLocation } from "react-router-dom"
 import { Sidebar } from "@/shared/components/sidebar"
 import { Header } from "@/shared/components/header"
-import { Spinner } from "@nextui-org/react"
+import { Spinner } from "@heroui/react"
 
 export function DashboadLayout() {
   const location = useLocation()

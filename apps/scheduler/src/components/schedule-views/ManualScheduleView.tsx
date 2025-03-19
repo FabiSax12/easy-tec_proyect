@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useMemo, useRef, useState } from "react"
 import { toPng } from "html-to-image"
 import { useSchedule } from "@/hooks/useSchedules"
 import { ScheduleEvent } from "@/interfaces/courses-schedule"

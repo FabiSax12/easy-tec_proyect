@@ -3,7 +3,7 @@ import { campusOptions, carriersOptions, periodsOptions, subjectsOptions } from 
 import { SchedulesProvider } from "@/modules/schedule/context/schedule"
 import { SchedulesTable } from "@/modules/schedule/components"
 import { SectionCard, ValidatedSelect as Select } from "@/shared/components"
-import { Button, Spinner } from "@nextui-org/react"
+import { Button, Spinner } from "@heroui/react"
 import { BiSearchAlt } from "react-icons/bi"
 import CoursesSchedule from "@/modules/schedule/components/CoursesSchedule"
 import { axiosClient } from "@/api/axios.config"

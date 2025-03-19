@@ -1,6 +1,6 @@
-import { FormEvent } from "react";
-import { Form, Input, Button } from "@heroui/react";
-import { IoSearchOutline } from "react-icons/io5";
+import { FormEvent } from "react"
+import { Form, Input, Button } from "@heroui/react"
+import { IoSearchOutline } from "react-icons/io5"
 
 interface StudentCoursesFormProps {
   onSubmit: (studentId: string) => void;
@@ -9,10 +9,10 @@ interface StudentCoursesFormProps {
 
 export const StudentCoursesForm: React.FC<StudentCoursesFormProps> = ({ onSubmit, isLoading }) => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = Object.fromEntries(new FormData(e.currentTarget));
-    onSubmit(formData.studentId as string);
-  };
+    e.preventDefault()
+    const formData = Object.fromEntries(new FormData(e.currentTarget))
+    onSubmit(formData.studentId as string)
+  }
 
   return (
     <Form onSubmit={handleSubmit} className="flex flex-row mb-10" validationBehavior="native">
@@ -34,5 +34,5 @@ export const StudentCoursesForm: React.FC<StudentCoursesFormProps> = ({ onSubmit
         isLoading={isLoading}
       />
     </Form>
-  );
-};
+  )
+}

@@ -4,7 +4,7 @@ import { TaskWithCourseName, TimeRemaining } from "@/shared/types/entities/Task"
 import { useAuthStore } from "@/modules/auth/store/auth.store"
 import { EditTaskDrawer } from "./EditTaskDrawer"
 import { TasksTableCell } from "./TasksTableCell"
-import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react"
+import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react"
 
 interface Props {
   periodCode: string

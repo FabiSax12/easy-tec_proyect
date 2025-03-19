@@ -5,7 +5,7 @@ import { Select, NumberInput } from "@/shared/components"
 import {
   Modal, ModalContent, ModalHeader,
   ModalBody, ModalFooter, Button, Input
-} from "@nextui-org/react"
+} from "@heroui/react"
 
 const options = [{ label: "Semestre", value: "S" }, { label: "Verano", value: "V" }]
 

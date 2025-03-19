@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { Chip } from "@nextui-org/react"
+import { Chip } from "@heroui/react"
 import { EditTaskDrawer } from "./EditTaskDrawer"
 import { FaClock } from "react-icons/fa6"
 

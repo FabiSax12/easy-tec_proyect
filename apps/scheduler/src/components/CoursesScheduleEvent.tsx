@@ -1,10 +1,10 @@
-import { useSchedule } from "@/hooks/useSchedules";
+import { useSchedule } from "@/hooks/useSchedules"
 import { ScheduleEvent } from "@/interfaces/courses-schedule"
-import { Button, Tooltip } from "@heroui/react";
-import { useEffect, useState } from "react";
+import { Button, Tooltip } from "@heroui/react"
+import { useEffect, useState } from "react"
 import { IoLocation, IoPencil, IoPeople, IoTrashBin } from "react-icons/io5"
 import { HexColorPicker } from "react-colorful"
-import { createPortal } from "react-dom";
+import { createPortal } from "react-dom"
 
 interface Props {
   event: ScheduleEvent;
@@ -29,7 +29,7 @@ export const CoursesScheduleEvent = ({ event, style, isDeleteable, isEditable }:
 
   return (
     <div
-      className={`absolute text-primary-foreground text-xs p-2 rounded-md shadow-md transition-transform group bg-primary z-10`}
+      className={"absolute text-primary-foreground text-xs p-2 rounded-md shadow-md transition-transform group bg-primary z-10"}
       style={{
         ...style,
         backgroundColor: color

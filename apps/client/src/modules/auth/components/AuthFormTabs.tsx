@@ -1,6 +1,6 @@
 import { useDinamicSearchParam } from "@/shared/hooks/useDinamicSearchParam"
 import { SignInForm, SignUpForm } from "@/modules/auth/components"
-import { Tab, Tabs } from "@nextui-org/react"
+import { Tab, Tabs } from "@heroui/react"
 
 import type { AuthMode } from "@/modules/auth/components"
 
