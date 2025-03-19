@@ -39,7 +39,7 @@ export const RemovePeriodModal = (props: Props) => {
 
   const removePeriodToUserMutation = useOptimisticMutation<Period, Error, { userId: number, periodId: number }>({
     mutationKey: ["periods", user?.id],
-    mutationFn: (data) => deleteUserPeriod(data.userId, data.periodId),
+    mutationFn: (data) => deleteUserPeriod(data.periodId),
     onMutateOptimistic: ({ periodId }, previousPeriods) => {
 
       queryClient.setQueryData<Course[]>(

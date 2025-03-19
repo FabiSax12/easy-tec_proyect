@@ -26,9 +26,9 @@ export const Header = () => {
       </Breadcrumbs>
 
       <SectionCard className="w-max flex items-center gap-4">
-        <Badge color="primary" size="md" content="5">
+        {/* <Badge color="primary" size="md" content="5">
           <AiFillBell size={20} className="cursor-pointer" />
-        </Badge>
+        </Badge> */}
         <FaGear size={20} className="cursor-pointer" onClick={() => setIsOpen(true)} />
         <UserInfo />
       </SectionCard>

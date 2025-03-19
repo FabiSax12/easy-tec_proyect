@@ -1,3 +1,4 @@
+import { axiosClient } from "@/api/axios.config"
 import { Spinner } from "@/shared/components"
 import { Button, Card, CardBody, CardFooter, CardHeader } from "@nextui-org/react"
 import { useCallback, useEffect, useState } from "react"
@@ -18,9 +19,9 @@ export const VerifyMagicLinkPage = () => {
     setIsLoading(true)
 
     try {
-      fetch(`/api/auth/verify?token=${token}`)
+      axiosClient.get(`/api/auth/verify?token=${token}`)
         .then(res => {
-          if (res.ok) {
+          if (res.status === 200) {
             setIsVerified(true)
             setIsError(false)
           } else {

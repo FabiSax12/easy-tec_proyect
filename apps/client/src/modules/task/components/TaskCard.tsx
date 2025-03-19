@@ -25,14 +25,14 @@ export function TaskCard({ task }: Props) {
     transform: CSS.Transform.toString(transform),
   }), [transform, transition])
 
-  const timeLeft = useMemo(() => {
+  const timeRemaining = useMemo(() => {
     const taskDate = new Date(task.date).getTime()
     const currentDate = Date.now()
-    const timeLeft = taskDate - currentDate
+    const timeRemaining = taskDate - currentDate
 
-    const daysLeft = Math.floor(timeLeft / (1000 * 60 * 60 * 24))
-    const hoursLeft = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-    const minutesLeft = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60))
+    const daysLeft = Math.floor(timeRemaining / (1000 * 60 * 60 * 24))
+    const hoursLeft = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+    const minutesLeft = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60))
 
     return { daysLeft, hoursLeft, minutesLeft }
   }, [task.date])
@@ -47,7 +47,7 @@ export function TaskCard({ task }: Props) {
         bg-white p-2 h-16 min-h-[64px] flex text-left rounded-xl cursor-grab relative
         group ring-default ring-1 active:cursor-grabbing select-none hover:cursor-pointer
         ${isDragging ? "opacity-30 ring-default cursor-grabbing" : "opacity-100"}
-        ${timeLeft.daysLeft > 3 ? "hover:ring-primary" : timeLeft.daysLeft > 0 ? "hover:ring-warning" : "hover:ring-danger"}
+        ${timeRemaining.daysLeft > 3 ? "hover:ring-primary" : timeRemaining.daysLeft > 0 ? "hover:ring-warning" : "hover:ring-danger"}
       `}
       onClick={() => setIsModalOpen(true)}
     >
@@ -61,17 +61,17 @@ export function TaskCard({ task }: Props) {
 
       <Chip
         variant="solid"
-        color={timeLeft.daysLeft > 3 ? "primary" : timeLeft.daysLeft > 0 ? "warning" : "danger"}
+        color={timeRemaining.daysLeft > 3 ? "primary" : timeRemaining.daysLeft > 0 ? "warning" : "danger"}
         size="sm"
         startContent={<FaClock />}
         className="absolute -top-2 -right-2"
       >
-        {timeLeft.daysLeft > 0
-          ? `${timeLeft.daysLeft}d`
-          : timeLeft.hoursLeft > 0
-            ? `${timeLeft.hoursLeft}h`
-            : timeLeft.minutesLeft > 0
-              ? `${timeLeft.minutesLeft}m`
+        {timeRemaining.daysLeft > 0
+          ? `${timeRemaining.daysLeft}d`
+          : timeRemaining.hoursLeft > 0
+            ? `${timeRemaining.hoursLeft}h`
+            : timeRemaining.minutesLeft > 0
+              ? `${timeRemaining.minutesLeft}m`
               : "---"
         }
       </Chip>
@@ -79,7 +79,7 @@ export function TaskCard({ task }: Props) {
       {<EditTaskDrawer
         isOpen={isModalOpen}
         task={task}
-        timeLeft={timeLeft}
+        timeRemaining={timeRemaining}
         onClose={() => setIsModalOpen(false)}
         onOpenChange={() => setIsModalOpen(prev => !prev)}
       />}

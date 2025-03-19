@@ -23,18 +23,18 @@ import { IoPencil, IoTrash } from "react-icons/io5"
 import { TiCancel } from "react-icons/ti"
 import { BiSave } from "react-icons/bi"
 
-import type { TaskWithCourseName, UpdateTaskDto } from "@/shared/types/entities/Task"
+import type { TaskWithCourseName, TimeRemaining, UpdateTaskDto } from "@/shared/types/entities/Task"
 import { parseAbsoluteToLocal } from "@internationalized/date"
 
 interface Props {
   isOpen: boolean
   task: TaskWithCourseName
-  timeLeft: { daysLeft: number, hoursLeft: number, minutesLeft: number }
+  timeRemaining: TimeRemaining
   onClose: () => void
   onOpenChange: () => void
 }
 
-export const EditTaskDrawer = ({ isOpen, onClose, task, timeLeft }: Props) => {
+export const EditTaskDrawer = ({ isOpen, onClose, task, timeRemaining }: Props) => {
 
   const user = useAuthStore(state => state.user)
   const { id: periodCode } = useParams()
@@ -47,7 +47,7 @@ export const EditTaskDrawer = ({ isOpen, onClose, task, timeLeft }: Props) => {
 
   const courses = useQuery({
     queryKey: ["courses", user?.id, periodCode],
-    queryFn: () => getUserCoursesByPeriodId(user!.id, periodCode!),
+    queryFn: () => getUserCoursesByPeriodId(periodCode!),
     enabled: !!user && !!periodCode,
     staleTime: Infinity
   })
@@ -156,9 +156,9 @@ export const EditTaskDrawer = ({ isOpen, onClose, task, timeLeft }: Props) => {
               </p>
               <p>
                 <strong>Tiempo restante: </strong>
-                {timeLeft.minutesLeft < 0
+                {timeRemaining.minutesLeft < 0
                   ? "La tarea ya ha vencido"
-                  : `${timeLeft.daysLeft} días, ${timeLeft.hoursLeft} horas, ${timeLeft.minutesLeft} minutos`}
+                  : `${timeRemaining.daysLeft} días, ${timeRemaining.hoursLeft} horas, ${timeRemaining.minutesLeft} minutos`}
 
               </p>
             </>

@@ -1,14 +1,14 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
-import { userLogin, userSignup } from "@/modules/auth/services/auth.service"
+import { getNewAccessToken, getUserProfile, userLogin, userSignup } from "@/modules/auth/services/auth.service"
 
 import type { User, CreateUserDto } from "@/shared/types/entities/User"
 
 interface AuthState {
     user: User | null;
     accessToken: string | null;
-    refreshToken: string | null;
-    signup: (user: CreateUserDto) => Promise<User>;
+    loggedDate: Date | null;
+    signup: (user: CreateUserDto) => Promise<{ email: string }>;
     login: (email: string, password: string) => Promise<void>;
     logout: () => void;
     refreshAccessToken: () => Promise<string | null>;
@@ -19,15 +19,14 @@ export const useAuthStore = create(
     persist<AuthState>(
         (set, get) => ({
             user: null,
-            accessToken: localStorage.getItem("access_token"),
-            refreshToken: localStorage.getItem("refresh_token"),
+            accessToken: null,
+            loggedDate: null,
 
             signup: async (user: CreateUserDto) => {
                 try {
-                    const createdUser = await userSignup(user)
-                    console.log("User signed up", createdUser)
-                    set({ user: createdUser })
-                    return createdUser
+                    await userSignup(user)
+                    console.log("User signed up")
+                    return { email: user.email }
                 } catch (error) {
                     console.error("Signup failed", error)
                     throw error
@@ -39,13 +38,10 @@ export const useAuthStore = create(
                     const data = await userLogin(email, password)
 
                     if (data?.access_token) {
-                        localStorage.setItem("access_token", data.access_token)
-                        set({ accessToken: data.access_token })
-                    }
-
-                    if (data?.refresh_token) {
-                        localStorage.setItem("refresh_token", data.refresh_token)
-                        set({ refreshToken: data.refresh_token })
+                        set({
+                            accessToken: data.access_token,
+                            loggedDate: new Date()
+                        })
                     }
 
                     await get().initializeUser()
@@ -56,28 +52,23 @@ export const useAuthStore = create(
             },
 
             logout: () => {
-                localStorage.removeItem("access_token")
-                localStorage.removeItem("refresh_token")
-                set({ accessToken: null, refreshToken: null, user: null })
+                set({ accessToken: null, loggedDate: null, user: null })
             },
 
             refreshAccessToken: async () => {
-                const { refreshToken, logout } = get()
+                const { logout } = get()
+
                 try {
-                    const response = await fetch("/api/auth/refresh", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ refreshToken }),
-                    })
+                    const access_token = await getNewAccessToken()
+                    console.log(access_token)
 
-                    const data = (await response.json())
-
-                    if (data?.access_token) {
-                        localStorage.setItem("access_token", data.access_token)
-                        set({ accessToken: data.access_token })
-                        return data.access_token
+                    if (access_token) {
+                        set({
+                            accessToken: access_token,
+                            loggedDate: new Date()
+                        })
+                        return access_token
                     } else {
-                        logout()
                         return null
                     }
                 } catch (error) {
@@ -92,13 +83,10 @@ export const useAuthStore = create(
                 if (!accessToken || user) return
 
                 try {
-                    const response = await fetch("/api/auth/profile", {
-                        headers: { Authorization: `Bearer ${accessToken}` },
-                    })
-                    const data = (await response.json()) as User
+                    const user = await getUserProfile()
 
-                    if (data) {
-                        set({ user: data })
+                    if (user) {
+                        set({ user })
                     }
                 } catch (error) {
                     console.error("Failed to get user data", error)

@@ -10,6 +10,7 @@ type UseOptimisticMutationOptions<TData, TError, TVariables> = {
   rollbackOptimistic?: (previousData: TData[]) => void
   onRetry?: (variables: TVariables) => void
   onUndo?: (variables: TVariables) => void
+  replaceOldData?: (data: TData) => void
 }
 
 type MutationContext<TData> = {
@@ -24,7 +25,8 @@ export function useOptimisticMutation<TData, TError, TVariables>({
   onMutateOptimistic,
   rollbackOptimistic,
   onRetry,
-  onUndo
+  onUndo,
+  replaceOldData
 }: UseOptimisticMutationOptions<TData, TError, TVariables>) {
   const queryClient = useQueryClient()
 
@@ -65,6 +67,8 @@ export function useOptimisticMutation<TData, TError, TVariables>({
     onSuccess: (data, variables, context) => {
       // Show success toast with undo option
       console.log("onSuccessMessage data: ", data)
+      replaceOldData?.(data)
+
       toast.success(onSuccessMessage?.(data) || "Action completada satisfactoriamente", {
         action: onUndo && {
           label: "Deshacer",

@@ -1,4 +1,4 @@
-import { Course } from "@/shared/interfaces/api.entities"
+import { Course } from "@/shared/types/entities/Course"
 import { Chip } from "@nextui-org/react"
 import { ChipProps } from "@nextui-org/react"
 

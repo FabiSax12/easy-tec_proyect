@@ -39,10 +39,10 @@ export const NotFound = () => {
       <div className="mt-8 text-sm text-muted-foreground">
         <p>¿Prefieres contactarnos directamente?</p>
         <div className="flex justify-center gap-4 mt-2">
-          <Link to="#todo" className="flex items-center hover:text-primary">
+          <Link to="mailto:f.vargas.1@estudiantec.cr" className="flex items-center hover:text-primary">
             <LuMail className="mr-1 h-4 w-4" /> Email
           </Link>
-          <Link to="https://github.com/easy-tec_proyect/issues" className="flex items-center hover:text-primary">
+          <Link to="https://github.com/FabiSax12/easy-tec_proyect/issues" className="flex items-center hover:text-primary">
             <LuGithub className="mr-1 h-4 w-4" /> GitHub Issues
           </Link>
         </div>

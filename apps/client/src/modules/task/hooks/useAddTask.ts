@@ -5,6 +5,7 @@ import { useOptimisticMutation } from "@/shared/hooks/useOptimisticMutation"
 import { createTask } from "../services/tasks.service"
 
 import type { TaskWithCourseName, CreateTaskDto } from "@/shared/types/entities/Task"
+import { Course } from "@/shared/types/entities/Course"
 
 export const useAddTask = (periodCode: string) => {
   const userId = useAuthStore(state => state.user?.id)
@@ -20,7 +21,9 @@ export const useAddTask = (periodCode: string) => {
         id: -1,
         createdAt: new Date(),
         updatedAt: new Date(),
-        course: { name: "Sin Curso" }
+        course: {
+          name: queryClient.getQueryData<Course[]>(["courses", userId])?.find(course => course.id === newTask.courseId)?.name || ""
+        }
       } as TaskWithCourseName,
     ],
     rollbackOptimistic: (previousTasks) => {
@@ -28,5 +31,10 @@ export const useAddTask = (periodCode: string) => {
     },
     onSuccessMessage: (data) => `Tarea "${data.name}" añadida correctamente`,
     onErrorMessage: () => "Error al añadir la tarea",
+    replaceOldData: (createdTask) => {
+      const oldTasks = queryClient.getQueryData<TaskWithCourseName[]>(["tasks", userId, periodCode])
+      const newTasks = oldTasks?.filter((task) => task.id !== -1) || []
+      queryClient.setQueryData(["tasks", userId, periodCode], [...newTasks!, createdTask])
+    }
   })
 }

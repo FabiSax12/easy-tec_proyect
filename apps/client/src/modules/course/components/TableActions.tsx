@@ -12,9 +12,9 @@ export function TableActions({ onDeleteCourse, onEditCourse, onOpenCourse }: Pro
   return (
     <div className="relative flex justify-end items-center gap-2">
       <span className="hidden w-full lg:flex lg:items-center lg:justify-evenly">
-        <button className="text-primary" onClick={onOpenCourse}>
+        {/* <button className="text-primary" onClick={onOpenCourse}>
           <FaArrowUpRightFromSquare />
-        </button>
+        </button> */}
         <button className="text-success" onClick={onEditCourse}>
           <FaPen />
         </button>
@@ -30,15 +30,17 @@ export function TableActions({ onDeleteCourse, onEditCourse, onOpenCourse }: Pro
           </Button>
         </DropdownTrigger>
         <DropdownMenu>
-          <DropdownItem
+          {/* <DropdownItem
+            key={1}
             color="primary"
             variant="light"
             startContent={<FaArrowUpRightFromSquare />}
             onPress={onOpenCourse}
           >
             Abrir
-          </DropdownItem>
+          </DropdownItem> */}
           <DropdownItem
+            key={2}
             color="success"
             variant="light"
             startContent={<FaPen />}
@@ -47,6 +49,7 @@ export function TableActions({ onDeleteCourse, onEditCourse, onOpenCourse }: Pro
             Editar
           </DropdownItem>
           <DropdownItem
+            key={3}
             className="text-danger"
             color="danger"
             variant="solid"

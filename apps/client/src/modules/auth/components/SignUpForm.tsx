@@ -42,19 +42,17 @@ export const SignUpForm = ({ setSelected }: Props) => {
     toast.promise(signup(data), {
       loading: "Creando cuenta...",
       success: async (createdUser) => {
-        await requestVerificationEmail(createdUser.email).then((res) => {
-          if (res.ok) {
+        requestVerificationEmail(createdUser.email)
+          .then(() => {
             toast.success("Email de verificación enviado")
             navigate("/auth/created-account")
-          } else {
-            toast.error("Error al enviar email de verificación", {
-              action: {
-                label: "Reintentar",
-                onClick: () => requestVerificationEmail(createdUser.email),
-              },
-            })
-          }
-        })
+          })
+          .catch(() => toast.error("Error al enviar email de verificación", {
+            action: {
+              label: "Reintentar",
+              onClick: () => requestVerificationEmail(createdUser.email),
+            },
+          }))
         return "Cuenta creada correctamente"
       },
       error: "Error al crear cuenta",

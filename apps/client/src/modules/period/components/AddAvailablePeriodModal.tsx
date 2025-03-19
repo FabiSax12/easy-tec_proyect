@@ -7,6 +7,7 @@ import { useAuthStore } from "@/modules/auth/store/auth.store"
 import { getPeriods, getPeriodsByUserId } from "../services/periods.service"
 import { Button, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, SelectSection } from "@nextui-org/react"
 import { useOptimisticMutation } from "@/shared/hooks/useOptimisticMutation"
+import { assingPeriodToUser } from "@/modules/user/services/user.service"
 // import { Select } from "@/shared/components/nextui/Select"
 
 interface Props {
@@ -54,24 +55,15 @@ export const AddAvailablePeriodModal = (props: Props) => {
     [userAssignedPeriodsQuery.data]
   )
 
-  const handleAddPeriod = async (userId: number, periodId: number) => {
+  const handleAddPeriod = async (periodId: number) => {
     if (selectedPeriod && user) {
-      return fetch("/api/user-periods", {
-        method: "POST",
-        body: JSON.stringify({
-          userId: userId,
-          periodId: periodId
-        }),
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }).then(res => res.json())
+      return assingPeriodToUser(periodId)
     }
   }
 
-  const assingPeriodToUserMutation = useOptimisticMutation<Period, Error, { userId: number, periodId: number }>({
+  const assingPeriodToUserMutation = useOptimisticMutation<Period, Error, { periodId: number }>({
     mutationKey: ["periods", user?.id],
-    mutationFn: (data) => handleAddPeriod(data.userId, data.periodId),
+    mutationFn: (data) => handleAddPeriod(data.periodId),
     onMutateOptimistic: ({ periodId }, previousPeriods) => {
       const newPeriod = availablePeriodsQuery.data?.find(period => period.id === periodId) as Period
 
@@ -145,7 +137,7 @@ export const AddAvailablePeriodModal = (props: Props) => {
           color="primary"
           onPress={() => {
             props.onOpenChange()
-            assingPeriodToUserMutation.mutate({ userId: user?.id, periodId: Number(selectedPeriod) })
+            assingPeriodToUserMutation.mutate({ periodId: Number(selectedPeriod) })
           }}
         >
           Guardar

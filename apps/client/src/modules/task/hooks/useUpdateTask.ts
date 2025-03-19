@@ -22,5 +22,12 @@ export function useUpdateTask(periodCode: string) {
     },
     onSuccessMessage: (data) => `Tarea "${data.name}" actualizada correctamente`,
     onErrorMessage: () => "Error al actualizar la tarea",
+    // replaceOldData: (newData) => {
+    //   const oldTasks = queryClient.getQueryData<TaskWithCourseName[]>(["tasks", userId, periodCode])
+
+    //   const newTasks = oldTasks?.filter((task) => task.id !== newData.id) || []
+
+    //   queryClient.setQueryData(["tasks", userId, periodCode], [...newTasks, newData])
+    // }
   })
 }

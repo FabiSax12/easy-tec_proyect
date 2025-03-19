@@ -7,13 +7,14 @@ import {
 import { arrayMove } from "@dnd-kit/sortable"
 import { useAuthStore } from "@/modules/auth/store/auth.store"
 import { defaultCols } from "@/modules/task/data/trello-columns"
-import { getTasksByPeriodId } from "../services/tasks.service"
+import { getTasksByPeriodCode } from "../services/tasks.service"
 import { useUpdateTask } from "./useUpdateTask"
 
 import type { TaskWithCourseName } from "@/shared/types/entities/Task"
 
 export function useTaskDnD(period: string) {
-  const { accessToken, user } = useAuthStore()
+  const user = useAuthStore(state => state.user)
+  const queryClient = useQueryClient()
 
   const [activeTask, setActiveTask] = useState<TaskWithCourseName | null>(null)
   const columns = useMemo(() => defaultCols, [])
@@ -27,16 +28,12 @@ export function useTaskDnD(period: string) {
     })
   )
 
-  const queryClient = useQueryClient()
-
+  const updateTaskMutation = useUpdateTask(period)
   const { data: tasks = [], isLoading: loadingTasks, } = useQuery<TaskWithCourseName[]>({
     queryKey: ["tasks", user?.id, period],
-    queryFn: () => getTasksByPeriodId(user!.id, period),
-    enabled: !!user?.id && !!period && !!accessToken,
-    staleTime: Infinity
+    queryFn: () => getTasksByPeriodCode(period),
+    staleTime: 0
   })
-
-  const updateTaskMutation = useUpdateTask(period)
 
   const onDragStart = (event: DragStartEvent) => {
     if (event.active.data.current?.type === "Task") {
