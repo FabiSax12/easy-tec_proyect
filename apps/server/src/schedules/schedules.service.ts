@@ -1,221 +1,228 @@
-import { Injectable, HttpException, HttpStatus } from "@nestjs/common"
-import * as fs from "node:fs/promises"
-import * as puppeteer from "puppeteer"
-
-interface Schedule {
-  day: string;
-  start: string;
-  end: string;
-}
-
-export interface ScheduleRow {
-  id: string;
-  code: string;
-  subject: string;
-  group: number;
-  credits: number;
-  schedule: Schedule;
-  schedules: Schedule[];
-  classroom: string;
-  teacher: string;
-  teachers: string[];
-  totalSpaces: number;
-  typeOfSubject: string;
-  typeOfGroup: string;
-  reserved: number;
-}
+import {HttpException, HttpStatus, Injectable, NotFoundException} from "@nestjs/common"
+import {JSDOM} from "jsdom"
+import {Agent} from "node:https";
+import {CompleteCourseRow, MergedCourseRow, ScheduleRow, SimpleCourseRow} from "../types/schedules"
 
 @Injectable()
 export class ScheduleService {
-  constructor() { }
-
-  private async saveCookies(page: puppeteer.Page) {
-    const cookies = await page.cookies()
-    await fs.writeFile("./cookies.json", JSON.stringify(cookies, null, 2))
-  }
-
-  private async loadCookies(page: puppeteer.Page) {
-    try {
-      if (await fs.access("./cookies.json").then(() => true).catch(() => false)) {
-        const cookies = JSON.parse(await fs.readFile("./cookies.json", "utf-8"))
-        if (cookies.length > 0) await page.setCookie(...cookies)
-      } else {
-        await fs.writeFile("./cookies.json", "[]")
-      }
-    } catch (error) {
-      throw new HttpException("Error loading cookies", HttpStatus.INTERNAL_SERVER_ERROR)
-    }
-  }
-
-  private async preventResources(page: puppeteer.Page) {
-    await page.setRequestInterception(true)
-    page.on("request", (request) => {
-      if (["image", "font"].includes(request.resourceType())) request.abort()
-      else request.continue()
+  async fetchSchedule(campus: string, carrier: string, period: string): Promise<string> {
+    const response = await fetch("https://tecdigital.tec.ac.cr/tda-expediente-estudiantil/ajax/tabla_guia_horario", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: `sede=${campus}&carrera=${carrier}&periodo=${period}`
     })
-  }
 
-  async login(page: puppeteer.Page, email: string, password: string) {
-    if (page.url().includes("tecdigital.tec.ac.cr/register/")) {
-      await page.type("#mail-input", email, { delay: 10 })
-      await page.type("#password-input", password, { delay: 10 })
-
-      await page.evaluate(() => {
-        const button = document.querySelector<HTMLButtonElement>("button[type='submit']")
-        button?.removeAttribute("disabled")
-        button?.click()
-      })
-
-      await page.waitForNavigation()
-      await this.saveCookies(page)
-    }
-  }
-
-  async selectInfo(page: puppeteer.Page, campus: string, carrier: string, period: string) {
-    await page.evaluate((campus, carrier, period) => {
-      document.querySelector("#sede_n")?.setAttribute("value", campus)
-      document.querySelector("#carrera_n")?.setAttribute("value", carrier)
-      document.querySelector("#periodo_n")?.setAttribute("value", period)
-    }, campus, carrier, period)
-  }
-
-  async getSchedule(
-    campus: string,
-    carrier: string,
-    period: string,
-    credentials: { email: string; password: string },
-  ): Promise<Partial<ScheduleRow>[]> {
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    })
-    const page = await browser.newPage()
-
-    try {
-      await this.preventResources(page)
-      await this.loadCookies(page)
-      await page.goto("https://tecdigital.tec.ac.cr/tda-expediente-estudiantil/")
-      await this.login(page, credentials.email, credentials.password)
-
-      await page.click("button#guia_horario")
-      await page.waitForSelector("div#sede_n")
-      await this.selectInfo(page, campus, carrier, period)
-      await page.click("i#imgBuscar")
-      await page.waitForSelector("table#tguiaHorario")
-
-      const data = await this.extractTableData(page)
-      return data
-    } catch (error) {
+    if (!response.ok) {
       throw new HttpException("Error fetching schedule data", HttpStatus.INTERNAL_SERVER_ERROR)
-    } finally {
-      await browser.close()
+    }
+
+    return await response.text()
+  }
+
+  async getSchedule(campus: string, carrier: string, period: string): Promise<Partial<ScheduleRow>[]> {
+    try {
+      const tableString = await this.fetchSchedule(campus, carrier, period)
+      const dom = new JSDOM(tableString)
+      const tableHtml = dom.window.document
+      const table = tableHtml.querySelector("table")
+
+      if (!table) {
+        throw new NotFoundException("No se encontró la tabla de horarios.")
+      }
+
+      return await this.extractTableData(table)
+    } catch (error) {
+      console.error(error)
+      throw new HttpException("Error al obtener los datos del horario", HttpStatus.INTERNAL_SERVER_ERROR)
     }
   }
 
-  private async extractTableData(page: puppeteer.Page): Promise<Partial<ScheduleRow>[]> {
-    return page.evaluate(() => {
-      const table = document.querySelector<HTMLTableElement>("#tguiaHorario")
-      const headers = Array.from(table?.querySelectorAll("thead th") || []).map((th: HTMLTableColElement) => th.innerText)
-      const rows = Array.from(table?.querySelectorAll("tbody tr") || [])
+  private async extractTableData(table: HTMLTableElement): Promise<Partial<ScheduleRow>[]> {
+    const headers = Array.from(table.querySelectorAll("thead th") || []).map((th) => (th as HTMLElement).textContent)
 
-      const data = rows.map(row => {
-        const cells = Array.from(row.querySelectorAll("td"))
-        const dataRow: ScheduleRow = {
-          id: "",
-          code: "",
-          subject: "",
-          group: 0,
-          credits: 0,
-          schedule: { day: "", start: "", end: "" },
-          schedules: [],
-          classroom: "",
-          teacher: "",
-          teachers: [],
-          totalSpaces: 0,
-          typeOfSubject: "",
-          typeOfGroup: "",
-          reserved: 0,
-        }
+    if (headers.length === 0) {
+      throw new NotFoundException("La tabla no tiene encabezados.")
+    }
 
-        cells.forEach((cell, index) => {
-          switch (headers[index]) {
-            case "Código":
-              dataRow.code = cell.innerText.trim()
-              break
-            case "Materia":
-              dataRow.subject = cell.innerText.trim()
-              break
-            case "Grupo":
-              dataRow.group = parseInt(cell.innerText.trim(), 10)
-              break
-            case "Créditos":
-              dataRow.credits = parseInt(cell.innerText.trim(), 10)
-              break
-            case "Horario":
-              const schedule = cell.innerText.split(" - ")
-              const day = schedule[0].slice(0, 3)
-              const times = schedule[1].split(":")
-              const hour1 = times[0] + ":" + (times[1].length == 2 ? times[1] : times[1] + "0")
-              const hour2 = times[2] + ":" + (times[3].length == 2 ? times[3] : times[3] + "0")
+    const rows = Array.from(table.querySelectorAll("tbody tr") || [])
 
-              dataRow.schedule = {
-                day,
-                start: hour1,
-                end: hour2
-              }
-              break
-            case "Aula":
-              dataRow.classroom = cell.innerText.trim()
-              break
-            case "Profesor":
-              dataRow.teacher = cell.innerText.trim()
-              dataRow.teachers.push(dataRow.teacher) // Agrega al array de profesores
-              break
-            case "Cupo":
-              dataRow.totalSpaces = parseInt(cell.innerText.trim(), 10)
-              break
-            case "Tipo Materia":
-              dataRow.typeOfSubject = cell.innerText.trim()
-              break
-            case "Tipo Grupo":
-              dataRow.typeOfGroup = cell.innerText.trim()
-              break
-            case "Reservados":
-              dataRow.reserved = parseInt(cell.innerText.trim(), 10)
-              break
-          }
-        })
+    const data = rows.map((row) => {
+      const cells = Array.from(row.querySelectorAll("td"))
+      const dataRow: ScheduleRow = {
+        id: "",
+        code: "",
+        subject: "",
+        group: 0,
+        credits: 0,
+        schedule: { day: "", start: "", end: "" },
+        schedules: [],
+        classroom: "",
+        teacher: "",
+        teachers: [],
+        totalSpaces: 0,
+        typeOfSubject: "",
+        typeOfGroup: "",
+        reserved: 0,
+      }
 
-        dataRow.id = `${dataRow.code}-${dataRow.group}-${dataRow.teacher.split(" ").map(w => w[0]).join("")}`
-
-        return dataRow
-      })
-
-      const combinedData: Partial<ScheduleRow>[] = []
-
-      data.forEach(row => {
-        const existingRow = combinedData.find(item => item.code === row.code && item.group === row.group)
-
-        if (existingRow) {
-          // Agrega el horario si no está duplicado
-          if (!existingRow.schedules.some(s => s.day === row.schedule.day && s.start === row.schedule.start && s.end === row.schedule.end)) {
-            existingRow.schedules.push(row.schedule)
-          }
-          // Agrega el profesor si no está duplicado
-          if (!existingRow.teachers.includes(row.teacher)) {
-            existingRow.teachers.push(row.teacher)
-          }
-        } else {
-          // Crear una nueva entrada
-          combinedData.push({
-            ...row,
-            schedules: [row.schedule],
-            teachers: [row.teacher],
-          })
+      cells.forEach((cell, index) => {
+        switch (headers[index]) {
+          case "Código":
+            if (cell.textContent.trim().includes("En este momento no hay información disponible para el periodo consultado.")) {
+              throw new NotFoundException("Error en el TEC Digital")
+            }
+            dataRow.code = cell.textContent.trim()
+            break
+          case "Materia":
+            dataRow.subject = cell.textContent.trim()
+            break
+          case "Grupo":
+            dataRow.group = parseInt(cell.textContent.trim(), 10)
+            break
+          case "Créditos":
+            dataRow.credits = parseInt(cell.textContent.trim(), 10)
+            break
+          case "Horario":
+            const schedule = cell.textContent.split(" - ")
+            dataRow.schedule = {
+              day: schedule[0].slice(0, 3),
+              start: schedule[1].split(":").slice(0, 2).join(":"),
+              end: schedule[1].split(":").slice(2, 4).join(":"),
+            }
+            break
+          case "Aula":
+            dataRow.classroom = cell.textContent.trim()
+            break
+          case "Profesor":
+            dataRow.teacher = cell.textContent.trim()
+            dataRow.teachers.push(dataRow.teacher)
+            break
+          case "Cupo":
+            dataRow.totalSpaces = parseInt(cell.textContent.trim(), 10)
+            break
+          case "Tipo Materia":
+            dataRow.typeOfSubject = cell.textContent.trim()
+            break
+          case "Tipo Grupo":
+            dataRow.typeOfGroup = cell.textContent.trim()
+            break
+          case "Reservados":
+            dataRow.reserved = parseInt(cell.textContent.trim(), 10)
+            break
         }
       })
 
-      return combinedData
+      dataRow.id = `${dataRow.code}-${dataRow.group}-${dataRow.teacher.split(" ").map((w) => w[0]).join("")}`
+      return dataRow
     })
+
+    return data.reduce((acc: Partial<ScheduleRow>[], row) => {
+      const existingRow = acc.find((item) => item.code === row.code && item.group === row.group)
+      if (existingRow) {
+        if (!existingRow.schedules.some((s) => s.day === row.schedule.day && s.start === row.schedule.start && s.end === row.schedule.end)) {
+          existingRow.schedules.push(row.schedule)
+        }
+        if (!existingRow.teachers.includes(row.teacher)) {
+          existingRow.teachers.push(row.teacher)
+        }
+      } else {
+        acc.push({ ...row, schedules: [row.schedule], teachers: [row.teacher] })
+      }
+      return acc
+    }, [])
+  }
+
+  async getScheduleByStudentId(studentId: string) {
+    const courses = await this.fetchScheduleByStudentId(studentId);
+    return this.getUniqueCourses(courses)
+  }
+
+  private async getUniqueCourses(data: CompleteCourseRow[]) {
+    const cursosMap = new Map();
+
+    data.forEach(curso => {
+      const code = curso.IDE_MATERIA;
+      const name = curso.DSC_MATERIA;
+
+      if (!cursosMap.has(code)) {
+        cursosMap.set(code, name);
+      }
+    });
+
+    return Array.from(cursosMap, ([code, name]) => ({ code, name }));
+  }
+
+  async fetchScheduleByStudentId(studentId: string): Promise<CompleteCourseRow[]> {
+    const response = await fetch("https://tec-appsext.itcr.ac.cr/guiahorarios/estudiante.aspx/getdatos", {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ carnet: studentId }),
+      agent: new Agent({ rejectUnauthorized: false })
+    } as any);
+
+    const data = await response.json();
+    return JSON.parse(data.d);
+  }
+
+  async getSpecificitiesSchedules(
+      studentId: string,
+      requestedCourses: { code: string; campus: { name: string; typeOfGroup: string }[] }[]
+  ): Promise<SimpleCourseRow[]> {
+    const allCourses = await this.fetchScheduleByStudentId(studentId);
+
+    const filteredCourses = allCourses.filter(course =>
+        requestedCourses.some(req =>
+            course.IDE_MATERIA === req.code &&
+            req.campus.some(c =>
+                course.DSC_SEDE === c.name &&
+                course.TIPO_CURSO === c.typeOfGroup
+            )
+        )
+    );
+
+    const mergedCourses = this.mergeCourseGroups(filteredCourses);
+
+    return mergedCourses.map(this.completeToSimpleCourseRow);
+  }
+
+  private mergeCourseGroups(courses: CompleteCourseRow[]): MergedCourseRow[] {
+    const mergedMap = new Map<string, MergedCourseRow>();
+
+    courses.forEach(course => {
+      const key = `${course.IDE_MATERIA}-${course.IDE_GRUPO}-${course.DSC_SEDE}`;
+
+      if (!mergedMap.has(key)) {
+        mergedMap.set(key, {
+          ...course,
+          HORARIOS: []
+        });
+      }
+
+      mergedMap.get(key).HORARIOS.push({
+        day: course.NOM_DIA,
+        start: course.HINICIO,
+        end: course.HFIN
+      });
+    });
+
+    return Array.from(mergedMap.values());
+  }
+
+  private completeToSimpleCourseRow(course: MergedCourseRow): SimpleCourseRow {
+    return {
+      campus: course.DSC_SEDE,
+      code: course.IDE_MATERIA,
+      name: course.DSC_MATERIA,
+      group: course.IDE_GRUPO,
+      department: course.DSC_DEPTO,
+      credits: course.CAN_CREDITOS,
+      modeId: course.IDE_MODALIDAD,
+      mode: course.DSC_MODALIDAD,
+      type: course.TIPO_CURSO,
+      teacher: course.NOM_PROFESOR,
+      schedules: course.HORARIOS
+    };
   }
 }

@@ -31,7 +31,7 @@ const serveClient = ServeStaticModule.forRoot({
     UserPeriodsModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ".env"
+      envFilePath: ".env.local"
     }),
     MailerModule.forRootAsync({
       inject: [ConfigService],

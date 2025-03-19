@@ -19,6 +19,7 @@ export class AuthMiddleware implements NestMiddleware {
 
     if (!authHeader) {
       // throw new UnauthorizedException("Authorization header not found")
+      console.log("Authorization header not found")
       req.isAuthenticated = false
       return next()
     }
@@ -27,6 +28,7 @@ export class AuthMiddleware implements NestMiddleware {
 
     if (type !== "Bearer") {
       // throw new UnauthorizedException("Invalid token type")
+      console.log("Invalid token type")
       req.isAuthenticated = false
       return next()
     }
@@ -44,6 +46,7 @@ export class AuthMiddleware implements NestMiddleware {
       payload.isAdmin = payload.email === process.env.ADMIN_EMAIL && payload.id === process.env.ADMIN_ID
       req.user = payload
       req.isAuthenticated = true
+      console.log("payload", req.user)
       next()
     } catch (error) {
       throw new UnauthorizedException("Invalid token")

@@ -78,11 +78,13 @@ export class UsersService {
   }
 
   isUserTask(userId: number, taskId: number) {
-    return this.prismaService.task.findFirst({
+    const task = this.prismaService.task.findFirst({
       where: {
         id: taskId,
         userId
       }
     })
+
+    return !!task
   }
 }

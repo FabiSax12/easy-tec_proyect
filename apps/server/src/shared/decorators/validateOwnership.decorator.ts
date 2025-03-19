@@ -1,4 +1,4 @@
-import { UnauthorizedException } from "@nestjs/common"
+import { SetMetadata, UnauthorizedException } from "@nestjs/common"
 import { UsersService } from "src/users/users.service"
 
 type ValidateOwnershipData = {
@@ -7,7 +7,9 @@ type ValidateOwnershipData = {
   idBody?: string;
 }
 
-export function ValidateOwnership(data: ValidateOwnershipData) {
+export const ValidateOwnership = (data: ValidateOwnershipData) => SetMetadata("ownership", data)
+
+function ValidateOwnership2(data: ValidateOwnershipData) {
   return function (
     target: any,
     propertyKey: string | symbol,
@@ -17,7 +19,8 @@ export function ValidateOwnership(data: ValidateOwnershipData) {
 
     descriptor.value = async function (...args: any[]) {
       const ctx = args[0]
-      const req = ctx?.req
+      console.log("req", ctx)
+      const req = ctx
       const userId = req.user.id
       const resourceId = data.idParam ? +req.params[data.idParam] : +req.body[data.idBody]
 

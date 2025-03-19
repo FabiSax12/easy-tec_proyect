@@ -12,7 +12,8 @@ import {
   ParseBoolPipe,
   ParseIntPipe,
   DefaultValuePipe,
-  ForbiddenException
+  ForbiddenException,
+  Req
 } from "@nestjs/common"
 import { CoursesService } from "./courses.service"
 import { CreateCourseDto } from "./dto/create-course.dto"
@@ -20,9 +21,10 @@ import { UpdateCourseDto } from "./dto/update-course.dto"
 import { AuthGuard } from "src/shared/guards/auth.guard"
 import { ValidateOwnership } from "src/shared/decorators/validateOwnership.decorator"
 import { UsersService } from "src/users/users.service"
+import { OwnershipGuard } from "src/shared/guards/ownership.guard"
 
 @Controller("courses")
-@UseGuards(AuthGuard)  // Apply the AuthGuard to all routes in this controller
+@UseGuards(AuthGuard)
 export class CoursesController {
   constructor(
     private readonly coursesService: CoursesService,
@@ -30,6 +32,7 @@ export class CoursesController {
   ) { }
 
   @Post()
+  @UseGuards(OwnershipGuard)
   @ValidateOwnership({ type: "period", idBody: "periodId" })
   async create(@Body() createCourseDto: CreateCourseDto) {
     return this.coursesService.create(createCourseDto)

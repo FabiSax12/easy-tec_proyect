@@ -1,6 +1,6 @@
-import { Controller, Get, Inject, Query } from "@nestjs/common"
-import { ScheduleService } from "./schedules.service"
-import { Cache } from "cache-manager"
+import {Body, Controller, Get, Inject, Param, Post, Query} from "@nestjs/common"
+import {ScheduleService} from "./schedules.service"
+import {Cache} from "cache-manager"
 
 @Controller("schedules")
 export class SchedulesController {
@@ -23,14 +23,24 @@ export class SchedulesController {
       return cachedData  // Returns cached data
     }
 
-    const data = await this.scheduleService.getSchedule(campus, carrier, period, {
-      email: process.env.TEC_EMAIL,
-      password: process.env.TEC_PASSWORD
-    })
+    const data = await this.scheduleService.getSchedule(campus, carrier, period)
 
     await this.cacheManager.set(cacheKey, data)  // Save in cache
 
     console.log("Returning fresh data")
     return data
+  }
+
+  @Get("availables/:studentId")
+  async findByStudentId(@Param("studentId") studentId: string) {
+    return await this.scheduleService.getScheduleByStudentId(studentId)
+  }
+
+  @Post(":studentId")
+  async findByStudentIdAndCodes(
+      @Param("studentId") studentId: string,
+      @Body() codes: {code: string, campus: {name: string, typeOfGroup: string}[]}[]
+  ) {
+    return await this.scheduleService.getSpecificitiesSchedules(studentId, codes)
   }
 }
