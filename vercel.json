@@ -2,19 +2,23 @@
   "version": 2,
   "builds": [
     {
-      "src": "server/main.ts",
-      "use": "@vercel/node"
+      "src": "apps/server/dist/main.js",
+      "use": "@vercel/node",
+      "config": {
+        "maxDuration": 30
+      }
     }
   ],
   "routes": [
     {
-      "src": "/(.*)",
-      "dest": "/server/main.js"
+      "src": "/api/(.*)",
+      "dest": "/apps/server/dist/main.js",
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ]
     }
-  ],
-  "env": {
-    "DATABASE_URL": "@database_url",
-    "JWT_SECRET": "@jwt_secret",
-    "CLOUDINARY_URL": "@cloudinary_url"
-  }
+  ]
 }
