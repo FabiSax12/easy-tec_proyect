@@ -2,7 +2,7 @@ import { useNavigate, useHref } from "react-router-dom"
 import { Toaster } from "sonner"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
-import { NextUIProvider } from "@heroui/react"
+import { HeroUIProvider } from "@heroui/react"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -17,11 +17,11 @@ export const Providers = (props: { children: React.ReactNode }) => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <NextUIProvider navigate={navigate} useHref={useHref}>
+      <HeroUIProvider navigate={navigate} useHref={useHref}>
         {props.children}
         <ReactQueryDevtools />
         <Toaster richColors closeButton />
-      </NextUIProvider>
+      </HeroUIProvider>
     </QueryClientProvider>
   )
 }
