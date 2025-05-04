@@ -1,5 +1,5 @@
 {
-  "extends": "@easy-tec/typescript-config/base.json",
+  "extends": "@easy-tec/typescript-config/react-library.json",
   "files": [],
   "references": [
     {

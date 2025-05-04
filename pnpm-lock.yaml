@@ -45,6 +45,9 @@ importers:
       '@dnd-kit/utilities':
         specifier: 3.2.2
         version: 3.2.2(react@18.3.1)
+      '@tailwindcss/vite':
+        specifier: ^4.1.5
+        version: 4.1.5(vite@5.4.6(@types/node@22.15.3)(lightningcss@1.29.2)(terser@5.39.0))
       '@tanstack/react-query':
         specifier: ^5.60.5
         version: 5.69.0(react@18.3.1)
@@ -78,10 +81,19 @@ importers:
       sonner:
         specifier: 1.5.0
         version: 1.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      tailwindcss:
+        specifier: ^4.1.5
+        version: 4.1.5
       zustand:
         specifier: ^5.0.1
         version: 5.0.3(@types/react@18.3.3)(react@18.3.1)(use-sync-external-store@1.4.0(react@18.3.1))
     devDependencies:
+      '@easy-tec/eslint-config':
+        specifier: workspace:*
+        version: link:../../packages/eslint-config
+      '@easy-tec/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
       '@types/react':
         specifier: 18.3.3
         version: 18.3.3
@@ -9008,6 +9020,13 @@ snapshots:
       '@tailwindcss/oxide-wasm32-wasi': 4.1.5
       '@tailwindcss/oxide-win32-arm64-msvc': 4.1.5
       '@tailwindcss/oxide-win32-x64-msvc': 4.1.5
+
+  '@tailwindcss/vite@4.1.5(vite@5.4.6(@types/node@22.15.3)(lightningcss@1.29.2)(terser@5.39.0))':
+    dependencies:
+      '@tailwindcss/node': 4.1.5
+      '@tailwindcss/oxide': 4.1.5
+      tailwindcss: 4.1.5
+      vite: 5.4.6(@types/node@22.15.3)(lightningcss@1.29.2)(terser@5.39.0)
 
   '@tailwindcss/vite@4.1.5(vite@6.2.2(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.0))':
     dependencies:
