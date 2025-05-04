@@ -1,9 +1,14 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "./hero.ts";
+@source "../../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}";
+@custom-variant dark (&:is(.dark *));
 
 body {
   @apply bg-default-100;
   @apply p-1;
   @apply sm:p-6;
+}
+
+.grid-cols-0\.5-5 {
+  grid-template-columns: 0.5fr repeat(5, minmax(0, 1fr))
 }

@@ -1,4 +1,5 @@
 {
+  "extends": "@easy-tec/typescript-config/base.json",
   "files": [],
   "references": [
     {
