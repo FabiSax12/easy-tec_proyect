@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common"
 import { CreateTaskDto } from "./dto/create-task.dto"
 import { UpdateTaskDto } from "./dto/update-task.dto"
-import { Task } from "@prisma/client"
-import { PrismaService } from "src/prisma/prisma.service"
+import { Task } from "@easy-tec/db"
+import { PrismaService } from "../prisma/prisma.service"
 
 @Injectable()
 export class TasksService {
@@ -19,7 +19,18 @@ export class TasksService {
 
   async create(createTaskDto: CreateTaskDto): Promise<Task> {
     return this.prismaService.task.create({
-      data: createTaskDto,
+      data: {
+        name: createTaskDto.name,
+        description: createTaskDto.description,
+        endDate: createTaskDto.endDate,
+        percentage: createTaskDto.percentage,
+        course: {
+          connect: { id: createTaskDto.courseId },
+        },
+        user: {
+          connect: { id: createTaskDto.userId },
+        },
+      },
       include: this.courseSelect,
     })
   }
@@ -40,7 +51,18 @@ export class TasksService {
   async update(id: number, updateTaskDto: UpdateTaskDto): Promise<Task> {
     return this.prismaService.task.update({
       where: { id },
-      data: updateTaskDto,
+      data: {
+        name: updateTaskDto.name,
+        description: updateTaskDto.description,
+        endDate: updateTaskDto.endDate,
+        percentage: updateTaskDto.percentage,
+        course: {
+          connect: { id: updateTaskDto.courseId },
+        },
+        user: {
+          connect: { id: updateTaskDto.userId },
+        }
+      },
       include: this.courseSelect,
     })
   }

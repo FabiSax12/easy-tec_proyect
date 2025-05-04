@@ -16,9 +16,9 @@ import {
 import { PeriodsService } from "./periods.service"
 import { CreatePeriodDto } from "./dto/create-period.dto"
 import { UpdatePeriodDto } from "./dto/update-period.dto"
-import { AuthGuard } from "src/shared/guards/auth.guard"
-import { ValidateOwnership } from "src/shared/decorators/validateOwnership.decorator"
-import { AdminGuard } from "src/shared/guards/admin.guard"
+import { AuthGuard } from "../shared/guards/auth.guard"
+import { ValidateOwnership } from "../shared/decorators/validateOwnership.decorator"
+import { AdminGuard } from "../shared/guards/admin.guard"
 
 @Controller("periods")
 export class PeriodsController {

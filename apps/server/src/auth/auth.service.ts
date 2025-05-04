@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common"
 import { JwtService } from "@nestjs/jwt"
-import { User } from "@prisma/client"
+import { User } from "@easy-tec/db"
 import { compareSync } from "bcryptjs"
 import { JwtPayload } from "jsonwebtoken"
 import { UsersService } from "../users/users.service"
@@ -156,8 +156,7 @@ export class AuthService {
       email: user.email,
       name: user.name,
       lastname: user.lastname,
-      avatar: user.avatar,
-      carrier: user.carrier,
+      major: user.majorId,
       verified: user.verified
     }
   }

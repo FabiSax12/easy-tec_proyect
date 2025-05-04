@@ -1,6 +1,6 @@
-import {Body, Controller, Get, Inject, Param, Post, Query} from "@nestjs/common"
-import {ScheduleService} from "./schedules.service"
-import {Cache} from "cache-manager"
+import { Body, Controller, Get, Inject, Param, Post, Query } from "@nestjs/common"
+import { ScheduleService } from "./schedules.service"
+import type { Cache } from "cache-manager"
 
 @Controller("schedules")
 export class SchedulesController {
@@ -38,8 +38,8 @@ export class SchedulesController {
 
   @Post(":studentId")
   async findByStudentIdAndCodes(
-      @Param("studentId") studentId: string,
-      @Body() codes: {code: string, campus: {name: string, typeOfGroup: string}[]}[]
+    @Param("studentId") studentId: string,
+    @Body() codes: { code: string, campus: { name: string, typeOfGroup: string }[] }[]
   ) {
     return await this.scheduleService.getSpecificitiesSchedules(studentId, codes)
   }

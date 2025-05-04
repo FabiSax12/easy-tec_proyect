@@ -1,6 +1,8 @@
+import { CourseState, Prisma } from "@easy-tec/db"
 import { IsNumber, IsString } from "class-validator"
 
-export class CreateCourseDto {
+export class CreateCourseDto implements Prisma.CourseCreateInput {
+
   @IsString()
   name: string
 
@@ -11,14 +13,14 @@ export class CreateCourseDto {
   periodCode: string
 
   @IsString()
-  state: string
+  state: CourseState
 
   @IsString()
-  teacher: string
+  teacherName: string
 
   @IsNumber()
   credits: number
 
   @IsNumber()
-  periodId: number
+  period: Prisma.PeriodCreateNestedOneWithoutCoursesInput
 }

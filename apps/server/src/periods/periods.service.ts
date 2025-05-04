@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common"
 import { CreatePeriodDto } from "./dto/create-period.dto"
 import { UpdatePeriodDto } from "./dto/update-period.dto"
-import { PrismaService } from "src/prisma/prisma.service"
+import { PrismaService } from "../prisma/prisma.service"
 
 @Injectable()
 export class PeriodsService {
@@ -11,13 +11,7 @@ export class PeriodsService {
    * Create a new period with a unique code
    */
   create(data: CreatePeriodDto) {
-    const code = this.generatePeriodCode(data)
-    return this.prisma.period.create({
-      data: {
-        ...data,
-        code
-      }
-    })
+    return this.prisma.period.create({ data })
   }
 
   /**
@@ -47,10 +41,9 @@ export class PeriodsService {
    */
   async update(id: number, data: UpdatePeriodDto) {
     const existingPeriod = await this.findOne(id)  // Validate if the period exists
-    const code = this.generatePeriodCode(data) // Regenerate code if needed
     return this.prisma.period.update({
       where: { id },
-      data: { ...existingPeriod, ...data, code }
+      data: { ...existingPeriod, ...data }
     })
   }
 
@@ -68,19 +61,12 @@ export class PeriodsService {
   findByUser(userId: number) {
     return this.prisma.period.findMany({
       where: {
-        users: {
+        userPeriods: {
           some: {
-            id: userId
+            userId
           }
         }
       }
     })
-  }
-
-  /**
-   * Helper method to generate a period code
-   */
-  private generatePeriodCode(data: CreatePeriodDto | UpdatePeriodDto) {
-    return `${data.type}-${data.number}_${data.year}`
   }
 }
