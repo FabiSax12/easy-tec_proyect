@@ -7,6 +7,7 @@ import { axiosClient } from "@/api/axios.config"
 import { BiSearchAlt } from "react-icons/bi"
 import { ScheduleRow } from "@/interfaces/courses-schedule"
 import { ManualScheduleView } from "@/components/schedule-views/ManualScheduleView"
+import { GroupedSchedulesView } from "@/components/GroupedSchedulesView"
 
 type CarrierOption = typeof carriersOptions[keyof typeof carriersOptions]
 type SubjectOption = typeof subjectsOptions[keyof typeof subjectsOptions]
@@ -54,8 +55,8 @@ export const SchedulesPage = () => {
 
   return (
     <section className="flex flex-col gap-5">
-      <SectionCard className="w-full flex flex-wrap justify-center items-center gap-2">
-        <div className="flex-1 flex flex-wrap justify-evenly gap-2">
+      <SectionCard className="w-full flex flex-col md:flex-row flex-wrap justify-center items-center gap-2">
+        <div className="w-full flex-1 flex flex-wrap justify-evenly gap-2">
           <Select
             label="Sede"
             errorMessage="Debe seleccionar una sede"
@@ -78,7 +79,24 @@ export const SchedulesPage = () => {
             onValueChange={setPeriod}
           />
         </div>
-        <Button onPress={getSchedules} color="primary" isIconOnly endContent={<BiSearchAlt />} />
+
+        <Button
+          onPress={getSchedules}
+          color="primary"
+          isIconOnly
+          startContent={<BiSearchAlt />}
+          className="hidden md:block"
+        />
+
+        <Button
+          onPress={getSchedules}
+          color="primary"
+          startContent={<BiSearchAlt />}
+          className="w-full px-2 md:hidden"
+        >
+          Buscar
+        </Button>
+
         <Switch isSelected={isRowLayout} onValueChange={setIsRowLayout} className="hidden xl:block">
           {isRowLayout ? "Horizontal" : "Vertical"}
         </Switch>
@@ -91,7 +109,15 @@ export const SchedulesPage = () => {
         `}
       >
         <div className="flex-1">
-          <SchedulesTable schedules={schedules} isLoading={isLoading} />
+          <span className="hidden md:block">
+            <SchedulesTable schedules={schedules} isLoading={isLoading} />
+          </span>
+          {/* <span className="md:hidden">
+            <SchedulesCards schedules={schedules} isLoading={isLoading} />
+          </span> */}
+          <span className="md:hidden">
+            <GroupedSchedulesView schedules={schedules} isLoading={isLoading} />
+          </span>
         </div>
         <SectionCard
           className={`

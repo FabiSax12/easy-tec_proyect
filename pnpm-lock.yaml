@@ -45,6 +45,9 @@ importers:
       '@dnd-kit/utilities':
         specifier: 3.2.2
         version: 3.2.2(react@18.3.1)
+      '@easy-tec/db':
+        specifier: workspace:*
+        version: link:../../packages/database
       '@tailwindcss/vite':
         specifier: ^4.1.5
         version: 4.1.5(vite@5.4.6(@types/node@22.15.3)(lightningcss@1.29.2)(terser@5.39.0))
@@ -298,6 +301,9 @@ importers:
         specifier: ^6.7.0
         version: 6.7.0(prisma@6.7.0(typescript@5.8.3))(typescript@5.8.3)
     devDependencies:
+      '@easy-tec/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
       prisma:
         specifier: ^6.7.0
         version: 6.7.0(typescript@5.8.3)
