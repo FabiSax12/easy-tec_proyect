@@ -1,0 +1,67 @@
+{
+  "name": "@easy-tec/ui",
+  "version": "0.1.0",
+  "private": true,
+  "files": [
+    "dist",
+    "./src/index.css"
+  ],
+  "style": "index.css",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "require": "./src/index.ts"
+    },
+    "./heroui": "./src/heroui/index.ts",
+    "./heroui/*": "./src/heroui/*.tsx",
+    "./tailwind-config": {
+      "import": "./tailwind.config.js",
+      "require": "./tailwind.config.js"
+    },
+    "./theme.css": "./src/index.css",
+    "./styles.css": "./dist/styles.css",
+    "./*": {
+      "import": "./src/*",
+      "require": "./src/*"
+    }
+  },
+  "scripts": {
+    "dev": "tailwindcss -i ./src/index.css -o ./dist/styles.css --watch",
+    "build": "tailwindcss -i ./src/index.css -o ./dist/styles.css",
+    "lint": "eslint . --max-warnings 0",
+    "check-types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@easy-tec/eslint-config": "workspace:*",
+    "@easy-tec/typescript-config": "workspace:*",
+    "@types/node": "^22.15.3",
+    "@types/react": "19.1.0",
+    "@types/react-dom": "19.1.1",
+    "eslint": "^9.25.0",
+    "typescript": "5.8.2"
+  },
+  "dependencies": {
+    "@heroui/alert": "^2.2.19",
+    "@heroui/button": "^2.2.19",
+    "@heroui/card": "^2.2.18",
+    "@heroui/chip": "^2.2.15",
+    "@heroui/divider": "^2.2.13",
+    "@heroui/form": "^2.1.18",
+    "@heroui/input": "^2.4.19",
+    "@heroui/modal": "^2.2.16",
+    "@heroui/pagination": "^2.2.17",
+    "@heroui/select": "^2.4.19",
+    "@heroui/spinner": "^2.2.16",
+    "@heroui/switch": "^2.2.17",
+    "@heroui/system": "^2.4.15",
+    "@heroui/table": "^2.2.18",
+    "@heroui/theme": "2.4.16-beta.1",
+    "@heroui/tooltip": "^2.2.16",
+    "@react-types/shared": "^3.29.0",
+    "@tailwindcss/cli": "^4.1.5",
+    "framer-motion": "^12.9.7",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "tailwindcss": "4.1.5"
+  }
+}
