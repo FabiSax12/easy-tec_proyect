@@ -1,10 +1,10 @@
 import { Suspense } from "react"
-import { useParams } from "react-router-dom"
+import { useParams } from "react-router"
 import { SectionCard, Spinner } from "@/shared/components"
 import { CoursesTable } from "@/modules/course/components"
 import { Trello } from "@/modules/task/components"
 import { TasksTable } from "@/modules/task/components/TasksTable"
-import { Tab, Tabs } from "@heroui/react"
+import { Tab, Tabs } from "@easy-tec/ui"
 import { LuKanban, LuTableProperties } from "react-icons/lu"
 
 export const Period = () => {

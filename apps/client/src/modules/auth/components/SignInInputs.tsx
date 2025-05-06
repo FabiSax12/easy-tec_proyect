@@ -1,4 +1,4 @@
-import { Input } from "@heroui/react"
+import { Input } from "@easy-tec/ui"
 
 interface Props {
   formData: { email: string, password: string }

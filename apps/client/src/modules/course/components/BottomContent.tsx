@@ -1,4 +1,4 @@
-import { Pagination } from "@heroui/react"
+import { Pagination } from "@easy-tec/ui"
 
 interface Props {
   hasSearchFilter: boolean;

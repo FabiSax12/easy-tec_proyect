@@ -1,8 +1,8 @@
 import { Suspense } from "react"
-import { Navigate, Outlet, useLocation } from "react-router-dom"
+import { Navigate, Outlet, useLocation } from "react-router"
 import { Sidebar } from "@/shared/components/sidebar"
 import { Header } from "@/shared/components/header"
-import { Spinner } from "@heroui/react"
+import { Spinner } from "@easy-tec/ui"
 
 export function DashboadLayout() {
   const location = useLocation()

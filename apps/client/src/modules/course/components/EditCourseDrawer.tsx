@@ -4,7 +4,7 @@ import { CourseFormFields } from "./CourseFormFields"
 import {
   Button, Drawer, DrawerBody, DrawerContent,
   DrawerFooter, DrawerHeader
-} from "@heroui/react"
+} from "@easy-tec/ui"
 
 import type { Course, CreateCourseDto } from "@/shared/types/entities/Course"
 

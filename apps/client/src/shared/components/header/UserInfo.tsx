@@ -1,9 +1,9 @@
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router"
 import { useAuthStore } from "@/modules/auth/store/auth.store"
 import {
   Button, Dropdown, DropdownItem,
   DropdownMenu, DropdownTrigger, Skeleton, User
-} from "@heroui/react"
+} from "@easy-tec/ui"
 import { IoEllipsisVerticalSharp } from "react-icons/io5"
 import { MdLogout } from "react-icons/md"
 import { useQueryClient } from "@tanstack/react-query"

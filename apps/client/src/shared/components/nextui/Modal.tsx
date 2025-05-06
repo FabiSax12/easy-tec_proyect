@@ -1,4 +1,4 @@
-import { Modal, ModalProps } from "@heroui/react"
+import { Modal, ModalProps } from "@easy-tec/ui"
 
 export const CustomModal = (props: ModalProps) => (
   <Modal

@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom"
+import { Link } from "react-router"
 import { FaArrowUpRightFromSquare } from "react-icons/fa6"
-import { Progress } from "@heroui/react"
+import { Progress } from "@easy-tec/ui"
 import { useQueryClient } from "@tanstack/react-query"
 import { Course } from "@/shared/types/entities/Course"
 import { formatDate } from "@/shared/utils"

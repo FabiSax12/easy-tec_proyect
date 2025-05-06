@@ -1,4 +1,4 @@
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react"
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@easy-tec/ui"
 import { IoEllipsisVerticalSharp } from "react-icons/io5"
 import { MdLogout } from "react-icons/md"
 

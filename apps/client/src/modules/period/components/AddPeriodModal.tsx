@@ -1,11 +1,11 @@
 import { useState, useEffect, ChangeEvent } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router"
 import { useAuthStore } from "@/modules/auth/store/auth.store"
 import { Select, NumberInput } from "@/shared/components"
 import {
   Modal, ModalContent, ModalHeader,
   ModalBody, ModalFooter, Button, Input
-} from "@heroui/react"
+} from "@easy-tec/ui"
 
 const options = [{ label: "Semestre", value: "S" }, { label: "Verano", value: "V" }]
 

@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useParams } from "react-router-dom"
+import { useParams } from "react-router"
 import { useQueryClient } from "@tanstack/react-query"
 import { parseAbsoluteToLocal } from "@internationalized/date"
 import { Course } from "@/shared/types/entities/Course"
@@ -10,7 +10,7 @@ import { useAddTask } from "../hooks/useAddTask"
 import {
   ModalContent, ModalHeader, ModalBody, ModalFooter,
   Input, Button, DatePicker, Textarea, Select, SelectItem,
-} from "@heroui/react"
+} from "@easy-tec/ui"
 
 import type { CreateTaskDto } from "@/shared/types/entities/Task"
 

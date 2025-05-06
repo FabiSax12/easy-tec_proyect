@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { useNavigate, Outlet } from "react-router-dom"
+import { useNavigate, Outlet } from "react-router"
 import { useAuthStore } from "@/modules/auth/store/auth.store"
 
 export const AuthLayout = () => {

@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useParams } from "react-router-dom"
+import { useParams } from "react-router"
 import { toast } from "sonner"
 import { useQuery } from "@tanstack/react-query"
 import {
@@ -12,7 +12,7 @@ import {
   DrawerHeader,
   Input,
   Textarea,
-} from "@heroui/react"
+} from "@easy-tec/ui"
 import { Select } from "@/shared/components"
 import { getUserCoursesByPeriodId } from "@/modules/course/services/courses.service"
 import { useAuthStore } from "@/modules/auth/store/auth.store"

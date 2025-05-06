@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router"
 import { toast } from "sonner"
 import { useQuery } from "@tanstack/react-query"
 import { useOptimisticDelete, usePagination } from "@/shared/hooks"
@@ -14,7 +14,7 @@ import {
   Selection, Spinner, Table,
   TableBody, TableCell, TableColumn,
   TableHeader, TableRow
-} from "@heroui/react"
+} from "@easy-tec/ui"
 
 import type { Course } from "@/shared/types/entities/Course"
 

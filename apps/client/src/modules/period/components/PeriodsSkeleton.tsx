@@ -1,4 +1,4 @@
-import { Skeleton } from "@heroui/react"
+import { Skeleton } from "@easy-tec/ui"
 
 export const PeriodsSkeleton = () => {
   return <div className="flex gap-6 scroll-smooth">

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import type { Course } from "@/shared/types/entities/Course"
-import type { Selection, SortDescriptor } from "@heroui/react"
+import type { Selection, SortDescriptor } from "@easy-tec/ui"
 
 export const useCoursesTable = (courses: Course[] | undefined, initialFilter?: { period?: string; state?: string }) => {
   const [filterValue, setFilterValue] = useState("")

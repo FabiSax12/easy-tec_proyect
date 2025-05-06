@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom"
+import { Routes, Route, Navigate } from "react-router"
 import { DashboadLayout, AuthLayout } from "@/layouts"
 import {
   AuthPage, DashboardPage, NotFound,

@@ -1,3 +1,3 @@
-import { heroui } from "@heroui/react";
+import { heroui } from "@easy-tec/ui";
 
 export default heroui()

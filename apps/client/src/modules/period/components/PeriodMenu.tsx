@@ -1,6 +1,6 @@
 // import { useRouter } from "next/navigation"
 // import { deletePeriod } from "@/actions"
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react"
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@easy-tec/ui"
 import { IoEllipsisVerticalSharp, IoTrashOutline } from "react-icons/io5"
 
 interface Props {

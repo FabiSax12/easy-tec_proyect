@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Input, InputProps } from "@heroui/react"
+import { Input, InputProps } from "@easy-tec/ui"
 import { BsEye, BsEyeSlash } from "react-icons/bs"
 
 export const PasswordInput = (props: InputProps) => {

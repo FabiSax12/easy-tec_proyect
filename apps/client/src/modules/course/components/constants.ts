@@ -1,4 +1,4 @@
-import { ChipProps } from "@heroui/react"
+import { ChipProps } from "@easy-tec/ui"
 
 export const courseInputs = [
   { label: "Nombre", key: "name", type: "text" },

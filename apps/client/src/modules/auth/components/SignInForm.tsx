@@ -1,9 +1,9 @@
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router"
 import { toast } from "sonner"
 import { useAuthStore } from "@/modules/auth/store/auth.store"
 import { SignInInputs } from "@/modules/auth/components"
-import { Button, Link } from "@heroui/react"
+import { Button, Link } from "@easy-tec/ui"
 
 import type { AuthMode } from "@/modules/auth/components"
 import { requestVerificationEmail } from "../services/auth.service"

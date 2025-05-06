@@ -1,5 +1,5 @@
 import { AddPeriodModal } from "@/modules/period/components"
-import { useDisclosure } from "@heroui/react"
+import { useDisclosure } from "@easy-tec/ui"
 import { FaPlus } from "react-icons/fa6"
 
 export const AddPeriodButton = () => {

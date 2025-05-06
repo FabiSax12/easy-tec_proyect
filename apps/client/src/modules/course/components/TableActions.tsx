@@ -1,4 +1,4 @@
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react"
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@easy-tec/ui"
 import { FaPen, FaTrashCan } from "react-icons/fa6"
 import { HiDotsVertical } from "react-icons/hi"
 
