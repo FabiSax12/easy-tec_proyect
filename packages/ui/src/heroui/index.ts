@@ -15,6 +15,17 @@ export * from "@heroui/divider";
 export * from "@heroui/form";
 export * from "@heroui/table";
 export * from "@heroui/switch";
+export * from "@heroui/dropdown";
+export * from "@heroui/image";
+export * from "@heroui/breadcrumbs";
+export * from "@heroui/tabs";
+export * from "@heroui/link";
+export * from "@heroui/skeleton";
+export * from "@heroui/user";
+export * from "@heroui/drawer";
+export * from "@heroui/progress";
+export * from "@heroui/scroll-shadow";
+export * from "@heroui/date-picker";
 
 // Explicitly re-exporting to avoid conflicts
 export type { DOMAttributes, forwardRef, Selection } from "@react-types/shared";
