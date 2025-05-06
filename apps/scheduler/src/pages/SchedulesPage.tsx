@@ -2,12 +2,13 @@ import { useState } from "react"
 import { campusOptions, carriersOptions, periodsOptions, subjectsOptions } from "@/data/schedule-options"
 import { SchedulesTable } from "@/components/SchedulesTable"
 import { SectionCard, ValidatedSelect as Select } from "@/components/ui"
-import { Button, Switch } from "@heroui/react"
+import { Button, Switch } from "@easy-tec/ui"
 import { axiosClient } from "@/api/axios.config"
 import { BiSearchAlt } from "react-icons/bi"
 import { ScheduleRow } from "@/interfaces/courses-schedule"
 import { ManualScheduleView } from "@/components/schedule-views/ManualScheduleView"
 import { GroupedSchedulesView } from "@/components/GroupedSchedulesView"
+import { SchedulesCards } from "@/components/SchedulesCards"
 
 type CarrierOption = typeof carriersOptions[keyof typeof carriersOptions]
 type SubjectOption = typeof subjectsOptions[keyof typeof subjectsOptions]
@@ -56,7 +57,7 @@ export const SchedulesPage = () => {
   return (
     <section className="flex flex-col gap-5">
       <SectionCard className="w-full flex flex-col md:flex-row flex-wrap justify-center items-center gap-2">
-        <div className="w-full flex-1 flex flex-wrap justify-evenly gap-2">
+        <div className="w-xs md:flex-1 flex flex-col md:flex-row md:flex-wrap items-center md:justify-evenly gap-2">
           <Select
             label="Sede"
             errorMessage="Debe seleccionar una sede"
@@ -85,14 +86,14 @@ export const SchedulesPage = () => {
           color="primary"
           isIconOnly
           startContent={<BiSearchAlt />}
-          className="hidden md:block"
+          className="hidden md:inline-flex"
         />
 
         <Button
           onPress={getSchedules}
           color="primary"
           startContent={<BiSearchAlt />}
-          className="w-full px-2 md:hidden"
+          className="w-xs justify-center max-w-sm md:hidden"
         >
           Buscar
         </Button>
@@ -104,21 +105,26 @@ export const SchedulesPage = () => {
 
       <div
         className={`
-          w-full flex flex-col gap-6
+          w-full flex flex-col gap-4
           ${isRowLayout ? "xl:flex-row xl:h-[80vh]" : "xl:flex-col"}
         `}
       >
-        <div className="flex-1">
-          <span className="hidden md:block">
+        <SectionCard
+          className={`
+            flex-1
+            ${isRowLayout ? "overflow-y-scroll" : "h-full"}
+          `}
+        >
+          {/* <span className="hidden md:block">
             <SchedulesTable schedules={schedules} isLoading={isLoading} />
-          </span>
+          </span> */}
           {/* <span className="md:hidden">
             <SchedulesCards schedules={schedules} isLoading={isLoading} />
           </span> */}
-          <span className="md:hidden">
+          <span className="">
             <GroupedSchedulesView schedules={schedules} isLoading={isLoading} />
           </span>
-        </div>
+        </SectionCard>
         <SectionCard
           className={`
             flex-1

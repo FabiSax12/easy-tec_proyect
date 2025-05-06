@@ -8,9 +8,9 @@ import { SchedulesProvider } from "./context/schedule.tsx"
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
-        <SchedulesProvider>
-          <App />
-        </SchedulesProvider>
+      <SchedulesProvider>
+        <App />
+      </SchedulesProvider>
     </BrowserRouter>
   </StrictMode>,
 )

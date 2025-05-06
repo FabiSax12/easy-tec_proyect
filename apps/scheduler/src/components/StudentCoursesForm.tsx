@@ -1,5 +1,5 @@
 import { FormEvent } from "react"
-import { Form, Input, Button } from "@heroui/react"
+import { Form, Input, Button } from "@easy-tec/ui"
 import { IoSearchOutline } from "react-icons/io5"
 
 interface StudentCoursesFormProps {

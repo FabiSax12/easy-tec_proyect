@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { useSchedule } from "@/hooks/useSchedules";
 import { ScheduleRow } from "@/interfaces/courses-schedule";
-// --- Importaciones UI (Asegúrate que sean las correctas para tu proyecto) ---
 import {
   Card,
   CardHeader,
@@ -10,8 +9,7 @@ import {
   Chip,
   Divider,
   Button,
-} from "@heroui/react"; // O tu librería UI
-// --- Importaciones Iconos ---
+} from "@easy-tec/ui";
 import {
   IoLocationOutline,
   IoTimeOutline,
@@ -59,12 +57,9 @@ export const ScheduleGroupCard = ({ groupSchedule }: Props) => {
   ]);
 
   return (
-    // Añadimos un ancho fijo o mínimo para las tarjetas en el carrusel
     <Card
-      isPressable={!isDisabled || isSelected} // Permite presionar si no está deshabilitada o si ya está seleccionada (para deseleccionar)
+      isPressable={!isDisabled || isSelected}
       onPress={handleCardClick}
-      // Define un ancho para las tarjetas dentro del scroll horizontal
-      // Ajusta 'w-72' (288px) o 'w-80' (320px) según tu preferencia
       className={`
         w-72 flex-shrink-0
         transition-opacity duration-200
@@ -76,8 +71,6 @@ export const ScheduleGroupCard = ({ groupSchedule }: Props) => {
       `}
     >
       <CardHeader className="flex gap-3 items-center pb-2">
-        {/* Ya no mostramos el código aquí, se muestra a nivel de curso */}
-        {/* Mostramos el número de grupo de forma prominente */}
         <Chip
           size="sm"
           color={isSelected ? "primary" : "default"}
@@ -85,7 +78,6 @@ export const ScheduleGroupCard = ({ groupSchedule }: Props) => {
         >
           Grupo {groupSchedule.group}
         </Chip>
-        {/* Podrías añadir el tipo de grupo si es relevante */}
         <span className="text-xs text-neutral-500 dark:text-neutral-400">
           ({groupSchedule.typeOfGroup})
         </span>
@@ -135,17 +127,15 @@ export const ScheduleGroupCard = ({ groupSchedule }: Props) => {
             <span>{groupSchedule.classroom}</span>
           </div>
         )}
-        {/* Créditos (Quizás redundante si se muestra a nivel de curso) */}
         {/* <div className="flex items-center gap-2 text-neutral-700 dark:text-neutral-300">
           <IoSchoolOutline className="text-lg" />
           <span>{groupSchedule.credits} Créditos</span>
         </div> */}
       </CardBody>
-      <Divider />
       <CardFooter className="flex justify-end pt-2 pb-2 px-4">
         <Button
           size="sm"
-          isDisabled={isDisabled && !isSelected} // Deshabilitado solo si no se puede seleccionar
+          isDisabled={isDisabled && !isSelected}
           variant={isSelected ? "solid" : "ghost"}
           color="primary"
           onPress={handleCardClick}

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { SectionCard } from "@/components/ui"
-import { Button } from "@heroui/react"
+import { Button } from "@easy-tec/ui"
 import { axiosClient } from "@/api/axios.config.ts"
 import { CourseNameAndCode, SimpleCourseRow, SelectedCourse } from "@/interfaces/courses-schedule.ts"
 import { StudentCoursesForm } from "@/components/StudentCoursesForm"

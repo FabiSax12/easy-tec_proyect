@@ -1,6 +1,6 @@
 import { useSchedule } from "@/hooks/useSchedules"
 import { ScheduleEvent } from "@/interfaces/courses-schedule"
-import { Button, Tooltip } from "@heroui/react"
+import { Button, Tooltip } from "@easy-tec/ui"
 import { useEffect, useState } from "react"
 import { IoLocation, IoPencil, IoPeople, IoTrashBin } from "react-icons/io5"
 import { HexColorPicker } from "react-colorful"

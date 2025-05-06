@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { ScheduleRow } from "@/interfaces/courses-schedule";
 import { CourseGroupCarousel, GroupedCourse } from "./CourseGroupCarousel";
-import { Spinner, Pagination } from "@heroui/react";
+import { Spinner, Pagination } from "@easy-tec/ui";
 
 interface Props {
   schedules: ScheduleRow[];
@@ -73,9 +73,6 @@ export const GroupedSchedulesView = ({ schedules, isLoading }: Props) => {
 
   return (
     <div className="pt-2"> {/* Padding superior */}
-      {currentCourses.map((course) => (
-        <CourseGroupCarousel key={course.code} courseData={course} />
-      ))}
 
       {/* Paginación de Cursos */}
       {totalPages > 1 && (
@@ -91,6 +88,13 @@ export const GroupedSchedulesView = ({ schedules, isLoading }: Props) => {
           />
         </div>
       )}
+
+
+      {currentCourses.map((course) => (
+        <CourseGroupCarousel key={course.code} courseData={course} />
+      ))}
+
+
     </div>
   );
 };

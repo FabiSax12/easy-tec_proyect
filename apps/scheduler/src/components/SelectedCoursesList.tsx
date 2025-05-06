@@ -1,5 +1,5 @@
 import React from "react"
-import { Button, Select, SelectItem } from "@heroui/react"
+import { Button, Select, SelectItem } from "@easy-tec/ui"
 import { IoTrashBin } from "react-icons/io5"
 import { CourseNameAndCode } from "@/interfaces/courses-schedule.ts"
 import { campusOptions } from "@/data/schedule-options"

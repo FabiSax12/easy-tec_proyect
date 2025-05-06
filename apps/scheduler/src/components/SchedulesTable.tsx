@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react"
 import { useSchedule } from "@/hooks/useSchedules"
-import { Pagination, Selection, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react"
+import { Pagination, Selection, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@easy-tec/ui"
 import { ScheduleRow } from "@/interfaces/courses-schedule"
 
 const columns: {

@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
-import { useSchedule } from "@/hooks/useSchedules"; // Reutiliza el mismo hook
-import { Button, Card, CardBody, CardFooter, CardHeader, Chip, Divider, Pagination, Spinner } from "@heroui/react"; // Solo necesitamos Pagination y Spinner
+import { useSchedule } from "@/hooks/useSchedules";
+import { Button, Card, CardBody, CardFooter, CardHeader, Chip, Divider, Pagination, Spinner } from "@easy-tec/ui";
 import { ScheduleRow } from "@/interfaces/courses-schedule";
 import { IoInformationCircleOutline, IoLocationOutline, IoPeopleOutline, IoPersonOutline, IoPricetagOutline, IoSchoolOutline, IoTimeOutline } from "react-icons/io5"
 

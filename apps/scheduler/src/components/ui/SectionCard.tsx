@@ -1,4 +1,4 @@
-import { Spinner } from "@heroui/react"
+import { Card, CardBody, CardHeader, Spinner } from "@easy-tec/ui"
 import { ReactNode, Suspense } from "react"
 
 interface Props {
@@ -9,8 +9,17 @@ interface Props {
 }
 
 export const SectionCard = ({ title, children, className, centerTitle = false }: Props) => {
+  // return <Card className={className} >
+  //   <CardHeader className={`w-min ${centerTitle && "mx-auto"}`}>
+  //     {title}
+  //   </CardHeader>
+  //   <CardBody>
+  //     {children}
+  //   </CardBody>
+  // </Card>
+
   return (
-    <section className={`bg-white px-6 py-2 rounded-lg ${className}`}>
+    <section className={`bg-content1 px-6 py-2 rounded-lg ${className}`}>
       {
         title && <header className={`w-min ${centerTitle && "mx-auto"}`}>
           <h3 className='text-xl mb-4'>{title}</h3>

@@ -1,5 +1,5 @@
 import { useRef } from "react"
-import { Button, ButtonGroup, Tooltip } from "@heroui/react"
+import { Button, ButtonGroup, Tooltip } from "@easy-tec/ui"
 import { ScheduleEvent } from "@/interfaces/courses-schedule.ts"
 import { SimpleCourseRow } from "@/interfaces/courses-schedule.ts"
 import { IoIosDownload } from "react-icons/io"

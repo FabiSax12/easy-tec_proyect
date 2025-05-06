@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes, useHref, useNavigate } from "react-router"
-import { Alert, HeroUIProvider } from "@heroui/react"
+import { HeroUIProvider, Alert } from "@easy-tec/ui"
 import { SchedulesPage } from "@/pages/SchedulesPage"
 import { AutoSchedulesPage } from "@/pages/AutoSchedulesPage"
 import { CustomNavLink } from "@/components/ui/CustomNavLink.tsx"
@@ -12,7 +12,7 @@ function App() {
   }
 
   return (
-    <HeroUIProvider navigate={navigate} useHref={useHref}>
+    <HeroUIProvider navigate={navigate} useHref={useHref} >
       <>
         <Alert
           isClosable

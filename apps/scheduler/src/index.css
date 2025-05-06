@@ -1,10 +1,10 @@
 @import "tailwindcss";
-@plugin "./hero.ts";
-@source "../../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}";
+@import "@easy-tec/ui/theme.css";
+@source "../../../node_modules/@heroui/theme/dist/*.{js,ts,jsx,tsx}";
 @custom-variant dark (&:is(.dark *));
 
 body {
-  @apply bg-default-100;
+  @apply bg-content3;
   @apply p-1;
   @apply sm:p-6;
 }
