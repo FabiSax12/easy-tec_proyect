@@ -2,7 +2,7 @@ import { useState } from "react"
 import { campusOptions, carriersOptions, periodsOptions, subjectsOptions } from "@/data/schedule-options"
 import { SchedulesTable } from "@/components/SchedulesTable"
 import { SectionCard, ValidatedSelect as Select } from "@/components/ui"
-import { Button, Switch } from "@easy-tec/ui"
+import { Button, Card, Switch } from "@easy-tec/ui"
 import { axiosClient } from "@/api/axios.config"
 import { BiSearchAlt } from "react-icons/bi"
 import { ScheduleRow } from "@/interfaces/courses-schedule"
@@ -55,7 +55,7 @@ export const SchedulesPage = () => {
   }
 
   return (
-    <section className="flex flex-col gap-5">
+    <section className="flex flex-col gap-5 xl:h-full">
       <SectionCard className="w-full flex flex-col md:flex-row flex-wrap justify-center items-center gap-2">
         <div className="w-xs md:flex-1 flex flex-col md:flex-row md:flex-wrap items-center md:justify-evenly gap-2">
           <Select
@@ -105,14 +105,14 @@ export const SchedulesPage = () => {
 
       <div
         className={`
-          w-full flex flex-col gap-4
-          ${isRowLayout ? "xl:flex-row xl:h-[80vh]" : "xl:flex-col"}
+          w-full flex flex-col gap-4 flex-1
+          ${isRowLayout ? "xl:flex-row xl:h-full" : "xl:flex-col"}
         `}
       >
-        <SectionCard
+        <Card
           className={`
-            flex-1
-            ${isRowLayout ? "overflow-y-scroll" : "h-full"}
+            flex-1 px-1 rounded-2xl
+            ${isRowLayout ? "h-[1000px]" : ""}
           `}
         >
           {/* <span className="hidden md:block">
@@ -121,14 +121,12 @@ export const SchedulesPage = () => {
           {/* <span className="md:hidden">
             <SchedulesCards schedules={schedules} isLoading={isLoading} />
           </span> */}
-          <span className="">
-            <GroupedSchedulesView schedules={schedules} isLoading={isLoading} />
-          </span>
-        </SectionCard>
+          <GroupedSchedulesView schedules={schedules} isLoading={isLoading} />
+        </Card>
         <SectionCard
           className={`
-            flex-1
-            ${isRowLayout ? "overflow-y-scroll" : "h-full sm:px-10 md:px-20 lg:px-32 xl:px-56"}
+            flex-1/3
+            ${isRowLayout ? "" : "h-full sm:px-10 md:px-20 lg:px-32 xl:px-56"}
           `}
         >
           <ManualScheduleView />

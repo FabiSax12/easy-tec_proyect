@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { ScheduleRow } from "@/interfaces/courses-schedule";
 import { CourseGroupCarousel, GroupedCourse } from "./CourseGroupCarousel";
-import { Spinner, Pagination } from "@easy-tec/ui";
+import { Spinner, Pagination, ScrollShadow } from "@easy-tec/ui";
 
 interface Props {
   schedules: ScheduleRow[];
@@ -19,18 +19,17 @@ const groupSchedulesByCourse = (schedules: ScheduleRow[]): GroupedCourse[] => {
       acc[schedule.code] = {
         code: schedule.code,
         subject: schedule.subject,
-        credits: schedule.credits, // Asume que créditos y tipo son iguales para todos los grupos del mismo curso
+        credits: schedule.credits,
         typeOfSubject: schedule.typeOfSubject,
         groups: [],
       };
     }
-    // Ordenar grupos por número al insertarlos (opcional pero recomendado)
     acc[schedule.code].groups.push(schedule);
     acc[schedule.code].groups.sort((a, b) => a.group - b.group);
     return acc;
   }, {} as Record<string, GroupedCourse>);
 
-  // Convertir el objeto agrupado en un array y ordenarlo por código (opcional)
+  // Convertir el objeto agrupado en un array y ordenarlo por código
   return Object.values(grouped).sort((a, b) => a.code.localeCompare(b.code));
 };
 
@@ -41,10 +40,8 @@ export const GroupedSchedulesView = ({ schedules, isLoading }: Props) => {
     [schedules]
   );
 
-  // --- Paginación (Opcional, basada en cursos) ---
-  // Decide si quieres paginar la lista de cursos
   const [page, setPage] = useState(1);
-  const coursesPerPage = 5; // ¿Cuántos cursos mostrar por página? Ajusta según necesites
+  const coursesPerPage = 5;
   const totalCourses = groupedCourses.length;
   const totalPages = Math.ceil(totalCourses / coursesPerPage);
 
@@ -72,11 +69,11 @@ export const GroupedSchedulesView = ({ schedules, isLoading }: Props) => {
   }
 
   return (
-    <div className="pt-2"> {/* Padding superior */}
+    <div className="flex flex-col h-full">
 
       {/* Paginación de Cursos */}
       {totalPages > 1 && (
-        <div className="flex w-full justify-center py-4 px-2">
+        <div className="sticky top-0 z-10 flex w-full justify-center py-4">
           <Pagination
             isCompact
             showControls
@@ -89,12 +86,13 @@ export const GroupedSchedulesView = ({ schedules, isLoading }: Props) => {
         </div>
       )}
 
-
-      {currentCourses.map((course) => (
-        <CourseGroupCarousel key={course.code} courseData={course} />
-      ))}
-
-
+      {/* Carruseles con Sombra de Scroll */}
+      <ScrollShadow size={50} offset={0}>
+        {currentCourses.map((course) => (
+          <CourseGroupCarousel key={course.code} courseData={course} />
+        ))}
+      </ScrollShadow>
     </div>
+
   );
 };

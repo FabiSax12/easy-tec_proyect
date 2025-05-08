@@ -15,6 +15,7 @@ export function MainLayout() {
     <HeroUIProvider
       navigate={(to: To, options?: NavigateOptions) => navigateHook(to, options)}
       useHref={(to: To) => hrefHook(to)}
+      className="bg-content3 p-1 sm:p-6"
     >
       <SchedulesProvider>
         <Alert
@@ -30,12 +31,17 @@ export function MainLayout() {
           <p>Se recomienda validar siempre los horarios mostrados aquí con el gestor de horarios oficial. Esta herramienta está diseñada únicamente para facilitar la construcción de su horario.</p>
           <p>Si encuentra algún error, por favor, comuníquelo a la siguiente dirección de correo electrónico: <a href="mailto:f.vargas.1@estudiantec.cr">f.vargas.1@estudiantec.cr</a>. Gracias :)</p>
         </Alert>
-
-        <div className="mb-4 flex gap-2">
-          <CustomNavLink to={"/manual"}>Manual</CustomNavLink>
-          <CustomNavLink to={"/auto"}>Automático</CustomNavLink>
+        <div className="h-full flex flex-col">
+          {/* Heading */}
+          <div className="mb-4 flex gap-2">
+            <CustomNavLink to={"/manual"}>Manual</CustomNavLink>
+            <CustomNavLink to={"/auto"}>Automático</CustomNavLink>
+          </div>
+          {/* Content */}
+          <div className="flex-1">
+            <Outlet />
+          </div>
         </div>
-        <Outlet />
       </SchedulesProvider>
     </HeroUIProvider>
   );
