@@ -26,6 +26,12 @@ interface SelectedCoursesListProps {
   onRemoveCampus: (courseIndex: number, campusIndex: number) => void;
 }
 
+const courseModalitiesOptions = [
+  { name: "Regular", value: "Regular" },
+  { name: "Semipresencial", value: "Semipresencial" },
+  { name: "Virtual", value: "Virtual" }
+]
+
 export const SelectedCoursesList: React.FC<SelectedCoursesListProps> = ({
   isLoading,
   availableCourses,
@@ -38,9 +44,9 @@ export const SelectedCoursesList: React.FC<SelectedCoursesListProps> = ({
   onRemoveCampus,
 }) => {
   return (
-    <div className="flex flex-col gap-2 w-full">
+    <div className="flex flex-col gap-12 md:gap4 w-full">
       {selectedCourses.map((course, courseIndex) => (
-        <div key={courseIndex} className="grid grid-cols-2 items-start gap-6">
+        <div key={courseIndex} className="grid grid-cols-1 md:grid-cols-2 items-start gap-6">
           <div className="flex gap-6">
             <Button
               startContent={<IoTrashBin />}
@@ -55,9 +61,10 @@ export const SelectedCoursesList: React.FC<SelectedCoursesListProps> = ({
               selectedKeys={[course.code]}
               onChange={(e) => onUpdateCourseCode(courseIndex, e.target.value)}
               isLoading={isLoading}
+              className="flex-grow"
             >
               {availableCourses.map((course) => (
-                <SelectItem key={course.code} value={course.code}>
+                <SelectItem key={course.code}>
                   {course.name}
                 </SelectItem>
               ))}
@@ -65,15 +72,16 @@ export const SelectedCoursesList: React.FC<SelectedCoursesListProps> = ({
           </div>
           <div className="w-full">
             {course.campus.map((campus, campusIndex) => (
-              <div key={campusIndex} className="flex gap-2 mb-4">
+              <div key={campusIndex} className="flex flex-row md:flex-row gap-2 mb-4">
                 <Select
                   placeholder="Campus"
                   size="sm"
                   selectedKeys={[campus.name]}
                   onChange={(e) => onUpdateCampus(courseIndex, campusIndex, "name", e.target.value)}
+                  className="md:flex-1"
                 >
                   {campusOptions.map((option) => (
-                    <SelectItem key={option.fullName} value={option.fullName}>
+                    <SelectItem key={option.fullName}>
                       {option.name}
                     </SelectItem>
                   ))}
@@ -83,16 +91,15 @@ export const SelectedCoursesList: React.FC<SelectedCoursesListProps> = ({
                   size="sm"
                   selectedKeys={[campus.typeOfGroup]}
                   onChange={(e) => onUpdateCampus(courseIndex, campusIndex, "typeOfGroup", e.target.value)}
+                  className="md:flex-1"
                 >
-                  <SelectItem key="Regular" value="Regular">
-                    Regular
-                  </SelectItem>
-                  <SelectItem key="Semipresencial" value="Semipresencial">
-                    Semipresencial
-                  </SelectItem>
-                  <SelectItem key="Virtual" value="Virtual">
-                    Virtual
-                  </SelectItem>
+                  {
+                    courseModalitiesOptions.map(modalitie => (
+                      <SelectItem key={modalitie.value}>
+                        {modalitie.name}
+                      </SelectItem>
+                    ))
+                  }
                 </Select>
                 <Button
                   startContent={<IoTrashBin />}
@@ -100,6 +107,7 @@ export const SelectedCoursesList: React.FC<SelectedCoursesListProps> = ({
                   color="danger"
                   isIconOnly
                   onPress={() => onRemoveCampus(courseIndex, campusIndex)}
+                  className="self-end md:self-center"
                 />
               </div>
             ))}

@@ -88,7 +88,7 @@ export const AutoSchedulesPage = () => {
 	}
 
 	return (
-		<div className="grid grid-cols-2 gap-4">
+		<div className="flex flex-col md:grid md:grid-cols-2 gap-4">
 			<SectionCard className="flex flex-col flex-wrap gap-2">
 				<StudentCoursesForm onSubmit={getStudentAvailableCourses} isLoading={isLoading} />
 				<SelectedCoursesList
