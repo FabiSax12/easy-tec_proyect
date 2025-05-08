@@ -15,7 +15,6 @@ export const ManualScheduleView = () => {
 
   const days = useMemo(() => ["Lun", "Mar", "Mie", "Jue", "Vie"], [])
 
-
   const events = useMemo(() => {
     const newEvents: ScheduleEvent[] = []
 
@@ -42,7 +41,7 @@ export const ManualScheduleView = () => {
 
   const handleDownloadImage = async () => {
     if (scheduleRef.current) {
-      await toPng(scheduleRef.current, { width: 1200, height: 800 })
+      await toPng(scheduleRef.current)
         .then((dataUrl) => {
           const link = document.createElement("a")
           link.download = "horario.png"

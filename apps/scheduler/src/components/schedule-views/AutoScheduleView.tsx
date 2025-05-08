@@ -45,7 +45,7 @@ export const AutoScheduleView: React.FC<AutoScheduleViewProps> = ({
 
   const handleDownloadImage = async () => {
     if (scheduleRef.current) {
-      await toPng(scheduleRef.current, { width: 1200, height: 800 })
+      await toPng(scheduleRef.current)
         .then((dataUrl) => {
           const link = document.createElement("a")
           link.download = "horario.png"
