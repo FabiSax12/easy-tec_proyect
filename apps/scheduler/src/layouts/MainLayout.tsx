@@ -46,10 +46,6 @@ export function MainLayout() {
         </Alert>
         <div className="h-full flex flex-col">
           {/* Heading */}
-          {/* <div className="mb-4 flex gap-2">
-            <CustomNavLink to={"/manual"}>Manual</CustomNavLink>
-            <CustomNavLink to={"/auto"}>Automático</CustomNavLink>
-          </div> */}
           <div className="flex justify-between items-center mb-4">
             <Tabs size="lg" classNames={{ panel: "hidden" }} selectedKey={location.pathname}>
               <Tab key="/manual" href="/manual">Manual</Tab>

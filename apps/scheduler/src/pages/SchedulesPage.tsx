@@ -1,14 +1,12 @@
 import { useState } from "react"
 import { campusOptions, carriersOptions, periodsOptions, subjectsOptions } from "@/data/schedule-options"
-import { SchedulesTable } from "@/components/SchedulesTable"
-import { SectionCard, ValidatedSelect as Select } from "@/components/ui"
+import { ValidatedSelect as Select } from "@/components/ui"
 import { Button, Card, CardBody, Switch } from "@easy-tec/ui"
 import { axiosClient } from "@/api/axios.config"
 import { BiSearchAlt } from "react-icons/bi"
 import { ScheduleRow } from "@/interfaces/courses-schedule"
 import { ManualScheduleView } from "@/components/schedule-views/ManualScheduleView"
 import { GroupedSchedulesView } from "@/components/GroupedSchedulesView"
-import { SchedulesCards } from "@/components/SchedulesCards"
 
 type CarrierOption = typeof carriersOptions[keyof typeof carriersOptions]
 type SubjectOption = typeof subjectsOptions[keyof typeof subjectsOptions]
