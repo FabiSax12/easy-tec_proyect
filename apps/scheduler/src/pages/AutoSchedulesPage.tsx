@@ -1,18 +1,20 @@
 import { useState } from "react"
-import { SectionCard } from "@/components/ui"
-import { Button, Card, CardBody } from "@easy-tec/ui"
+import { Button, Card, CardBody, Form } from "@easy-tec/ui"
 import { axiosClient } from "@/api/axios.config.ts"
 import { CourseNameAndCode, SimpleCourseRow, SelectedCourse } from "@/interfaces/courses-schedule.ts"
 import { StudentCoursesForm } from "@/components/StudentCoursesForm"
 import { SelectedCoursesList } from "@/components/SelectedCoursesList"
 import { AutoScheduleView } from "@/components/schedule-views/AutoScheduleView"
 import { generateCombinations } from "@/utils/get-schdule-combinations"
+import { AxiosError } from "axios"
 
 export const AutoSchedulesPage = () => {
 	const [studentId, setStudentId] = useState<string | null>(null)
 	const [availableCourses, setAvailableCourses] = useState<CourseNameAndCode[]>([])
 	const [isLoading, setIsLoading] = useState(false)
-	const [selectedCourses, setSelectedCourses] = useState<SelectedCourse[]>([])
+	const [isGenerating, setIsGenerating] = useState(false)
+	const [errors, setErrors] = useState<string[]>([])
+	const [selectedCourses, setSelectedCourses] = useState<SelectedCourse[]>([{ code: "", campus: [] }])
 	const [scheduleCombinations, setScheduleCombinations] = useState<SimpleCourseRow[][]>([])
 	const [currentCombination, setCurrentCombination] = useState(0)
 
@@ -63,20 +65,48 @@ export const AutoSchedulesPage = () => {
 		setSelectedCourses(updatedCourses)
 	}
 
-	const generateSchedules = async () => {
-		const response = await axiosClient.post(`/api/schedules/${studentId}`, selectedCourses)
-		const data = response.data as SimpleCourseRow[]
+	const generateSchedules = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault()
+		setErrors([])
 
-		const coursesGroupedByCode = data.reduce((acc, course) => {
-			if (!acc[course.code]) acc[course.code] = []
-			acc[course.code].push(course)
-			return acc
-		}, {} as Record<string, SimpleCourseRow[]>)
+		if (selectedCourses.some((course) => course.code === "" || course.campus.some((c) => c.name === "" || c.typeOfGroup === ""))) {
+			setErrors(["Por favor, completa todos los campos de los cursos seleccionados."])
+			return
+		}
 
-		const combinations: SimpleCourseRow[][] = []
-		generateCombinations(coursesGroupedByCode, 0, [], combinations)
-		setScheduleCombinations(combinations)
-		setCurrentCombination(0)
+		try {
+			setIsGenerating(true)
+			setScheduleCombinations([])
+			const response = await axiosClient.post(`/api/schedules/${studentId}`, selectedCourses)
+			const data = response.data as SimpleCourseRow[]
+
+			console.log("Horarios generados:", data)
+
+			if (data.length === 0) {
+				setErrors(["No se encontraron horarios disponibles para los cursos seleccionados."])
+				return
+			}
+
+			const coursesGroupedByCode = data.reduce((acc, course) => {
+				if (!acc[course.code]) acc[course.code] = []
+				acc[course.code].push(course)
+				return acc
+			}, {} as Record<string, SimpleCourseRow[]>)
+
+			const combinations: SimpleCourseRow[][] = []
+			generateCombinations(coursesGroupedByCode, 0, [], combinations)
+			setScheduleCombinations(combinations)
+			setCurrentCombination(0)
+		} catch (error) {
+			console.error(error)
+			if (error instanceof AxiosError) {
+				setErrors([error.response?.data.message || "Error al generar los horarios."])
+			} else {
+				setErrors(["Error al generar los horarios."])
+			}
+		} finally {
+			setIsGenerating(false)
+		}
 	}
 
 	const handlePrev = () => {
@@ -88,29 +118,39 @@ export const AutoSchedulesPage = () => {
 	}
 
 	return (
-		<div className="flex flex-col md:grid md:grid-cols-5 gap-4">
-			<Card className="col-span-2">
+		<div className="flex flex-col xl:grid xl:grid-cols-2 gap-4">
+			<Card className="col-span-1">
 				<CardBody className="flex flex-col flex-wrap gap-2">
 					<StudentCoursesForm onSubmit={getStudentAvailableCourses} isLoading={isLoading} />
-					<SelectedCoursesList
-						isLoading={isLoading}
-						availableCourses={availableCourses}
-						selectedCourses={selectedCourses}
-						onAddCourse={addCourseRow}
-						onUpdateCourseCode={updateCourseCode}
-						onRemoveCourse={removeCourseRow}
-						onAddCampus={addCampusRow}
-						onUpdateCampus={updateCourseCampus}
-						onRemoveCampus={removeCampusRow}
-					/>
-					<Button color="success" variant="flat" onPress={generateSchedules}>
-						Generar Horarios
-					</Button>
+					<Form onSubmit={generateSchedules} validationBehavior="native">
+						<SelectedCoursesList
+							isLoading={isLoading}
+							availableCourses={availableCourses}
+							selectedCourses={selectedCourses}
+							onAddCourse={addCourseRow}
+							onUpdateCourseCode={updateCourseCode}
+							onRemoveCourse={removeCourseRow}
+							onAddCampus={addCampusRow}
+							onUpdateCampus={updateCourseCampus}
+							onRemoveCampus={removeCampusRow}
+						/>
+						<Button isLoading={isGenerating} color="success" variant="flat" type="submit" fullWidth>
+							{isGenerating ? "Generando..." : "Generar horarios"}
+						</Button>
+						{errors.length > 0 && (
+							<div className="text-red-500">
+								{errors.map((error, index) => (
+									<p key={index}>{error}</p>
+								))}
+							</div>
+						)}
+					</Form>
 				</CardBody>
 			</Card>
-			<Card className="col-span-3">
+			<Card className="col-span-1">
 				<CardBody className="flex flex-col justify-center items-center flex-1 relative">
 					<AutoScheduleView
+						isGenerating={isGenerating}
 						scheduleCombinations={scheduleCombinations}
 						currentCombination={currentCombination}
 						onPrev={handlePrev}

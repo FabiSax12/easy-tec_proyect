@@ -27,6 +27,7 @@ export * from "@heroui/drawer";
 export * from "@heroui/progress";
 export * from "@heroui/scroll-shadow";
 export * from "@heroui/date-picker";
+export * from "@heroui/autocomplete";
 
 // Explicitly re-exporting to avoid conflicts
 export type { DOMAttributes, forwardRef, Selection } from "@react-types/shared";

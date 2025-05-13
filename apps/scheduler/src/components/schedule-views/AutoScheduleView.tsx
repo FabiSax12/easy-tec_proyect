@@ -14,6 +14,7 @@ interface AutoScheduleViewProps {
   currentCombination: number;
   onPrev: () => void;
   onNext: () => void;
+  isGenerating?: boolean;
 }
 
 export const AutoScheduleView: React.FC<AutoScheduleViewProps> = ({
@@ -21,6 +22,7 @@ export const AutoScheduleView: React.FC<AutoScheduleViewProps> = ({
   currentCombination,
   onPrev,
   onNext,
+  isGenerating = false,
 }) => {
 
   const { setSelectedSubjects } = useSchedule()
@@ -37,7 +39,6 @@ export const AutoScheduleView: React.FC<AutoScheduleViewProps> = ({
         start: schedule.start,
         end: schedule.end,
         group: course.group,
-        color: course.color,
       })
     })
     return eventsPerCourse
@@ -59,8 +60,10 @@ export const AutoScheduleView: React.FC<AutoScheduleViewProps> = ({
   }
 
   const handleSaveSchedule = () => {
-    setSelectedSubjects(scheduleCombinations[currentCombination])
+    // setSelectedSubjects(scheduleCombinations[currentCombination])
   }
+
+  console.log("scheduleCombinations", scheduleCombinations)
 
   return (
     <div className="w-full flex flex-col items-center">
@@ -71,7 +74,12 @@ export const AutoScheduleView: React.FC<AutoScheduleViewProps> = ({
         </ButtonGroup>
 
         <p>
-          {scheduleCombinations.length > 0 ? `Combinación ${currentCombination + 1} de ${scheduleCombinations.length}` : "No hay horarios disponibles"}
+          {isGenerating
+            ? "Generando horarios..."
+            : scheduleCombinations.length > 0
+              ? `Combinación ${currentCombination + 1} de ${scheduleCombinations.length}`
+              : "No hay horarios disponibles"
+          }
         </p>
         <div className="text-right mb-4 gap-4 flex justify-end">
           <Tooltip content="Descargar" placement="bottom">

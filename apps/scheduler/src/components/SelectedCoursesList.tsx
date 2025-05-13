@@ -1,5 +1,5 @@
 import React from "react"
-import { Button, Select, SelectItem } from "@easy-tec/ui"
+import { Autocomplete, AutocompleteItem, Button, Select, SelectItem } from "@easy-tec/ui"
 import { IoTrashBin } from "react-icons/io5"
 import { CourseNameAndCode } from "@/interfaces/courses-schedule.ts"
 import { campusOptions } from "@/data/schedule-options"
@@ -55,25 +55,33 @@ export const SelectedCoursesList: React.FC<SelectedCoursesListProps> = ({
               size="sm"
               isIconOnly
             />
-            <Select
-              placeholder="Select Course"
+            <Autocomplete
+              isRequired
+              placeholder="Seleccionar Curso"
               size="sm"
-              selectedKeys={[course.code]}
-              onChange={(e) => onUpdateCourseCode(courseIndex, e.target.value)}
+              selectedKey={course.code}
+              onSelectionChange={(value) => onUpdateCourseCode(courseIndex, value?.toString() || "")}
               isLoading={isLoading}
               className="flex-grow"
+              listboxProps={{
+                emptyContent: "Primero busca con tu carnet"
+              }}
+              validate={(value) => {
+                if (!value || value === "") return "Selecciona un curso"
+              }}
             >
               {availableCourses.map((course) => (
-                <SelectItem key={course.code}>
+                <AutocompleteItem key={course.code}>
                   {course.name}
-                </SelectItem>
+                </AutocompleteItem>
               ))}
-            </Select>
+            </Autocomplete>
           </div>
           <div className="w-full">
             {course.campus.map((campus, campusIndex) => (
               <div key={campusIndex} className="flex flex-row md:flex-row gap-2 mb-4">
                 <Select
+                  isRequired
                   placeholder="Campus"
                   size="sm"
                   selectedKeys={[campus.name]}
@@ -87,6 +95,7 @@ export const SelectedCoursesList: React.FC<SelectedCoursesListProps> = ({
                   ))}
                 </Select>
                 <Select
+                  isRequired
                   placeholder="Tipo de grupo"
                   size="sm"
                   selectedKeys={[campus.typeOfGroup]}
@@ -111,7 +120,13 @@ export const SelectedCoursesList: React.FC<SelectedCoursesListProps> = ({
                 />
               </div>
             ))}
-            <Button onPress={() => onAddCampus(courseIndex)} fullWidth size="sm" variant="bordered">
+            <Button
+              fullWidth
+              isDisabled={!course.code || course.code === "" || course.campus.some(c => c.name === "" || c.typeOfGroup === "")}
+              onPress={() => onAddCampus(courseIndex)}
+              size="sm"
+              variant="bordered"
+            >
               Añadir Sede
             </Button>
           </div>
