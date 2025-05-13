@@ -11,6 +11,7 @@ export const StudentCoursesForm: React.FC<StudentCoursesFormProps> = ({ onSubmit
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const formData = Object.fromEntries(new FormData(e.currentTarget))
+    localStorage.setItem("studentId", formData.studentId as string)
     onSubmit(formData.studentId as string)
   }
 
@@ -20,6 +21,7 @@ export const StudentCoursesForm: React.FC<StudentCoursesFormProps> = ({ onSubmit
         name="studentId"
         label="Carnet"
         labelPlacement="outside-left"
+        defaultValue={localStorage.getItem("studentId") || ""}
         variant="bordered"
         isRequired
         errorMessage="Introduce un carnet válido"

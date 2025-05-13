@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button, Card, CardBody, Form } from "@easy-tec/ui"
 import { axiosClient } from "@/api/axios.config.ts"
 import { CourseNameAndCode, SimpleCourseRow, SelectedCourse } from "@/interfaces/courses-schedule.ts"
@@ -18,15 +18,28 @@ export const AutoSchedulesPage = () => {
 	const [scheduleCombinations, setScheduleCombinations] = useState<SimpleCourseRow[][]>([])
 	const [currentCombination, setCurrentCombination] = useState(0)
 
+	useEffect(() => {
+		const storedAvailableCourses = localStorage.getItem("availableCourses")
+
+		if (storedAvailableCourses) {
+			const parsedCourses = JSON.parse(storedAvailableCourses) as CourseNameAndCode[]
+			setAvailableCourses(parsedCourses)
+		}
+	}, [])
+
 	const getStudentAvailableCourses = async (studentId: string) => {
 		setStudentId(studentId)
 		try {
 			setIsLoading(true)
 			const response = await axiosClient.get(`api/schedules/availables/${studentId}`)
 			const data = response.data as CourseNameAndCode[]
+			localStorage.setItem("studentId", studentId)
+			localStorage.setItem("availableCourses", JSON.stringify(data))
 			setAvailableCourses(data.sort((a, b) => a.name.localeCompare(b.name)))
 		} catch (e) {
 			console.error(e)
+			setAvailableCourses([])
+			localStorage.removeItem("availableCourses")
 			throw e
 		} finally {
 			setIsLoading(false)

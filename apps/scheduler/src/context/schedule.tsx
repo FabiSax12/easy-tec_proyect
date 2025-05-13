@@ -1,4 +1,4 @@
-import { createContext, useState, useCallback, useMemo, useEffect } from "react"
+import { createContext, useState, useCallback, useMemo } from "react"
 import { ScheduleRow } from "@/interfaces/courses-schedule"
 
 interface ScheduleContextProps {
@@ -19,10 +19,6 @@ const SchedulesProvider = ({ children }: { children: React.ReactNode }) => {
     if (!saved) return new Map()
     return new Map(JSON.parse(saved).map((subject: ScheduleRow) => [subject.id, subject]))
   })
-
-  useEffect(() => {
-    console.log("Selected subjects", selectedSubjects)
-  }, [selectedSubjects])
 
   const addSubject = useCallback((subject: ScheduleRow) => {
     setSelectedSubjects((prev) => new Map(prev.set(subject.id, subject)))

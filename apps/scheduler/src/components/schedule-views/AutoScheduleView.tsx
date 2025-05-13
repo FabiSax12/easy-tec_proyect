@@ -83,8 +83,6 @@ export const AutoScheduleView: React.FC<AutoScheduleViewProps> = ({
     // setSelectedSubjects(scheduleCombinations[currentCombination])
   }
 
-  console.log("scheduleCombinations", scheduleCombinations)
-
   return (
     <div className="w-full flex flex-col items-center">
       <div className="flex justify-between items-center w-full mb-4">
@@ -111,7 +109,7 @@ export const AutoScheduleView: React.FC<AutoScheduleViewProps> = ({
               onPress={handleDownloadImage}
             />
           </Tooltip>
-          <Tooltip content="Seleccionar" placement="bottom">
+          {/* <Tooltip content="Seleccionar" placement="bottom">
             <Button
               isIconOnly
               startContent={<LuCheckCheck size={20} />}
@@ -119,7 +117,7 @@ export const AutoScheduleView: React.FC<AutoScheduleViewProps> = ({
               size="md"
               onPress={handleSaveSchedule}
             />
-          </Tooltip>
+          </Tooltip> */}
         </div>
       </div>
       <div className="max-w-full overflow-auto">
