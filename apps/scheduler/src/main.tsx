@@ -24,6 +24,9 @@ const router = createBrowserRouter([
         Component: AutoSchedulesPage
       },
       {
+        path: "/editar-horario"
+      },
+      {
         path: "*",
         element: <Navigate to="/manual" replace />
       }

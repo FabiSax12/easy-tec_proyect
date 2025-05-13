@@ -13,6 +13,7 @@ export const ManualScheduleView = () => {
   const { selectedSubjects, clearSubjects } = useSchedule()
   const scheduleRef = useRef<HTMLDivElement>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isClearSchedulesModalOpen, setIsClearSchedulesModalOpen] = useState(false)
   const [scheduleTheme, setScheduleTheme] = useState<"light" | "dark" | undefined>(undefined)
 
   const days = useMemo(() => ["Lun", "Mar", "Mie", "Jue", "Vie"], [])
@@ -62,6 +63,8 @@ export const ManualScheduleView = () => {
 
   const toggleScheduleTheme = () => setScheduleTheme(prev => prev === "light" ? "dark" : prev === "dark" ? undefined : "light")
 
+  const showClearSubjectsModal = () => setIsClearSchedulesModalOpen(true)
+
   return (
     <div className="w-full">
       <div className="text-right mb-4 gap-4 flex justify-end">
@@ -104,7 +107,7 @@ export const ManualScheduleView = () => {
 
         <Tooltip content="Limpiar" placement="bottom">
           <Button
-            onPress={clearSubjects}
+            onPress={showClearSubjectsModal}
             color="danger"
             size="md"
             startContent={<LuRotateCcw size={20} />}
@@ -124,6 +127,31 @@ export const ManualScheduleView = () => {
             <ScheduleView theme={scheduleTheme} events={events} eventsEditable eventsDeleteable={false} />
           </ModalBody>
           <ModalFooter></ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <Modal isOpen={isClearSchedulesModalOpen} size="sm">
+        <ModalContent>
+          <ModalHeader>Limpiar cursos</ModalHeader>
+          <ModalBody>
+            ¿Seguro que deseas eliminar todos los cursos seleccionados?
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              onPress={() => {
+                clearSubjects()
+                setIsClearSchedulesModalOpen(false)
+              }}
+              color="danger"
+              size="md"
+              className="mr-2"
+            >
+              Aceptar
+            </Button>
+            <Button onPress={() => setIsClearSchedulesModalOpen(false)} color="default" size="md">
+              Cancelar
+            </Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </div>
