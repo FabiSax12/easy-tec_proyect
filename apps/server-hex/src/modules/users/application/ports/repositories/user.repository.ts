@@ -71,4 +71,12 @@ export abstract class UserRepository {
    * @returns A Promise resolving to true if the task belongs to the user, false otherwise.
    */
   abstract isUserTask(userId: number, taskId: number): Promise<boolean>;
+
+  /**
+   * Verifies a user by their unique identifier.
+   * This might involve updating the user's status or sending a verification email.
+   * @param userId - The ID of the user to verify.
+   * @returns A Promise that resolves when the user is verified.
+   */
+  abstract verify(userId: number): Promise<void>;
 }
