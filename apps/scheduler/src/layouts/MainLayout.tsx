@@ -1,6 +1,6 @@
 import { CustomNavLink } from "@/components/ui/CustomNavLink";
 import { SchedulesProvider } from "@/context/schedule";
-import { Alert, Button, HeroUIProvider, Tab, Tabs } from "@easy-tec/ui";
+import { Alert, Button, HeroUIProvider, Tab, Tabs, useTheme } from "@easy-tec/ui";
 import { useState } from "react";
 import { IoSunny, IoMoon } from "react-icons/io5";
 import { NavigateOptions, Outlet, To, useHref, useLocation, useNavigate } from "react-router";
@@ -10,7 +10,9 @@ export function MainLayout() {
   const hrefHook = useHref;
   const location = useLocation()
 
-  const [theme, setTheme] = useState<"light" | "dark">(localStorage.getItem("theme") === "dark" ? "dark" : "light")
+  const { theme, setTheme } = useTheme()
+
+  // const [theme, setTheme] = useState<"light" | "dark">(localStorage.getItem("theme") === "dark" ? "dark" : "light")
 
   const handleHideAlert = () => {
     localStorage.setItem("hideAlert", "true")
@@ -26,7 +28,7 @@ export function MainLayout() {
     <HeroUIProvider
       navigate={(to: To, options?: NavigateOptions) => navigateHook(to, options)}
       useHref={(to: To) => hrefHook(to)}
-      className={`${theme} bg-content3 p-1 sm:p-6`}
+      className={`bg-content3 p-1 sm:p-6`}
     >
       <SchedulesProvider>
         <Alert

@@ -2,7 +2,7 @@ import { useState } from "react"
 import { campusOptions, carriersOptions, periodsOptions, subjectsOptions } from "@/data/schedule-options"
 import { SchedulesTable } from "@/components/SchedulesTable"
 import { SectionCard, ValidatedSelect as Select } from "@/components/ui"
-import { Button, Card, Switch } from "@easy-tec/ui"
+import { Button, Card, CardBody, Switch } from "@easy-tec/ui"
 import { axiosClient } from "@/api/axios.config"
 import { BiSearchAlt } from "react-icons/bi"
 import { ScheduleRow } from "@/interfaces/courses-schedule"
@@ -56,52 +56,54 @@ export const SchedulesPage = () => {
 
   return (
     <section className="flex flex-col gap-5 xl:h-full">
-      <SectionCard className="w-full flex flex-col md:flex-row flex-wrap justify-center items-center gap-2">
-        <div className="w-xs md:flex-1 flex flex-col md:flex-row md:flex-wrap items-center md:justify-evenly gap-2">
-          <Select
-            label="Sede"
-            errorMessage="Debe seleccionar una sede"
-            options={campusOptions.map((campus) => ({ key: campus.code, label: campus.name }))}
-            size="sm"
-            onValueChange={setCampus}
-          />
-          <Select
-            label="Escuela"
-            errorMessage="Debe seleccionar una escuela"
-            options={schoolsOptions()}
-            size="sm"
-            onValueChange={setCarrier}
-          />
-          <Select
-            label="Periodo Académico"
-            errorMessage="Debe seleccionar un periodo académico"
-            options={periodsOptions.map((period) => ({ key: period.code, label: period.name }))}
-            size="sm"
-            onValueChange={setPeriod}
-          />
-        </div>
+      <Card fullWidth>
+        <CardBody className=" flex flex-col md:flex-row flex-wrap justify-center items-center gap-2">
+          <div className="w-xs md:flex-1 flex flex-col md:flex-row md:flex-wrap items-center md:justify-evenly gap-2">
+            <Select
+              label="Sede"
+              errorMessage="Debe seleccionar una sede"
+              options={campusOptions.map((campus) => ({ key: campus.code, label: campus.name }))}
+              size="sm"
+              onValueChange={setCampus}
+            />
+            <Select
+              label="Escuela"
+              errorMessage="Debe seleccionar una escuela"
+              options={schoolsOptions()}
+              size="sm"
+              onValueChange={setCarrier}
+            />
+            <Select
+              label="Periodo Académico"
+              errorMessage="Debe seleccionar un periodo académico"
+              options={periodsOptions.map((period) => ({ key: period.code, label: period.name }))}
+              size="sm"
+              onValueChange={setPeriod}
+            />
+          </div>
 
-        <Button
-          onPress={getSchedules}
-          color="primary"
-          isIconOnly
-          startContent={<BiSearchAlt />}
-          className="hidden md:inline-flex"
-        />
+          <Button
+            onPress={getSchedules}
+            color="primary"
+            isIconOnly
+            startContent={<BiSearchAlt />}
+            className="hidden md:inline-flex"
+          />
 
-        <Button
-          onPress={getSchedules}
-          color="primary"
-          startContent={<BiSearchAlt />}
-          className="w-xs justify-center max-w-sm md:hidden"
-        >
-          Buscar
-        </Button>
+          <Button
+            onPress={getSchedules}
+            color="primary"
+            startContent={<BiSearchAlt />}
+            className="w-xs justify-center max-w-sm md:hidden"
+          >
+            Buscar
+          </Button>
 
-        <Switch isSelected={isRowLayout} color="default" onValueChange={setIsRowLayout} className="hidden xl:block">
-          {isRowLayout ? "Horizontal" : "Vertical"}
-        </Switch>
-      </SectionCard>
+          <Switch isSelected={isRowLayout} color="default" onValueChange={setIsRowLayout} className="hidden xl:block">
+            {isRowLayout ? "Horizontal" : "Vertical"}
+          </Switch>
+        </CardBody>
+      </Card>
 
       <div
         className={`
@@ -123,14 +125,16 @@ export const SchedulesPage = () => {
           </span> */}
           <GroupedSchedulesView schedules={schedules} isLoading={isLoading} />
         </Card>
-        <SectionCard
+        <Card
           className={`
             flex-1/3
             ${isRowLayout ? "" : "h-full sm:px-10 md:px-20 lg:px-32 xl:px-56"}
           `}
         >
-          <ManualScheduleView />
-        </SectionCard>
+          <CardBody>
+            <ManualScheduleView />
+          </CardBody>
+        </Card>
       </div>
     </section >
   )

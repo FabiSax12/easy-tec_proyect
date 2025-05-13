@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { SectionCard } from "@/components/ui"
-import { Button } from "@easy-tec/ui"
+import { Button, Card, CardBody } from "@easy-tec/ui"
 import { axiosClient } from "@/api/axios.config.ts"
 import { CourseNameAndCode, SimpleCourseRow, SelectedCourse } from "@/interfaces/courses-schedule.ts"
 import { StudentCoursesForm } from "@/components/StudentCoursesForm"
@@ -88,32 +88,36 @@ export const AutoSchedulesPage = () => {
 	}
 
 	return (
-		<div className="flex flex-col md:grid md:grid-cols-2 gap-4">
-			<SectionCard className="flex flex-col flex-wrap gap-2">
-				<StudentCoursesForm onSubmit={getStudentAvailableCourses} isLoading={isLoading} />
-				<SelectedCoursesList
-					isLoading={isLoading}
-					availableCourses={availableCourses}
-					selectedCourses={selectedCourses}
-					onAddCourse={addCourseRow}
-					onUpdateCourseCode={updateCourseCode}
-					onRemoveCourse={removeCourseRow}
-					onAddCampus={addCampusRow}
-					onUpdateCampus={updateCourseCampus}
-					onRemoveCampus={removeCampusRow}
-				/>
-				<Button color="success" variant="flat" onPress={generateSchedules}>
-					Generar Horarios
-				</Button>
-			</SectionCard>
-			<SectionCard className="flex flex-col justify-center items-center flex-1 relative">
-				<AutoScheduleView
-					scheduleCombinations={scheduleCombinations}
-					currentCombination={currentCombination}
-					onPrev={handlePrev}
-					onNext={handleNext}
-				/>
-			</SectionCard>
+		<div className="flex flex-col md:grid md:grid-cols-5 gap-4">
+			<Card className="col-span-2">
+				<CardBody className="flex flex-col flex-wrap gap-2">
+					<StudentCoursesForm onSubmit={getStudentAvailableCourses} isLoading={isLoading} />
+					<SelectedCoursesList
+						isLoading={isLoading}
+						availableCourses={availableCourses}
+						selectedCourses={selectedCourses}
+						onAddCourse={addCourseRow}
+						onUpdateCourseCode={updateCourseCode}
+						onRemoveCourse={removeCourseRow}
+						onAddCampus={addCampusRow}
+						onUpdateCampus={updateCourseCampus}
+						onRemoveCampus={removeCampusRow}
+					/>
+					<Button color="success" variant="flat" onPress={generateSchedules}>
+						Generar Horarios
+					</Button>
+				</CardBody>
+			</Card>
+			<Card className="col-span-3">
+				<CardBody className="flex flex-col justify-center items-center flex-1 relative">
+					<AutoScheduleView
+						scheduleCombinations={scheduleCombinations}
+						currentCombination={currentCombination}
+						onPrev={handlePrev}
+						onNext={handleNext}
+					/>
+				</CardBody>
+			</Card>
 		</div>
 	)
 }
