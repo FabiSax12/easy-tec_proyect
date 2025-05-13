@@ -6,14 +6,14 @@ import { Email } from '@/modules/users/domain/value-objects/email.vo';
  * This is a primary port (repository interface) in the Application layer of the Users module.
  * It abstracts the underlying database technology.
  */
-export interface UserRepository {
+export abstract class UserRepository {
 
   /**
    * Finds a User by their unique identifier.
    * @param id - The ID of the user to find.
    * @returns A Promise resolving to the User entity or null if not found.
    */
-  findById(id: number): Promise<User | null>;
+  abstract findById(id: number): Promise<User | null>;
 
   /**
    * Finds a User by their email address.
@@ -21,13 +21,13 @@ export interface UserRepository {
    * // If using Email VO:  findByEmail(email: Email): Promise<User | null>;
    * @returns A Promise resolving to the User entity or null if not found.
    */
-  findByEmail(email: Email): Promise<User | null>;
+  abstract findByEmail(email: Email): Promise<User | null>;
 
   /**
    * Finds all Users in the system.
    * @returns A Promise resolving to an array of User entities.
    */
-  findAll(): Promise<User[]>;
+  abstract findAll(): Promise<User[]>;
 
   /**
    * Saves or updates a User entity.
@@ -35,7 +35,7 @@ export interface UserRepository {
    * @param user - The User entity to save.
    * @returns A Promise resolving to the saved User entity.
    */
-  save(user: User): Promise<User>;
+  abstract save(user: User): Promise<User>;
 
   /**
    * Deletes a User by their unique identifier.
@@ -43,7 +43,7 @@ export interface UserRepository {
    * @returns A Promise that resolves when the user is deleted.
    * @throws SomePersistenceException (or similar) if deletion fails.
    */
-  delete(id: number): Promise<void>;
+  abstract delete(id: number): Promise<void>;
 
   /**
    * Checks if a user is associated with a specific period.
@@ -52,7 +52,7 @@ export interface UserRepository {
    * @param periodId - The ID of the period.
    * @returns A Promise resolving to true if the user is in the period, false otherwise.
    */
-  isUserPeriod(userId: number, periodId: number): Promise<boolean>;
+  abstract isUserPeriod(userId: number, periodId: number): Promise<boolean>;
 
   /**
    * Checks if a user is associated with a specific course through their period enrollment.
@@ -62,7 +62,7 @@ export interface UserRepository {
    * @param courseId - The ID of the course.
    * @returns A Promise resolving to true if the user is associated with the course, false otherwise.
    */
-  isUserCourse(userId: number, courseId: number): Promise<boolean>;
+  abstract isUserCourse(userId: number, courseId: number): Promise<boolean>;
 
   /**
    * Checks if a specific task belongs to a user.
@@ -70,5 +70,5 @@ export interface UserRepository {
    * @param taskId - The ID of the task.
    * @returns A Promise resolving to true if the task belongs to the user, false otherwise.
    */
-  isUserTask(userId: number, taskId: number): Promise<boolean>;
+  abstract isUserTask(userId: number, taskId: number): Promise<boolean>;
 }

@@ -1,5 +1,7 @@
 import { Major } from '@/core/domain/entities/Major';
 import { Role } from '@/core/domain/entities/Role';
+import { Email } from '../value-objects/email.vo';
+import { Password } from '../value-objects/password.vo';
 
 /**
  * Represents a user in the system.
@@ -15,14 +17,12 @@ export class User {
   /**
    * The user's email address (should be unique).
    */
-  // Si usas Value Objects, podría ser: public email: Email;
-  public email: string;
+  public email: Email;
 
   /**
    * The user's password (should be hashed).
    */
-  // Si usas Value Objects, podría ser: public password: Password;
-  public password: string;
+  public password: Password;
 
   /**
    * The user's first name.
@@ -81,8 +81,8 @@ export class User {
    */
   constructor(props: {
     id: number;
-    email: string;
-    password: string;
+    email: Email;
+    password: Password;
     name: string;
     lastname: string;
     majorId: number | null;
@@ -119,11 +119,11 @@ export class User {
    * @returns A new User entity instance.
    */
   static createNew(props: {
-    email: string; // Consider Email Value Object
-    password: string; // Consider Password Value Object (hashed)
+    email: Email;
+    password: Password;
     name: string;
     lastname: string;
-    majorId?: number | null; // Make optional in createNew
+    majorId?: number | null;
     roleId: number;
   }): User {
     // Realizar validaciones de negocio básicas si no se usan Value Objects extensivamente
@@ -150,3 +150,4 @@ export class User {
       createdAt: new Date(), // Default value
     });
   }
+}

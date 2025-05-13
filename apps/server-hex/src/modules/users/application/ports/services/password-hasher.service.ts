@@ -1,3 +1,4 @@
+import { Password } from '@/modules/users/domain/value-objects/password.vo';
 import { Injectable } from '@nestjs/common';
 
 /**
@@ -11,7 +12,7 @@ export abstract class IPasswordHasher {
    * @param password - The raw password string to hash.
    * @returns A Promise resolving to the hashed password string.
    */
-  abstract hash(password: string): Promise<string>;
+  abstract hash(password: string): Promise<Password>;
 
   /**
    * Verifies a raw password string against a hashed password string.

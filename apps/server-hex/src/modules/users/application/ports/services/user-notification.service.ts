@@ -1,3 +1,4 @@
+import { Email } from '@/modules/users/domain/value-objects/email.vo';
 import { Injectable } from '@nestjs/common';
 
 /**
@@ -14,7 +15,7 @@ export abstract class UserNotificationService {
    * @returns A Promise that resolves when the notification is sent (or queued).
    * @throws SomeNotificationException (or similar) if sending fails.
    */
-  abstract sendWelcomeNotification(email: string, name?: string): Promise<void>;
+  abstract sendWelcomeNotification(email: Email, name?: string): Promise<void>;
 
   /**
    * Sends a password reset notification to a user.
@@ -22,5 +23,5 @@ export abstract class UserNotificationService {
    * @param resetLink - The unique link for resetting the password.
    * @returns A Promise that resolves when the notification is sent.
    */
-  abstract sendPasswordResetNotification(email: string, resetLink: string): Promise<void>;
+  abstract sendPasswordResetNotification(email: Email, resetLink: string): Promise<void>;
 }
