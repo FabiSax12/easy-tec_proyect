@@ -16,23 +16,24 @@ interface Props {
 export const CoursesScheduleEvent = ({ event, style, isDeleteable, isEditable }: Props) => {
   const { removeSubject, setSubjectColor } = useSchedule()
   const [isColorPickerOpen, setIsColorPickerOpen] = useState(false)
-  const [color, setColor] = useState<string>(event.color || "#006fee")
+  const [color, setColor] = useState<string | undefined>(event.color)
 
   useEffect(() => {
-    setColor(event.color || "#006fee")
+    setColor(event.color)
+    console.log(event.color, style)
   }, [event.color])
 
   const handleSaveColor = () => {
     setIsColorPickerOpen(false)
-    setSubjectColor(event.id, color)
+    setSubjectColor(event.id, color || "#006fee")
   }
 
   return (
     <div
-      className={"absolute text-primary-foreground text-xs p-2 rounded-md shadow-md transition-transform group bg-primary z-10"}
+      className={"absolute text-primary-foreground text-xs p-2 rounded-md shadow-md transition-transform group z-10"}
       style={{
         ...style,
-        backgroundColor: color
+        backgroundColor: color ? color : style.backgroundColor
       }}
     >
       <p className="font-semibold line-clamp-3">{event.title}</p>
