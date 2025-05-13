@@ -1,5 +1,6 @@
 export * from "@heroui/system";
 export * from "@heroui/theme";
+export * from "@heroui/use-theme"
 
 export * from "@heroui/button";
 export * from "@heroui/chip";
