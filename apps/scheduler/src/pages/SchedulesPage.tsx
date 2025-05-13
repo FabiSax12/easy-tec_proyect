@@ -98,7 +98,7 @@ export const SchedulesPage = () => {
           Buscar
         </Button>
 
-        <Switch isSelected={isRowLayout} onValueChange={setIsRowLayout} className="hidden xl:block">
+        <Switch isSelected={isRowLayout} color="default" onValueChange={setIsRowLayout} className="hidden xl:block">
           {isRowLayout ? "Horizontal" : "Vertical"}
         </Switch>
       </SectionCard>

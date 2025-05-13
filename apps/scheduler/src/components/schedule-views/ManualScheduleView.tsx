@@ -5,13 +5,15 @@ import { ScheduleEvent } from "@/interfaces/courses-schedule"
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Tooltip } from "@easy-tec/ui"
 import { ScheduleView } from "./ScheduleView"
 import { IoIosDownload } from "react-icons/io"
-import { IoPencil } from "react-icons/io5"
+import { IoMoon, IoPencil, IoSunny } from "react-icons/io5"
 import { LuRotateCcw } from "react-icons/lu"
+import { GrSync } from "react-icons/gr"
 
 export const ManualScheduleView = () => {
   const { selectedSubjects, clearSubjects } = useSchedule()
   const scheduleRef = useRef<HTMLDivElement>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [scheduleTheme, setScheduleTheme] = useState<"light" | "dark" | undefined>(undefined)
 
   const days = useMemo(() => ["Lun", "Mar", "Mie", "Jue", "Vie"], [])
 
@@ -58,9 +60,27 @@ export const ManualScheduleView = () => {
     setIsModalOpen(true)
   }
 
+  const toggleScheduleTheme = () => setScheduleTheme(prev => prev === "light" ? "dark" : prev === "dark" ? undefined : "light")
+
   return (
     <div className="w-full">
       <div className="text-right mb-4 gap-4 flex justify-end">
+
+        <Tooltip content="Tema" placement="bottom">
+          <Button
+            onPress={toggleScheduleTheme}
+            color="default"
+            size="md"
+            startContent={
+              scheduleTheme == "light"
+                ? <IoSunny size={20} />
+                : scheduleTheme == "dark"
+                  ? <IoMoon size={20} />
+                  : <GrSync size={20} />
+            }
+            isIconOnly
+          />
+        </Tooltip>
 
         <Tooltip content="Editar" placement="bottom">
           <Button
@@ -94,14 +114,14 @@ export const ManualScheduleView = () => {
       </div>
 
       <div className="max-w-full overflow-auto">
-        <ScheduleView ref={scheduleRef} events={events} eventsDeleteable={false} />
+        <ScheduleView theme={scheduleTheme} ref={scheduleRef} events={events} eventsDeleteable={false} />
       </div>
 
-      <Modal isOpen={isModalOpen} size="5xl" onClose={() => setIsModalOpen(false)} scrollBehavior="inside" isDismissable={false}>
+      <Modal className={scheduleTheme} isOpen={isModalOpen} size="5xl" onClose={() => setIsModalOpen(false)} scrollBehavior="inside" isDismissable={false}>
         <ModalContent>
           <ModalHeader></ModalHeader>
           <ModalBody>
-            <ScheduleView events={events} eventsEditable eventsDeleteable={false} />
+            <ScheduleView theme={scheduleTheme} events={events} eventsEditable eventsDeleteable={false} />
           </ModalBody>
           <ModalFooter></ModalFooter>
         </ModalContent>

@@ -6,18 +6,19 @@ import { CoursesScheduleEvent } from "../CoursesScheduleEvent"
 import { ScheduleHeader } from "../ScheduleHeader"
 
 interface Props {
+  theme?: "light" | "dark"
   events: ScheduleEvent[]
   eventsDeleteable?: boolean
   eventsEditable?: boolean
 }
 
-export const ScheduleView = forwardRef(({ events, eventsDeleteable = true, eventsEditable = false }: Props, ref: React.Ref<HTMLDivElement>) => {
+export const ScheduleView = forwardRef(({ events, eventsDeleteable = true, eventsEditable = false, theme }: Props, ref: React.Ref<HTMLDivElement>) => {
   const hours = useMemo(() => Array.from({ length: HOURS_COUNT }, (_, i) => `${HOURS_START + i}:00`), [])
   const days = useMemo(() => ["Lun", "Mar", "Mie", "Jue", "Vie"], [])
 
   return <div
     ref={ref}
-    className="grid grid-cols-0.5-5 col1text-sm h-[850px] w-[900px] rounded-lg border border-divider bg-content1 shadow-lg"
+    className={`${theme} grid grid-cols-0.5-5 col1text-sm h-[850px] w-[900px] rounded-lg border border-divider bg-content1 shadow-lg`}
     style={{
       height: CELL_HEIGHT * (HOURS_COUNT + 1),
     }}

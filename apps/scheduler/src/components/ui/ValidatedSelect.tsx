@@ -47,8 +47,7 @@ export const ValidatedSelect = (props: Props) => {
     <SelectUI
       variant="bordered"
       className="max-w-xs"
-      errorMessage={isValid || !touched ? "" : errorMessage
-      }
+      errorMessage={isValid || !touched ? "" : errorMessage}
       isInvalid={isValid || !touched ? false : true}
       selectedKeys={currentSelection}
       onSelectionChange={setValue}
@@ -57,7 +56,7 @@ export const ValidatedSelect = (props: Props) => {
     >
       {
         options.map((option) => (
-          <SelectItem key={option.key} >
+          <SelectItem key={option.key} className="text-foreground">
             {option.label}
           </SelectItem>
         ))
