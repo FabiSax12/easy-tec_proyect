@@ -12,7 +12,7 @@ export interface CreateUserUseCaseInput {
   name: string;
   lastname: string;
   majorId?: number | null;
-  roleId: number;
+  // roleId: number;
 }
 
 /**
@@ -51,7 +51,6 @@ export class CreateUserUseCase {
       name: input.name,
       lastname: input.lastname,
       majorId: input.majorId,
-      roleId: input.roleId,
     });
 
     const createdUser = await this.userRepository.save(newUser);

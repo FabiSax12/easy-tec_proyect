@@ -87,7 +87,7 @@ export class User {
     lastname: string;
     majorId: number | null;
     verified: boolean;
-    roleId: number;
+    roleId?: number;
     createdAt: Date;
     major?: Major;
     role?: Role;
@@ -124,7 +124,6 @@ export class User {
     name: string;
     lastname: string;
     majorId?: number | null;
-    roleId: number;
   }): User {
     // Realizar validaciones de negocio básicas si no se usan Value Objects extensivamente
     if (!props.email || !props.password || !props.name || !props.lastname) {
@@ -146,7 +145,7 @@ export class User {
       lastname: props.lastname,
       majorId: props.majorId ?? null, // Ensure it's null if not provided
       verified: false, // Default value
-      roleId: props.roleId,
+      roleId: 1,
       createdAt: new Date(), // Default value
     });
   }
