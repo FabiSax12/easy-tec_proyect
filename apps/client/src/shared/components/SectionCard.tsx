@@ -1,4 +1,4 @@
-import { Spinner } from "@nextui-org/react"
+import { Spinner } from "@easy-tec/ui"
 import { ReactNode, Suspense } from "react"
 
 interface Props {

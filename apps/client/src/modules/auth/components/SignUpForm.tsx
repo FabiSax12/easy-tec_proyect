@@ -1,11 +1,11 @@
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router"
 import { toast } from "sonner"
 import { useAuthStore } from "@/modules/auth/store/auth.store"
 import { SignUpInputs } from "@/modules/auth/components"
 import { validateInputs } from "@/modules/auth/utils/validate-inputs"
 import { requestVerificationEmail } from "../services/auth.service"
-import { Button, Link } from "@nextui-org/react"
+import { Button, Link } from "@easy-tec/ui"
 
 import type { AuthMode, FormData } from "@/modules/auth/components"
 
@@ -42,19 +42,17 @@ export const SignUpForm = ({ setSelected }: Props) => {
     toast.promise(signup(data), {
       loading: "Creando cuenta...",
       success: async (createdUser) => {
-        await requestVerificationEmail(createdUser.email).then((res) => {
-          if (res.ok) {
+        requestVerificationEmail(createdUser.email)
+          .then(() => {
             toast.success("Email de verificación enviado")
             navigate("/auth/created-account")
-          } else {
-            toast.error("Error al enviar email de verificación", {
-              action: {
-                label: "Reintentar",
-                onClick: () => requestVerificationEmail(createdUser.email),
-              },
-            })
-          }
-        })
+          })
+          .catch(() => toast.error("Error al enviar email de verificación", {
+            action: {
+              label: "Reintentar",
+              onClick: () => requestVerificationEmail(createdUser.email),
+            },
+          }))
         return "Cuenta creada correctamente"
       },
       error: "Error al crear cuenta",

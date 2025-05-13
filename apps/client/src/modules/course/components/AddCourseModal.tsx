@@ -6,7 +6,7 @@ import { CourseFormFields } from "./CourseFormFields"
 import {
   Modal, ModalContent, ModalHeader,
   ModalBody, ModalFooter, Button,
-} from "@nextui-org/react"
+} from "@easy-tec/ui"
 
 import type { Course, CreateCourseDto } from "@/shared/types/entities/Course"
 

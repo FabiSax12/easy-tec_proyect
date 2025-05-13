@@ -4,7 +4,7 @@ import { SortableContext } from "@dnd-kit/sortable"
 import { DndContext, DragOverlay } from "@dnd-kit/core"
 import { useTaskDnD } from "@/modules/task/hooks/useTaskDnD"
 import { TrelloColumn, TaskCard, AddTaskModal } from "@/modules/task/components"
-import { ScrollShadow } from "@nextui-org/react"
+import { ScrollShadow } from "@easy-tec/ui"
 
 interface Props {
   period: string

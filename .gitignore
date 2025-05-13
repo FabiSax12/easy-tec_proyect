@@ -5,6 +5,7 @@ planner.md
 
 # dependencies
 /node_modules
+**/node_modules
 /.pnp
 .pnp.js
 .yarn/install-state.gz
@@ -19,6 +20,7 @@ planner.md
 
 # production
 /build
+**/dist
 
 # misc
 .DS_Store
@@ -49,3 +51,5 @@ cookies.json
 
 # todo
 todo.md
+
+.turbo

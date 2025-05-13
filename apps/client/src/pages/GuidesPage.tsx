@@ -1,6 +1,6 @@
-import { Link as RouterLink } from "react-router-dom"
+import { Link as RouterLink } from "react-router"
 import { guidesCards } from "@/modules/guides/data/guides-cards"
-import { Card, CardBody, CardHeader, Chip } from "@nextui-org/react"
+import { Card, CardBody, CardHeader, Chip } from "@easy-tec/ui"
 
 export const GuidesPage = () => {
 

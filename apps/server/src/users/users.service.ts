@@ -1,7 +1,7 @@
 import { ConflictException, Injectable } from "@nestjs/common"
 import { CreateUserDto } from "./dto/create-user.dto"
 import { UpdateUserDto } from "./dto/update-user.dto"
-import { PrismaService } from "src/prisma/prisma.service"
+import { PrismaService } from "../prisma/prisma.service"
 import { hashSync } from "bcryptjs"
 
 @Injectable()
@@ -49,7 +49,7 @@ export class UsersService {
     const period = await this.prismaService.user.findUnique({
       where: {
         id: userId,
-        periods: {
+        userPeriods: {
           some: {
             id: periodId
           }
@@ -65,7 +65,7 @@ export class UsersService {
       where: {
         id: courseId,
         period: {
-          users: {
+          userPeriods: {
             some: {
               id: userId
             }
@@ -78,11 +78,13 @@ export class UsersService {
   }
 
   isUserTask(userId: number, taskId: number) {
-    return this.prismaService.task.findFirst({
+    const task = this.prismaService.task.findFirst({
       where: {
         id: taskId,
         userId
       }
     })
+
+    return !!task
   }
 }

@@ -1,5 +1,5 @@
 import { useMemo, useState, useCallback, useEffect } from "react"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router"
 
 interface Props<T extends string> {
   searchParam: string

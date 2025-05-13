@@ -5,7 +5,7 @@ import { CustomModal } from "@/shared/components/nextui/Modal"
 import { periodToString } from "@/shared/utils"
 import { useAuthStore } from "@/modules/auth/store/auth.store"
 import { deleteUserPeriod, getPeriodsByUserId } from "../services/periods.service"
-import { Alert, Button, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/react"
+import { Alert, Button, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@easy-tec/ui"
 import { useOptimisticMutation } from "@/shared/hooks/useOptimisticMutation"
 import { Select } from "@/shared/components/nextui/Select"
 import { Course } from "@/shared/types/entities/Course"
@@ -39,7 +39,7 @@ export const RemovePeriodModal = (props: Props) => {
 
   const removePeriodToUserMutation = useOptimisticMutation<Period, Error, { userId: number, periodId: number }>({
     mutationKey: ["periods", user?.id],
-    mutationFn: (data) => deleteUserPeriod(data.userId, data.periodId),
+    mutationFn: (data) => deleteUserPeriod(data.periodId),
     onMutateOptimistic: ({ periodId }, previousPeriods) => {
 
       queryClient.setQueryData<Course[]>(

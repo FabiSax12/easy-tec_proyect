@@ -1,4 +1,5 @@
 {
+  // "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "target": "ES2020",
     "useDefineForClassFields": true,
@@ -24,7 +25,10 @@
     "paths": {
       "@/*": [
         "./src/*"
-      ]
+      ],
+      "@easy-tec/shared/*": [
+        "../../packages/shared/*"
+      ],
     }
   },
   "include": [

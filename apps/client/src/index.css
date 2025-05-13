@@ -1,10 +1,28 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+/* @plugin "./hero.ts"; */
+@import "@easy-tec/ui/theme.css";
+@source "../../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}";
+@custom-variant dark (&:is(.dark *));
 
 /* body {
   @apply bg-default-100;
 } */
+
+@theme {
+  --color-light: #f4f4f4;
+  --color-gray: #6a737b;
+}
+
+@layer utilities {
+  .gradient-radial {
+    background: radial-gradient(var(--tw-gradient-stops));
+  }
+
+  .gradient-conic {
+    background: conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops));
+  }
+}
+
 
 hr {
   @apply border-default

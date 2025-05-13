@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Delete, UseGuards, Request, Param, ParseIntPipe, ForbiddenException, BadRequestException } from "@nestjs/common"
 import { UserPeriodsService } from "./user-periods.service"
 import { CreateUserPeriodDto } from "./dto/create-user-period.dto"
-import { AuthGuard } from "src/shared/guards/auth.guard"
+import { AuthGuard } from "../shared/guards/auth.guard"
 
 @Controller("user-periods")
 export class UserPeriodsController {

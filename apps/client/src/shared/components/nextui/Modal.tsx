@@ -1,4 +1,4 @@
-import { Modal, ModalProps } from "@nextui-org/react"
+import { Modal, ModalProps } from "@easy-tec/ui"
 
 export const CustomModal = (props: ModalProps) => (
   <Modal

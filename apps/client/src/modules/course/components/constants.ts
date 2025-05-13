@@ -1,4 +1,4 @@
-import { ChipProps } from "@nextui-org/react"
+import { ChipProps } from "@easy-tec/ui"
 
 export const courseInputs = [
   { label: "Nombre", key: "name", type: "text" },

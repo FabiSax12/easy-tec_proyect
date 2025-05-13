@@ -1,15 +1,23 @@
-export enum TaskState {
-  TODO = "Sin hacer",
-  DOING = "En proceso",
-  DONE = "Hecho",
-  DELIVERED = "Entregado",
+export type TaskState = "todo" | "doing" | "done" | "delivered"
+
+export interface TimeRemaining {
+  daysLeft: number
+  hoursLeft: number
+  minutesLeft: number
+}
+
+export enum TaskStateSpanish {
+  todo = "Pendiente",
+  doing = "En proceso",
+  done = "Hecho",
+  delivered = "Entregado"
 }
 
 export interface Task {
   id: number
   name: string
   description: string
-  state: string
+  state: TaskState
   date: Date
   createdAt: Date
   updatedAt: Date

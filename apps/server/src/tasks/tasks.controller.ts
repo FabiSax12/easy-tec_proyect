@@ -15,8 +15,8 @@ import {
 import { TasksService } from "./tasks.service"
 import { CreateTaskDto } from "./dto/create-task.dto"
 import { UpdateTaskDto } from "./dto/update-task.dto"
-import { AuthGuard } from "src/shared/guards/auth.guard"
-import { ValidateOwnership } from "src/shared/decorators/validateOwnership.decorator"
+import { AuthGuard } from "../shared/guards/auth.guard"
+import { ValidateOwnership } from "../shared/decorators/validateOwnership.decorator"
 import { TaskQueryDto } from "./dto/task-query.dto"
 
 @Controller("tasks")

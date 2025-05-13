@@ -5,7 +5,7 @@ import { getEventPosition } from "@/modules/schedule/utils/get-event-position"
 import { getOverlappingEvents } from "@/modules/schedule/utils/get-overlaping-events"
 import { CoursesScheduleEvent } from "./CoursesScheduleEvent"
 import { toPng } from "html-to-image"
-import { Button } from "@nextui-org/react"
+import { Button } from "@easy-tec/ui"
 
 const HOURS_START = 7
 const HOURS_COUNT = 16

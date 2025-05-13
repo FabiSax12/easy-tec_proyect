@@ -1,58 +1,63 @@
+import { axiosClient } from "@/api/axios.config"
 import type { Period } from "@/shared/types/entities/Period"
 
-export async function getPeriodsByUserId(userId: number | undefined) {
+export async function getPeriodsByUserId(userId: number | undefined): Promise<Period[]> {
   if (!userId) throw new Error("User is undefined")
 
-  const response = await fetch(`/api/periods?userId=${userId}`)
-  const data = await response.json() as Period[]
+  try {
+    const response = await axiosClient.get<Period[]>("/api/periods", {
+      params: { filterByUser: true }
+    })
 
-  const adaptedData = data.map((period: Period) => ({
-    ...period,
-    startDate: new Date(period.startDate),
-    endDate: new Date(period.endDate),
-  }))
+    const adaptedData = response.data.map((period: Period) => ({
+      ...period,
+      startDate: new Date(period.startDate),
+      endDate: new Date(period.endDate),
+    }))
 
-  return adaptedData
+    return adaptedData
+  } catch (error) {
+    console.error("Error fetching periods by user ID", error)
+    throw new Error("Error fetching periods by user ID")
+  }
 }
 
-export async function periodById(periodId: number) {
-  const response = await fetch(`/api/periods/${periodId}`)
-  return response.json()
+export async function periodById(periodId: number): Promise<Period> {
+  try {
+    const response = await axiosClient.get<Period>(`/api/periods/${periodId}`)
+    return response.data
+  } catch (error) {
+    console.error("Error fetching period by ID", error)
+    throw new Error("Error fetching period by ID")
+  }
 }
 
-export async function createPeriod(period: Period) {
-  const response = await fetch("/api/periods", {
-    method: "POST",
-    body: JSON.stringify(period),
-  })
-  return response.json()
+export async function createPeriod(period: Period): Promise<Period> {
+  try {
+    const response = await axiosClient.post<Period>("/api/periods", period)
+    return response.data
+  } catch (error) {
+    console.error("Error creating period", error)
+    throw new Error("Error creating period")
+  }
 }
 
-export async function getPeriods() {
-  const response = await fetch("/api/periods")
-
-  if (!response.ok) {
+export async function getPeriods(): Promise<Period[]> {
+  try {
+    const response = await axiosClient.get<Period[]>("/api/periods")
+    return response.data
+  } catch (error) {
+    console.error("Error fetching periods", error)
     throw new Error("Error fetching periods")
   }
-
-  return (await response.json()) as Period[]
 }
 
-export async function deleteUserPeriod(userId: number, periodId: number) {
-  const response = await fetch("/api/user-periods", {
-    method: "DELETE",
-    body: JSON.stringify({
-      userId,
-      periodId,
-    }),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-
-  if (!response.ok) {
+export async function deleteUserPeriod(periodId: number) {
+  try {
+    const res = await axiosClient.delete(`/api/user-periods/${periodId}`)
+    return res.data as Period
+  } catch (error) {
+    console.error("Error deleting period", error)
     throw new Error("Error deleting period")
   }
-
-  return response.json()
 }

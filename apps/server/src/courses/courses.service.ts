@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from "@nestjs/common"
-import { Course } from "@prisma/client"
+import { Course } from "@easy-tec/db"
 import { CreateCourseDto } from "./dto/create-course.dto"
 import { UpdateCourseDto } from "./dto/update-course.dto"
-import { PrismaService } from "src/prisma/prisma.service"
+import { PrismaService } from "../prisma/prisma.service"
 
 @Injectable()
 export class CoursesService {
@@ -61,12 +61,16 @@ export class CoursesService {
     if (userId) {
       const user = await this.prismaService.user.findUnique({
         where: { id: userId },
-        select: { periods: true },
+        select: {
+          userPeriods: {
+            select: { periodId: true }
+          }
+        },
       })
 
       if (!user) throw new NotFoundException("User not found")
 
-      whereClause = { ...whereClause, periodId: { in: user.periods.map(p => p.id) } }
+      whereClause = { ...whereClause, periodId: { in: user.userPeriods.map(p => p.periodId) } }
     }
 
     if (periodCode) {

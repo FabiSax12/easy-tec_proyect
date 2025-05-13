@@ -6,7 +6,7 @@ import { CacheModule } from "@nestjs/cache-manager"
 @Module({
   imports: [
     CacheModule.register({
-      ttl: 60 * 60 * 24,
+      ttl: 1000 * 60 * 60 * 24, // 24 hours
       max: 100,
     }),
   ],

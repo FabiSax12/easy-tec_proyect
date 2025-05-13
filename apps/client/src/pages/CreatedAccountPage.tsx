@@ -1,8 +1,8 @@
-import { Navigate } from "react-router-dom"
+import { Navigate } from "react-router"
 import { toast } from "sonner"
 import { requestVerificationEmail } from "@/modules/auth/services/auth.service"
 import { useAuthStore } from "@/modules/auth/store/auth.store"
-import { Button, Card, CardBody } from "@nextui-org/react"
+import { Button, Card, CardBody } from "@easy-tec/ui"
 import { BiCheckCircle } from "react-icons/bi"
 
 export const CreatedAccountPage = () => {

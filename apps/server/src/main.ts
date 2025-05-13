@@ -1,11 +1,12 @@
 import { NestFactory } from "@nestjs/core"
 import { ValidationPipe } from "@nestjs/common"
-import * as cookieParser from "cookie-parser"
+import cookieParser from "cookie-parser"
 import { AppModule } from "./app.module"
 import { BadConnectionSimulatorInterceptor } from "./shared/interceptors/badConnectionSimulator.interceptor"
 import { LoggerInterceptor } from "./shared/interceptors/logger.interceptor"
 
 async function bootstrap() {
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
   const app = await NestFactory.create(AppModule)
   app.setGlobalPrefix("api")
 

@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common"
-import { PrismaService } from "src/prisma/prisma.service"
+import { PrismaService } from "../prisma/prisma.service"
 
 @Injectable()
 export class UserPeriodsService {
@@ -9,9 +9,14 @@ export class UserPeriodsService {
     return await this.prismaService.period.update({
       where: { id: periodId },
       data: {
-        users: {
-          connect: { id: userId }
+        userPeriods: {
+          connect: {
+            id: userId
+          }
         }
+        // users: {
+        //   connect: { id: userId }
+        // }
       }
     })
   }
@@ -41,7 +46,7 @@ export class UserPeriodsService {
       return tx.period.update({
         where: { id: data.periodId },
         data: {
-          users: {
+          userPeriods: {
             disconnect: { id: data.userId }
           }
         }

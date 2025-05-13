@@ -4,7 +4,7 @@ import { AddCourseModal } from "@/modules/course/components"
 import {
   Input, Button, DropdownTrigger, Dropdown,
   DropdownMenu, DropdownItem, Selection
-} from "@nextui-org/react"
+} from "@easy-tec/ui"
 import { FaPlus, FaChevronDown } from "react-icons/fa6"
 import { LuSearch } from "react-icons/lu"
 

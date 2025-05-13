@@ -1,8 +1,9 @@
+import { axiosClient } from "@/api/axios.config"
 import { Spinner } from "@/shared/components"
-import { Button, Card, CardBody, CardFooter, CardHeader } from "@nextui-org/react"
+import { Button, Card, CardBody, CardFooter, CardHeader } from "@easy-tec/ui"
 import { useCallback, useEffect, useState } from "react"
 import { BiCheckCircle, BiXCircle } from "react-icons/bi"
-import { useNavigate, useSearchParams } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router"
 
 export const VerifyMagicLinkPage = () => {
   const [searchParams] = useSearchParams()
@@ -18,9 +19,9 @@ export const VerifyMagicLinkPage = () => {
     setIsLoading(true)
 
     try {
-      fetch(`/api/auth/verify?token=${token}`)
+      axiosClient.get(`/api/auth/verify?token=${token}`)
         .then(res => {
-          if (res.ok) {
+          if (res.status === 200) {
             setIsVerified(true)
             setIsError(false)
           } else {

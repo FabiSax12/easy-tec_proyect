@@ -1,4 +1,4 @@
-import { SpinnerProps, Spinner as SpinnerUI } from "@nextui-org/react"
+import { SpinnerProps, Spinner as SpinnerUI } from "@easy-tec/ui"
 
 export const Spinner = (props: SpinnerProps) => {
   return <SpinnerUI

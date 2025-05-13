@@ -31,7 +31,7 @@ const serveClient = ServeStaticModule.forRoot({
     UserPeriodsModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ".env"
+      envFilePath: ".env.local"
     }),
     MailerModule.forRootAsync({
       inject: [ConfigService],
@@ -46,7 +46,7 @@ const serveClient = ServeStaticModule.forRoot({
           }
         },
         defaults: {
-          from: `\"No Reply\" <${configService.get("MAILER_EMAIL")}>`,
+          from: `"No Reply" <${configService.get("MAILER_EMAIL")}>`,
         },
         template: {
           dir: process.cwd() + "/src/auth/templates",

@@ -11,12 +11,12 @@ import {
   UnauthorizedException,
   UseGuards,
 } from "@nestjs/common"
-import { User } from "@prisma/client"
+import type { User } from "@easy-tec/db"
 import { AuthService } from "./auth.service"
 import { CreateUserDto } from "./dto/create-user.dto"
 import { SignInDto } from "./dto/sign-in.dto"
-import { AuthGuard } from "src/shared/guards/auth.guard"
-import { Response, Request } from "express"
+import { AuthGuard } from "../shared/guards/auth.guard"
+import type { Response, Request } from "express"
 
 @Controller("auth")
 export class AuthController {

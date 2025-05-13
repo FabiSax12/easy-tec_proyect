@@ -1,5 +1,7 @@
+import { TaskState } from "@/shared/types/entities/Task"
+
 export interface Column {
-  id: string;
+  id: TaskState;
   title: string;
   color: "success" | "primary" | "danger";
 }

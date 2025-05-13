@@ -1,9 +1,9 @@
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router"
 import { useAuthStore } from "@/modules/auth/store/auth.store"
 import {
   Button, Dropdown, DropdownItem,
   DropdownMenu, DropdownTrigger, Skeleton, User
-} from "@nextui-org/react"
+} from "@easy-tec/ui"
 import { IoEllipsisVerticalSharp } from "react-icons/io5"
 import { MdLogout } from "react-icons/md"
 import { useQueryClient } from "@tanstack/react-query"
@@ -27,12 +27,19 @@ export const UserInfo = () => {
         name={user.name + " " + user.lastname}
         description={user.carrier ?? "Sin carrera"}
         avatarProps={{
-          src: "https://i.pravatar.cc/150?u=a04258114e29026702d",
+          src: user.avatar,
           disableAnimation: true,
         }}
       />
 
-      <Button startContent={<MdLogout />} isIconOnly color="danger" variant="light" onClick={signOut} />
+      <Button
+        className="hidden lg:flex"
+        endContent={<MdLogout />}
+        isIconOnly
+        color="danger"
+        variant="light"
+        onPress={signOut}
+      />
 
       <Dropdown
         showArrow

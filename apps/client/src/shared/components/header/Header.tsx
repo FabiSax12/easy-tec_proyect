@@ -1,14 +1,12 @@
-import { useNavigate, useLocation } from "react-router-dom"
+import { useLocation } from "react-router"
 import { SectionCard } from "../SectionCard"
 import { UserInfo } from "./UserInfo"
-import { Badge, BreadcrumbItem, Breadcrumbs } from "@nextui-org/react"
-import { AiFillBell } from "react-icons/ai"
+import { BreadcrumbItem, Breadcrumbs } from "@easy-tec/ui"
 import { FaGear } from "react-icons/fa6"
 import { ConfigModal } from "@/modules/user-config/components/ConfigModal"
 import { useState } from "react"
 
 export const Header = () => {
-  const navigate = useNavigate()
   const { pathname } = useLocation()
   const [isOpen, setIsOpen] = useState(false)
 
@@ -26,9 +24,9 @@ export const Header = () => {
       </Breadcrumbs>
 
       <SectionCard className="w-max flex items-center gap-4">
-        <Badge color="primary" size="md" content="5">
+        {/* <Badge color="primary" size="md" content="5">
           <AiFillBell size={20} className="cursor-pointer" />
-        </Badge>
+        </Badge> */}
         <FaGear size={20} className="cursor-pointer" onClick={() => setIsOpen(true)} />
         <UserInfo />
       </SectionCard>

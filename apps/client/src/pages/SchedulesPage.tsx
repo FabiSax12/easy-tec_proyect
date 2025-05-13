@@ -3,9 +3,10 @@ import { campusOptions, carriersOptions, periodsOptions, subjectsOptions } from 
 import { SchedulesProvider } from "@/modules/schedule/context/schedule"
 import { SchedulesTable } from "@/modules/schedule/components"
 import { SectionCard, ValidatedSelect as Select } from "@/shared/components"
-import { Button, Spinner } from "@nextui-org/react"
+import { Button, Spinner } from "@easy-tec/ui"
 import { BiSearchAlt } from "react-icons/bi"
 import CoursesSchedule from "@/modules/schedule/components/CoursesSchedule"
+import { axiosClient } from "@/api/axios.config"
 
 interface Schedule {
   day: string
@@ -45,8 +46,8 @@ export const SchedulesPage = () => {
 
     setIsLoading(true)
     try {
-      const res = await fetch(`/api/schedules?campus=${campus}&carrier=${carrier}&period=${period}`)
-      const data = await res.json() as ScheduleRow[]
+      const res = await axiosClient.get<ScheduleRow[]>(`/api/schedules?campus=${campus}&carrier=${carrier}&period=${period}`)
+      const data = res.data
       if (data) setSchedules(data)
     } catch {
       setSchedules([])
