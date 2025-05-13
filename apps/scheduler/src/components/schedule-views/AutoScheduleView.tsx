@@ -6,8 +6,6 @@ import { IoIosDownload } from "react-icons/io"
 import { IoArrowBack, IoArrowForward } from "react-icons/io5"
 import { ScheduleView } from "./ScheduleView"
 import { toPng } from "html-to-image"
-import { LuCheckCheck } from "react-icons/lu"
-import { useSchedule } from "@/hooks/useSchedules"
 
 interface AutoScheduleViewProps {
   scheduleCombinations: SimpleCourseRow[][];
@@ -24,8 +22,6 @@ export const AutoScheduleView: React.FC<AutoScheduleViewProps> = ({
   onNext,
   isGenerating = false,
 }) => {
-
-  const { setSelectedSubjects } = useSchedule()
 
   const scheduleRef = useRef<HTMLDivElement>(null)
 
@@ -63,25 +59,25 @@ export const AutoScheduleView: React.FC<AutoScheduleViewProps> = ({
     }
   }
 
-  const handleSaveSchedule = () => {
-    const selectedCombination = scheduleCombinations[currentCombination]
+  // const handleSaveSchedule = () => {
+  //   const selectedCombination = scheduleCombinations[currentCombination]
 
-    setSelectedSubjects(selectedCombination.map(course => ({
-      id: course.id,
-      code: course.code,
-      subject: course.subject,
-      group: course.group,
-      schedules: course.schedules,
-      credits: course.credits,
-      teachers: course.teachers,
-      typeOfGroup: course.typeOfGroup,
-      classroom: course.campus,
-      totalSpaces: null,
-      typeOfSubject: null,
-      reserved: null,
-    })))
-    // setSelectedSubjects(scheduleCombinations[currentCombination])
-  }
+  //   setSelectedSubjects(selectedCombination.map(course => ({
+  //     id: course.id,
+  //     code: course.code,
+  //     subject: course.subject,
+  //     group: course.group,
+  //     schedules: course.schedules,
+  //     credits: course.credits,
+  //     teachers: course.teachers,
+  //     typeOfGroup: course.typeOfGroup,
+  //     classroom: course.campus,
+  //     totalSpaces: null,
+  //     typeOfSubject: null,
+  //     reserved: null,
+  //   })))
+  //   // setSelectedSubjects(scheduleCombinations[currentCombination])
+  // }
 
   return (
     <div className="w-full flex flex-col items-center">

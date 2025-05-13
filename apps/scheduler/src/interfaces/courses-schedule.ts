@@ -7,7 +7,7 @@ export interface ScheduleEvent {
   group: number;
   campus?: string;
   teachers?: string[];
-  location?: string;
+  location?: string | null;
   typeOfGroup?: string;
   color?: string;
 }

@@ -6,7 +6,7 @@ export interface GroupedCourse {
   code: string;
   subject: string;
   credits: number; // Añadimos créditos aquí
-  typeOfSubject: string; // Añadimos tipo de materia aquí
+  typeOfSubject: string | null; // Añadimos tipo de materia aquí
   groups: ScheduleRow[]; // Array de grupos para este curso
 }
 
