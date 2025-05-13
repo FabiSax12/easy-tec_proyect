@@ -1,7 +1,7 @@
-import {HttpException, HttpStatus, Injectable, NotFoundException} from "@nestjs/common"
-import {JSDOM} from "jsdom"
-import {Agent} from "node:https"
-import {CompleteCourseRow, MergedCourseRow, ScheduleRow, SimpleCourseRow} from "../types/schedules"
+import { HttpException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common"
+import { JSDOM } from "jsdom"
+import { Agent } from "node:https"
+import { CompleteCourseRow, MergedCourseRow, ScheduleRow, SimpleCourseRow } from "../types/schedules"
 
 @Injectable()
 export class ScheduleService {
@@ -167,27 +167,32 @@ export class ScheduleService {
   }
 
   async getSpecificitiesSchedules(
-      studentId: string,
-      requestedCourses: { code: string; campus: { name: string; typeOfGroup: string }[] }[]
+    studentId: string,
+    requestedCourses: { code: string; campus: { name: string; typeOfGroup: string }[] }[]
   ): Promise<SimpleCourseRow[]> {
     const allCourses = await this.fetchScheduleByStudentId(studentId)
 
+    console.log("SE1204", allCourses.filter(course => course.IDE_MATERIA === "SE1204"))
+
     const filteredCourses = allCourses.filter(course =>
-        requestedCourses.some(req =>
-            course.IDE_MATERIA === req.code &&
-            req.campus.some(c =>
-                course.DSC_SEDE === c.name &&
-                course.TIPO_CURSO === c.typeOfGroup
-            )
+      requestedCourses.some(req =>
+        course.IDE_MATERIA === req.code &&
+        req.campus.some(c =>
+          course.DSC_SEDE === c.name &&
+          course.TIPO_CURSO === c.typeOfGroup
         )
+      )
     )
 
-    const mergedCourses = this.mergeCourseGroups(filteredCourses)
+    const mergedGroups = this.mergeCourses(filteredCourses)
+    const mergedCourses = this.mergeCourseTeachers(mergedGroups)
+
+    console.log("mergedCourses", mergedCourses)
 
     return mergedCourses.map(this.completeToSimpleCourseRow)
   }
 
-  private mergeCourseGroups(courses: CompleteCourseRow[]): MergedCourseRow[] {
+  private mergeCourses(courses: CompleteCourseRow[]): MergedCourseRow[] {
     const mergedMap = new Map<string, MergedCourseRow>()
 
     courses.forEach(course => {
@@ -196,15 +201,51 @@ export class ScheduleService {
       if (!mergedMap.has(key)) {
         mergedMap.set(key, {
           ...course,
+          PROFESORES: [],
           HORARIOS: []
         })
       }
 
-      mergedMap.get(key).HORARIOS.push({
-        day: course.NOM_DIA,
-        start: course.HINICIO,
-        end: course.HFIN
-      })
+      const existingSchedule = mergedMap.get(key).HORARIOS.find(schedule =>
+        schedule.day === course.NOM_DIA &&
+        schedule.start === course.HINICIO &&
+        schedule.end === course.HFIN
+      )
+
+      if (!existingSchedule) {
+        mergedMap.get(key).HORARIOS.push({
+          day: course.NOM_DIA,
+          start: course.HINICIO,
+          end: course.HFIN
+        })
+      }
+    })
+
+    return this.mergeCourseTeachers(Array.from(mergedMap.values()))
+  }
+
+  private mergeCourseTeachers(courses: MergedCourseRow[]): MergedCourseRow[] {
+    const mergedMap = new Map<string, MergedCourseRow>()
+
+    courses.forEach(course => {
+      const key = `${course.IDE_MATERIA}-${course.IDE_GRUPO}-${course.DSC_SEDE}`
+
+      if (!mergedMap.has(key)) {
+        mergedMap.set(key, {
+          ...course,
+          HORARIOS: course.HORARIOS ?? [],
+          PROFESORES: []
+        })
+      }
+
+      const mergedCourse = mergedMap.get(key)
+      if (!mergedCourse.PROFESORES.includes(course.NOM_PROFESOR)) {
+        mergedCourse.PROFESORES.push(
+          course.NOM_PROFESOR.toLowerCase().split(" ").map(w =>
+            w.charAt(0).toUpperCase() + w.substring(1)
+          ).join(" ")
+        )
+      }
     })
 
     return Array.from(mergedMap.values())
@@ -212,16 +253,17 @@ export class ScheduleService {
 
   private completeToSimpleCourseRow(course: MergedCourseRow): SimpleCourseRow {
     return {
+      id: `${course.IDE_MATERIA}-${course.IDE_GRUPO}-${course.PROFESORES[0].split(" ").map(w => w[0]).join("")}`,
       campus: course.DSC_SEDE,
       code: course.IDE_MATERIA,
-      name: course.DSC_MATERIA,
+      subject: course.DSC_MATERIA,
       group: course.IDE_GRUPO,
       department: course.DSC_DEPTO,
       credits: course.CAN_CREDITOS,
       modeId: course.IDE_MODALIDAD,
       mode: course.DSC_MODALIDAD,
-      type: course.TIPO_CURSO,
-      teacher: course.NOM_PROFESOR,
+      typeOfGroup: course.TIPO_CURSO,
+      teachers: course.PROFESORES,
       schedules: course.HORARIOS
     }
   }

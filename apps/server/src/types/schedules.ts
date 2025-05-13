@@ -22,16 +22,17 @@ export interface ScheduleRow {
 }
 
 export interface SimpleCourseRow {
+    id: string;
     campus: string;
     code: string;
-    name: string;
+    subject: string;
     group: number;
     department: string;
     credits: number;
     modeId: string;
     mode: string;
-    type: string;
-    teacher: string;
+    typeOfGroup: string;
+    teachers: string[];
     schedules: Schedule[];
 }
 
@@ -59,4 +60,5 @@ export interface CompleteCourseRow {
 
 export interface MergedCourseRow extends Omit<CompleteCourseRow, "NOM_DIA" | "HINICIO" | "HFIN"> {
     HORARIOS: Schedule[];
+    PROFESORES: string[];
 }
