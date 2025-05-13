@@ -34,11 +34,15 @@ export const AutoScheduleView: React.FC<AutoScheduleViewProps> = ({
     course.schedules.forEach((schedule) => {
       eventsPerCourse.push({
         id: course.code,
-        title: course.name,
+        title: course.subject,
         day: schedule.day.slice(0, 3),
         start: schedule.start,
         end: schedule.end,
         group: course.group,
+        campus: course?.campus,
+        teachers: course.teachers,
+        location: course.campus,
+        typeOfGroup: course.typeOfGroup,
       })
     })
     return eventsPerCourse
@@ -60,6 +64,22 @@ export const AutoScheduleView: React.FC<AutoScheduleViewProps> = ({
   }
 
   const handleSaveSchedule = () => {
+    const selectedCombination = scheduleCombinations[currentCombination]
+
+    setSelectedSubjects(selectedCombination.map(course => ({
+      id: course.id,
+      code: course.code,
+      subject: course.subject,
+      group: course.group,
+      schedules: course.schedules,
+      credits: course.credits,
+      teachers: course.teachers,
+      typeOfGroup: course.typeOfGroup,
+      classroom: course.campus,
+      totalSpaces: null,
+      typeOfSubject: null,
+      reserved: null,
+    })))
     // setSelectedSubjects(scheduleCombinations[currentCombination])
   }
 

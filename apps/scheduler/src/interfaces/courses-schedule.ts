@@ -5,7 +5,10 @@ export interface ScheduleEvent {
   end: string;
   title: string;
   group: number;
+  campus?: string;
+  teachers?: string[];
   location?: string;
+  typeOfGroup?: string;
   color?: string;
 }
 
@@ -15,20 +18,34 @@ export interface Schedule {
   end: string
 }
 
-export interface ScheduleRow {
+interface CommonScheduleRow {
   id: string
   code: string
   subject: string
-  group: number
-  credits: number
-  schedules: Schedule[]
-  classroom: string
-  teachers: string[]
-  totalSpaces: number
-  typeOfSubject: string
-  typeOfGroup: string
-  reserved: number
+  credits: number;
+  group: number;
   color?: string
+  schedules: Schedule[]
+  teachers: string[]
+  typeOfGroup: string
+  classroom: string | null
+  totalSpaces: number | null
+  typeOfSubject: string | null
+  reserved: number | null
+}
+
+export interface ScheduleRow extends CommonScheduleRow {
+  // classroom: string
+  // totalSpaces: number
+  // typeOfSubject: string
+  // reserved: number
+}
+
+export interface SimpleCourseRow extends CommonScheduleRow {
+  campus: string;
+  department: string;
+  modeId: string;
+  mode: string;
 }
 
 export interface CourseNameAndCode {
@@ -41,16 +58,3 @@ export interface SelectedCourse {
   campus: { name: string; typeOfGroup: string }[];
 }
 
-export interface SimpleCourseRow {
-  campus: string;
-  code: string;
-  name: string;
-  group: number;
-  department: string;
-  credits: number;
-  modeId: string;
-  mode: string;
-  type: string;
-  teacher: string;
-  schedules: Schedule[];
-}
