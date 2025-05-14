@@ -1,13 +1,30 @@
 {
-  "rewrites": [
+  "version": 2,
+  "builds": [
     {
-      "source": "/api/(.*)",
-      "destination": "/src/main.ts"
+      "src": "src/main.ts",
+      "use": "@vercel/node",
+      "config": {
+        "distDir": "dist",
+        "maxDuration": 30
+      }
     }
   ],
-  "functions": {
-    "src/main.ts": {
-      "includeFiles": "dist/**"
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/main.js",
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ]
+    }
+  ],
+  "build": {
+    "env": {
+      "VERCEL_NATIVE_BUILD": "1"
     }
   }
 }
