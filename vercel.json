@@ -2,7 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
   "installCommand": "pnpm install",
-  "buildCommand": "pnpm run build",
+  "buildCommand": "pnpm turbo run build",
   "builds": [
     {
       "src": "apps/server/dist/main.js",
