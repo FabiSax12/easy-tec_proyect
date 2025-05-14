@@ -1,24 +1,19 @@
 {
-  "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "apps/server/dist/main.js",
-      "use": "@vercel/node",
-      "config": {
-        "maxDuration": 30
-      }
+      "source": "/api/(.*)",
+      "destination": "/apps/server/(.*)"
     }
   ],
-  "routes": [
+  "build": {
+    "env": {
+      "VERCEL_NATIVE_BUILD": "1"
+    }
+  },
+  "crons": [
     {
-      "src": "/api/(.*)",
-      "dest": "/apps/server/dist/main.js",
-      "methods": [
-        "GET",
-        "POST",
-        "PUT",
-        "DELETE"
-      ]
+      "path": "/apps/scheduler/index.html",
+      "schedule": "0 0 * * *"
     }
   ]
 }
