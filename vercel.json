@@ -5,9 +5,15 @@
       "destination": "/apps/server/(.*)"
     }
   ],
+  "functions": {
+    "apps/server/src/main.ts": {
+      "includeFiles": "dist/apps/server/**"
+    }
+  },
   "build": {
     "env": {
-      "VERCEL_NATIVE_BUILD": "1"
+      "VERCEL_NATIVE_BUILD": "1",
+      "ENABLE_EXPERIMENTAL_COREPACK": "1"
     }
   },
   "crons": [
