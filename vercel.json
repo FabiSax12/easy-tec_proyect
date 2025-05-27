@@ -1,27 +1,22 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
+  "buildCommand": "pnpm run build --filter=server",
+  "outputDirectory": "apps/server/dist",
   "installCommand": "pnpm install",
-  "buildCommand": "pnpm turbo run build",
   "builds": [
     {
       "src": "apps/server/dist/main.js",
-      "use": "@vercel/node",
-      "config": {
-        "maxDuration": 30
-      }
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/apps/server/dist/main.js",
-      "methods": [
-        "GET",
-        "POST",
-        "PUT",
-        "DELETE"
-      ]
+      "src": "/(.*)",
+      "dest": "apps/server/dist/main.js"
     }
-  ]
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
 }

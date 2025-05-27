@@ -18,7 +18,8 @@
       ],
       "outputs": [
         "dist/**"
-      ]
+      ],
+      "cache": false
     },
     "lint": {
       "dependsOn": [
