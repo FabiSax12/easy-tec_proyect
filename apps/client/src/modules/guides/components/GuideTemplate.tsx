@@ -29,7 +29,7 @@ interface Props {
 
 export const GuideTemplate = ({ title, subtitle, description, steps, sections, example }: Props) => {
   return <article>
-    <div className="bg-white max-w-7xl mx-auto px-4 shadow overflow-hidden sm:rounded-lg sm:px-6 lg:px-8">
+    <div className="bg-content1 max-w-7xl mx-auto px-4 shadow overflow-hidden sm:rounded-lg sm:px-6 lg:px-8">
       <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
         <span>
           <h2 className="text-lg leading-6 font-medium text-default-900">

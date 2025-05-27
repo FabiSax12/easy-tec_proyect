@@ -3,13 +3,17 @@
   "builds": [
     {
       "src": "apps/server/dist/main.js",
-      "use": "@vercel/node",
+      "use": "@vercel/node@3",
       "config": {
+        "distDir": "apps/server/dist",
         "maxDuration": 30
       }
     }
   ],
   "routes": [
+    {
+      "handle": "filesystem"
+    },
     {
       "src": "/api/(.*)",
       "dest": "/apps/server/dist/main.js",
@@ -17,8 +21,14 @@
         "GET",
         "POST",
         "PUT",
-        "DELETE"
+        "PATCH",
+        "DELETE",
+        "OPTIONS"
       ]
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/apps/scheduler/dist/index.html"
     }
   ]
 }
