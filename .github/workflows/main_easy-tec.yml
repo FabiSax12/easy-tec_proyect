@@ -1,96 +1,147 @@
-name: Build and deploy Node.js app to Azure Web App - easy-tec
+name: Deploy to Azure Web App
 
 on:
   push:
     branches:
-      - main
-  workflow_dispatch:
+      - main # Cambia por la rama que quieras usar para deployment
+    paths:
+      - 'apps/server/**'
+      - 'packages/**'
+      - 'turbo.json'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+  workflow_dispatch: # Permite ejecutar manualmente
+
+env:
+  NODE_VERSION: '20' # Especifica la versión de Node.js
+  PNPM_VERSION: '9.0.0'
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read #This is required for actions/checkout
 
     steps:
-      - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: Set up Node.js version
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20.x'
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
 
-      # --- Configurar pnpm ---
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: '9.x'
-          run_install: false
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: ${{ env.PNPM_VERSION }}
 
-      # --- Instalar dependencias con pnpm ---
-      - name: Install dependencies with pnpm
-        run: pnpm install --no-frozen-lockfile
+    - name: Get pnpm store directory
+      shell: bash
+      run: |
+        echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+    - name: Setup pnpm cache
+      uses: actions/cache@v4
+      with:
+        path: ${{ env.STORE_PATH }}
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
+
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+
+    - name: Build application
+      run: pnpm turbo run build --filter=server
+
+    - name: Create deployment package
+      run: |
+        cd apps/server
+        # Crear directorio para el deployment
+        mkdir -p deployment
+        # Copiar archivos necesarios
+        cp -r dist deployment/
+        cp package.json deployment/
+        cp -r node_modules deployment/ 2>/dev/null || echo "node_modules not found, will be installed on Azure"
+
+        # Crear web.config para Azure si no existe
+        if [ ! -f web.config ]; then
+          cat > deployment/web.config << 'EOF'
+        <?xml version="1.0" encoding="utf-8"?>
+        <configuration>
+          <system.webServer>
+            <handlers>
+              <add name="iisnode" path="dist/main.js" verb="*" modules="iisnode"/>
+            </handlers>
+            <rewrite>
+              <rules>
+                <rule name="NodeInspector" patternSyntax="ECMAScript" stopProcessing="true">
+                  <match url="^dist/main.js\/debug[\/]?" />
+                </rule>
+                <rule name="StaticContent">
+                  <action type="Rewrite" url="public{REQUEST_URI}"/>
+                </rule>
+                <rule name="DynamicContent">
+                  <conditions>
+                    <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="True"/>
+                  </conditions>
+                  <action type="Rewrite" url="dist/main.js"/>
+                </rule>
+              </rules>
+            </rewrite>
+            <security>
+              <requestFiltering>
+                <hiddenSegments>
+                  <remove segment="bin"/>
+                </hiddenSegments>
+              </requestFiltering>
+            </security>
+            <iisnode
+              node_env="%node_env%"
+              nodeProcessCommandLine="node"
+              interceptor="iisnode/interceptor.js"
+              nodeProcessCountPerApplication="1"
+              maxConcurrentRequestsPerProcess="1024"
+              maxNamedPipeConnectionRetry="3"
+              namedPipeConnectionRetryDelay="2000"
+              maxNamedPipeConnectionPoolSize="512"
+              maxNamedPipePooledConnectionAge="30000"
+              asyncCompletionThreadCount="0"
+              initialRequestBufferSize="4096"
+              maxRequestBufferSize="65536"
+              watchedFiles="*.js"
+              uncFileChangesPollingInterval="5000"
+              gracefulShutdownTimeout="60000"
+              loggingEnabled="true"
+              logDirectoryNameSuffix="logs"
+              debuggingEnabled="false"
+              debuggerPortRange="5058-6058"
+              debuggerPathSegment="debug"
+              maxLogFileSizeInKB="128"
+              appendToExistingLog="false"
+              logFileFlushInterval="5000"
+              devErrorsEnabled="false"
+              flushResponse="false"
+              enableXFF="false"
+              promoteServerVars="" />
+          </system.webServer>
+        </configuration>
+        EOF
+        else
+          cp web.config deployment/
+        fi
 
 
-      # --- Construir la aplicación específica con Turborepo ---
-      - name: Build the 'server' app with Turborepo
-        run: pnpm run build --filter=server
 
-      - name: Prepare deployment package
-        # -- Copiar el package.json del server
-        run: |
-          mkdir deploy_package
-          cp -r apps/server/dist/* deploy_package/
-          cp apps/server/package.json deploy_package/
+    - name: Login to Azure
+      uses: azure/login@v2
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
 
-      # --- Zippear solo el contenido de la construcción del servidor ---
-      - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
-        working-directory: deploy_package
-
-
-      # --- Subir el artefacto desde el directorio correcto ---
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: node-app
-          path: deploy_package/release.zip
-
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
-    permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
-
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: node-app
-
-      # --- Descomprimir en la raíz del directorio de trabajo del job de deploy ---
-      - name: Unzip artifact for deployment
-        run: unzip release.zip
-
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-
-      - name: 'Deploy to Azure Web App'
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: 'easy-tec'
-          slot-name: 'Production'
-          package: . # Desplegar el contenido descomprimido
-          startup-command: 'npm install --prod && node main.js'
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v3
+      with:
+        app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+        package: ./apps/server/deployment
