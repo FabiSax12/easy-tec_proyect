@@ -92,4 +92,4 @@ jobs:
           app-name: 'easy-tec'
           slot-name: 'Production'
           package: . # Desplegar el contenido descomprimido
-          startup-command: 'pnpm run start:prod'
+          startup-command: 'node main.js'
