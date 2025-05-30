@@ -67,6 +67,12 @@ const carriersOptions = {
   },
   EMT: {
     name: "Ingeniería Mecatrónica", code: "EMT"
+  },
+  MI: {
+    name: "Ingeniería Electromecánica", code: "MI"
+  },
+  MIE: {
+    name: "Maestria En Investigacion Empresarial", code: "MIE"
   }
 }
 
@@ -94,6 +100,12 @@ const subjectsOptions = {
   },
   CD: {
     name: "Cultura y Deporte", code: "CD"
+  },
+  QU: {
+    name: "Química", code: "QU"
+  },
+  FH: {
+    name: "Formación Humanística", code: "FH"
   }
 }
 
@@ -138,10 +150,24 @@ const campusOptions = [
     fullName: "CAMPUS TECNOLOGICO LOCAL ALAJUELA",
     code: "AL",
     carriers: [
+      "AE",
+      "ME",
+      "MI",
       "CA",
-      "E"
+      "E",
+      "PI",
+      "SHO",
+      "MIE"
     ],
-    subjects: []
+    subjects: [
+      "CI",
+      "CS",
+      "CD",
+      "FI",
+      "MA",
+      "QU",
+      "FH"
+    ]
   },
   {
     name: "Cartago",
