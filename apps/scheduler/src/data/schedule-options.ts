@@ -23,8 +23,8 @@ const carriersOptions = {
   AEN: {
     name: "Administración de Empresas Nocturna", code: "AEN"
   },
-  ATI: {
-    name: "Administración de Tecnología de Información", code: "ATI"
+  AIT: {
+    name: "Administración de Tecnología de Información", code: "AIT"
   },
   EMA: {
     name: "Enseñanza de la Matemática con Entornos Tecnológicos", code: "EMA"
@@ -40,6 +40,9 @@ const carriersOptions = {
   },
   IB: {
     name: "Ingeniería en Biotecnología", code: "IB"
+  },
+  IBL: {
+    name: " Licenciatura Ingenieria En Biotecnologia Para Egresados", code: "IBL"
   },
   CES: {
     name: "Ingeniería en Computadores", code: "CES"
@@ -65,6 +68,9 @@ const carriersOptions = {
   FO: {
     name: "Ingeniería Forestal", code: "FO"
   },
+  GTS: {
+    name: "Gestión de Turismo Sostenible", code: "GTS"
+  },
   EMT: {
     name: "Ingeniería Mecatrónica", code: "EMT"
   },
@@ -73,6 +79,12 @@ const carriersOptions = {
   },
   MIE: {
     name: "Maestria En Investigacion Empresarial", code: "MIE"
+  },
+  LEM: {
+    name: "Licenciatura En Enseñanza De La Matematica Con Entornos Tecnologicos", code: "LEM"
+  },
+  DP: {
+    name: "Area Academica De Doctorado En Ingenieria", code: "DP"
   }
 }
 
@@ -106,6 +118,9 @@ const subjectsOptions = {
   },
   FH: {
     name: "Formación Humanística", code: "FH"
+  },
+  BI: {
+    name: "Biología", code: "BI"
   }
 }
 
@@ -176,26 +191,39 @@ const campusOptions = [
     carriers: [
       "AE",
       "AEN",
-      "ATI",
+      "AIT",
       "EMA",
       "IA",
       "AMB",
       "AN",
       "IB",
+      "IBL",
       "CA",
       "CES",
       "CO",
       "DI",
       "E",
+      "GTS",
       "MIL",
       "ME",
       "PI",
       "SHO",
       "IF",
       "FO",
-      "EMT"
+      "EMT",
+      "LEM",
+      "DP",
+      "MI"
     ],
-    subjects: []
+    subjects: [
+      "BI",
+      "CI",
+      "CS",
+      "CD",
+      "FI",
+      "MA",
+      "QU"
+    ]
   },
   {
     name: "Limón",
