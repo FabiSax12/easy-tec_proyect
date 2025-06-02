@@ -2,6 +2,7 @@ import { SchedulesProvider } from "@/context/schedule";
 import { Alert, Button, HeroUIProvider, Tab, Tabs, useTheme } from "@easy-tec/ui";
 import { IoSunny, IoMoon } from "react-icons/io5";
 import { NavigateOptions, Outlet, To, useHref, useLocation, useNavigate } from "react-router";
+import { Analytics } from "@vercel/analytics/react";
 
 export function MainLayout() {
   const navigateHook = useNavigate();
@@ -63,6 +64,7 @@ export function MainLayout() {
           </div>
         </div>
       </SchedulesProvider>
+      <Analytics />
     </HeroUIProvider>
   );
 }

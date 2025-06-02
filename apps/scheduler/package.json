@@ -12,6 +12,7 @@
   "dependencies": {
     "@easy-tec/ui": "workspace:^",
     "@tailwindcss/vite": "^4.1.5",
+    "@vercel/analytics": "^1.5.0",
     "axios": "^1.7.9",
     "html-to-image": "^1.11.11",
     "react": "^19.1.0",
