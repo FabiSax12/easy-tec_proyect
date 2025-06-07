@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useStudentCourses } from "@/features/automatic/hooks/useStudentCourses";
-import { useSelectedCourses } from "@/features/automatic/hooks/useSelectedCourses";
 import { useScheduleGeneration } from "@/features/automatic/hooks/useScheduleGeneration";
 import { StudentCoursesPanel } from "@/features/automatic/components/StudentCoursesPanel";
 import { ScheduleViewPanel } from "@/features/automatic/components/ScheduleViewPanel";
