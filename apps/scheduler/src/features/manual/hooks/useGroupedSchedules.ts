@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import { GroupedCourse, ScheduleRow } from "@/interfaces/courses-schedule";
 
 const groupSchedulesByCourse = (schedules: ScheduleRow[]): GroupedCourse[] => {
@@ -29,6 +29,10 @@ const groupSchedulesByCourse = (schedules: ScheduleRow[]): GroupedCourse[] => {
 export const useGroupedSchedules = (schedules: ScheduleRow[]) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    setSearchTerm("");
+  }, [schedules])
 
   const groupedCourses = useMemo(
     () => groupSchedulesByCourse(schedules),
