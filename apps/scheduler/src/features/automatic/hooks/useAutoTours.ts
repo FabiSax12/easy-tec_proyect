@@ -26,7 +26,7 @@ export const useAutoTours = () => {
       animate: true,
       smoothScroll: true,
       allowClose: true,
-      overlayClickNext: false,
+      overlayClickBehavior: 'nextStep',
       stagePadding: 8,
       stageRadius: 8,
       showButtons: ['next', 'previous', 'close'],
@@ -36,7 +36,6 @@ export const useAutoTours = () => {
       nextBtnText: '➡️ Siguiente',
       prevBtnText: '⬅️ Anterior',
       doneBtnText: '🎉 ¡Entendido!',
-      closeBtnText: '✖️',
     });
 
     return driverRef.current;

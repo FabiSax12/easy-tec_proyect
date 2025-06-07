@@ -1,6 +1,6 @@
 import { Form, Button } from "@easy-tec/ui";
 import { SelectedCoursesList } from "@/features/automatic/components/SelectedCoursesList";
-import { CourseNameAndCode, EnhancedCourseSelection, SelectedCourse } from "../types/auto-schedule-types";
+import { CourseNameAndCode, EnhancedCourseSelection } from "../types/auto-schedule-types";
 import { ErrorDisplay } from "@/components/ErrorDisplay";
 import { campusOptions } from "@/features/manual/data/schedule-options";
 
