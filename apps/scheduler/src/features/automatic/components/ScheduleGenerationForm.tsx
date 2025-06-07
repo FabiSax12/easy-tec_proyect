@@ -1,21 +1,25 @@
 import { Form, Button } from "@easy-tec/ui";
 import { SelectedCoursesList } from "@/features/automatic/components/SelectedCoursesList";
-import { CourseNameAndCode, SelectedCourse } from "../types/auto-schedule-types";
+import { CourseNameAndCode, EnhancedCourseSelection, SelectedCourse } from "../types/auto-schedule-types";
 import { ErrorDisplay } from "@/components/ErrorDisplay";
+import { campusOptions } from "@/features/manual/data/schedule-options";
+
+
+
 
 interface ScheduleGenerationFormProps {
   isLoading: boolean;
   isGenerating: boolean;
   availableCourses: CourseNameAndCode[];
-  selectedCourses: SelectedCourse[];
+  selectedCourses: EnhancedCourseSelection[];
   errors: string[];
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   onAddCourse: () => void;
   onUpdateCourseCode: (index: number, code: string) => void;
   onRemoveCourse: (courseIndex: number) => void;
   onAddCampus: (courseIndex: number) => void;
-  onUpdateCampus: (courseIndex: number, campusIndex: number, field: "name" | "typeOfGroup", value: string) => void;
-  onRemoveCampus: (courseIndex: number, campusIndex: number) => void;
+  onUpdateCampus: (courseIndex: number, groupId: string, field: 'campuses' | 'typeOfGroups', values: string[]) => void;
+  onRemoveCampus: (courseIndex: number, groupId: string) => void;
 }
 
 export const ScheduleGenerationForm = ({
@@ -35,15 +39,21 @@ export const ScheduleGenerationForm = ({
   return (
     <Form onSubmit={onSubmit} validationBehavior="native" className="space-y-4">
       <SelectedCoursesList
+        campusOptions={campusOptions.map(c => ({ key: c.fullName, label: c.name }))}
+        modalityOptions={[
+          { key: "Virtual", label: "Virtual" },
+          { key: "Regular", label: "Regular" },
+          { key: "Semipresencial", label: "Semipresencial" },
+        ]}
         isLoading={isLoading}
         availableCourses={availableCourses}
         selectedCourses={selectedCourses}
         onAddCourse={onAddCourse}
         onUpdateCourseCode={onUpdateCourseCode}
         onRemoveCourse={onRemoveCourse}
-        onAddCampus={onAddCampus}
-        onUpdateCampus={onUpdateCampus}
-        onRemoveCampus={onRemoveCampus}
+        onAddCampusGroup={onAddCampus}
+        onUpdateCampusGroup={onUpdateCampus}
+        onRemoveCampusGroup={onRemoveCampus}
       />
 
       <Button

@@ -1,13 +1,13 @@
 import { Card, CardBody } from "@easy-tec/ui";
 import { StudentCoursesForm } from "@/features/automatic/components/StudentCoursesForm";
 import { ScheduleGenerationForm } from "./ScheduleGenerationForm";
-import { CourseNameAndCode, SelectedCourse } from "../types/auto-schedule-types";
+import { CourseNameAndCode, EnhancedCourseSelection } from "../types/auto-schedule-types";
 
 interface StudentCoursesPanelProps {
   isLoading: boolean;
   isGenerating: boolean;
   availableCourses: CourseNameAndCode[];
-  selectedCourses: SelectedCourse[];
+  selectedCourses: EnhancedCourseSelection[];
   errors: string[];
   onFetchStudentCourses: (studentId: string) => Promise<void>;
   onGenerateSchedules: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
@@ -15,8 +15,8 @@ interface StudentCoursesPanelProps {
   onUpdateCourseCode: (index: number, code: string) => void;
   onRemoveCourse: (courseIndex: number) => void;
   onAddCampus: (courseIndex: number) => void;
-  onUpdateCampus: (courseIndex: number, campusIndex: number, field: "name" | "typeOfGroup", value: string) => void;
-  onRemoveCampus: (courseIndex: number, campusIndex: number) => void;
+  onUpdateCampus: (courseIndex: number, groupId: string, field: 'campuses' | 'typeOfGroups', values: string[]) => void;
+  onRemoveCampus: (courseIndex: number, groupId: string) => void;
 }
 
 export const StudentCoursesPanel = ({

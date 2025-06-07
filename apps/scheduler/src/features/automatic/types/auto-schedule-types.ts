@@ -3,9 +3,31 @@ export interface CourseNameAndCode {
   name: string;
 }
 
+export interface Campus {
+  name: string;
+  typeOfGroup: string;
+}
+
 export interface SelectedCourse {
   code: string;
-  campus: CampusConfig[];
+  campus: Campus[];
+}
+
+// Nueva interfaz para el estado interno del componente
+export interface EnhancedCourseSelection {
+  code: string;
+  campusGroups: CampusGroup[];
+}
+
+export interface CampusGroup {
+  id: string; // UUID único para cada grupo
+  campuses: string[]; // Array de nombres de campus
+  typeOfGroups: string[]; // Array de tipos de grupo
+}
+
+export interface CourseNameAndCode {
+  code: string;
+  name: string;
 }
 
 export interface CampusConfig {

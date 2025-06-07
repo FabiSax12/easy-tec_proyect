@@ -12,6 +12,7 @@ interface Props {
   style: React.CSSProperties;
   isDeleteable: boolean;
   isEditable: boolean;
+  showTeachers?: boolean;
 }
 
 export const CoursesScheduleEvent = ({
@@ -19,6 +20,7 @@ export const CoursesScheduleEvent = ({
   style,
   isDeleteable,
   isEditable,
+  showTeachers = true,
 }: Props) => {
   const { removeSubject, setSubjectColor } = useSchedule();
   const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
@@ -60,7 +62,7 @@ export const CoursesScheduleEvent = ({
           )}
         </div>
 
-        {event.teachers && event.teachers.length > 0 && (
+        {showTeachers && event.teachers && event.teachers.length > 0 && (
           <div className="text-[10px] text-primary-foreground/80 flex items-center gap-1">
             <FaUser size={13} />
             {event.teachers?.map((teacher, index) => (
@@ -71,7 +73,7 @@ export const CoursesScheduleEvent = ({
           </div>
         )}
         {event.location && (
-          <p className="text-[8px] text-primary-foreground/80 max-w-full flex items-center gap-1">
+          <p className="text-[10px] text-primary-foreground/80 max-w-full flex items-center gap-1">
             <IoLocation size={15} className="min-w-[15px]" />
             <span>{event.location}</span>
           </p>

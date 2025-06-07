@@ -41,6 +41,7 @@ export const ScheduleView = forwardRef(({ events, eventsDeleteable = true, event
               if (!course) return null
 
               return <CoursesScheduleEvent
+                showTeachers={false}
                 isEditable={eventsEditable}
                 isDeleteable={eventsDeleteable}
                 key={`${course.event.title}-${idx}`}

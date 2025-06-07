@@ -8,6 +8,7 @@ import { STORAGE_KEYS } from "@/features/automatic/constants/auto-schedule-const
 import { TourStyles } from "@/features/automatic/components/TourStyles";
 import { TourHelpButton } from "@/features/automatic/components/TourHelpButton";
 import { useAutoTours } from "@/features/automatic/hooks/useAutoTours";
+import { useEnhancedCourseSelection } from "@/features/automatic/hooks/useEnhancedCourseSelection";
 
 export const AutoSchedulesPage = () => {
 	// Custom hooks for state management
@@ -19,16 +20,28 @@ export const AutoSchedulesPage = () => {
 		setAvailableCourses,
 	} = useStudentCourses();
 
+	// const {
+	// 	selectedCourses,
+	// 	addCourse,
+	// 	removeCourse,
+	// 	updateCourseCode,
+	// 	addCampus,
+	// 	removeCampus,
+	// 	updateCampus,
+	// 	validateSelectedCourses,
+	// } = useSelectedCourses();
+
 	const {
-		selectedCourses,
+		enhancedCourses: selectedCourses,
 		addCourse,
 		removeCourse,
 		updateCourseCode,
-		addCampus,
-		removeCampus,
-		updateCampus,
-		validateSelectedCourses,
-	} = useSelectedCourses();
+		addCampusGroup: addCampus,
+		removeCampusGroup: removeCampus,
+		updateCampusGroup: updateCampus,
+		validateCourses: validateSelectedCourses,
+		getBackendFormat
+	} = useEnhancedCourseSelection();
 
 	const {
 		scheduleCombinations,
@@ -46,7 +59,7 @@ export const AutoSchedulesPage = () => {
 		startStudentIdTour,
 		startCourseSelectionTour,
 		startCampusConfigTour,
-		startGenerateSchedulesTour,
+		// startGenerateSchedulesTour,
 		startSchedulesGeneratedTour,
 		restartTour,
 		shouldShowTour,
@@ -127,7 +140,8 @@ export const AutoSchedulesPage = () => {
 			return;
 		}
 
-		await generateSchedules(studentId, selectedCourses);
+		const backendFormat = getBackendFormat();
+		await generateSchedules(studentId, backendFormat);
 	};
 
 	const handleUpdateCourseCode = (index: number, code: string) => {
@@ -142,12 +156,9 @@ export const AutoSchedulesPage = () => {
 	};
 
 	const handleUpdateCampus = (
-		courseIndex: number,
-		campusIndex: number,
-		field: "name" | "typeOfGroup",
-		value: string
+		courseIndex: number, groupId: string, field: 'campuses' | 'typeOfGroups', values: string[]
 	) => {
-		updateCampus(courseIndex, campusIndex, field, value);
+		updateCampus(courseIndex, groupId, field, values);
 
 		// Check if we should show the generate schedules tour
 		// const hasCompleteCourse = selectedCourses.some(course =>

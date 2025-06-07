@@ -1,60 +1,54 @@
-import React from "react"
-import { Autocomplete, AutocompleteItem, Button, Select, SelectItem } from "@easy-tec/ui"
-import { IoTrashBin } from "react-icons/io5"
-import { CourseNameAndCode } from "@/interfaces/courses-schedule.ts"
-import { campusOptions } from "@/features/manual/data/schedule-options"
-
-export interface Campus {
-  name: string;
-  typeOfGroup: string;
-}
-
-export interface SelectedCourse {
-  code: string;
-  campus: Campus[];
-}
+import React from 'react';
+import { Autocomplete, AutocompleteItem, Button } from '@easy-tec/ui';
+import { IoTrashBin, IoAdd } from 'react-icons/io5';
+import { EnhancedCourseSelection, CourseNameAndCode } from '../types/auto-schedule-types';
+import { CampusGroupSelector } from './CampusGroupSelector';
 
 interface SelectedCoursesListProps {
   isLoading: boolean;
   availableCourses: CourseNameAndCode[];
-  selectedCourses: SelectedCourse[];
+  selectedCourses: EnhancedCourseSelection[];
+  campusOptions: Array<{ key: string; label: string }>;
+  modalityOptions: Array<{ key: string; label: string }>;
   onAddCourse: () => void;
   onUpdateCourseCode: (index: number, code: string) => void;
   onRemoveCourse: (index: number) => void;
-  onAddCampus: (courseIndex: number) => void;
-  onUpdateCampus: (courseIndex: number, campusIndex: number, field: "name" | "typeOfGroup", value: string) => void;
-  onRemoveCampus: (courseIndex: number, campusIndex: number) => void;
+  onAddCampusGroup: (courseIndex: number) => void;
+  onUpdateCampusGroup: (courseIndex: number, groupId: string, field: 'campuses' | 'typeOfGroups', values: string[]) => void;
+  onRemoveCampusGroup: (courseIndex: number, groupId: string) => void;
 }
-
-const courseModalitiesOptions = [
-  { name: "Regular", value: "Regular" },
-  { name: "Semipresencial", value: "Semipresencial" },
-  { name: "Virtual", value: "Virtual" }
-]
 
 export const SelectedCoursesList: React.FC<SelectedCoursesListProps> = ({
   isLoading,
   availableCourses,
   selectedCourses,
+  campusOptions,
+  modalityOptions,
   onAddCourse,
   onUpdateCourseCode,
   onRemoveCourse,
-  onAddCampus,
-  onUpdateCampus,
-  onRemoveCampus,
+  onAddCampusGroup,
+  onUpdateCampusGroup,
+  onRemoveCampusGroup,
 }) => {
+
+  console.log(selectedCourses)
+
   return (
-    <div id="container-selected-courses" className="flex flex-col gap-12 md:gap4 w-full">
+    <div id="container-selected-courses" className="flex flex-col gap-6 w-full">
       {selectedCourses.map((course, courseIndex) => (
-        <div key={courseIndex} className="grid grid-cols-1 md:grid-cols-2 items-start gap-6">
-          <div className="flex gap-6">
+        <div key={courseIndex} className="p-4">
+          {/* Header del curso */}
+          <div className="flex gap-3 mb-4">
             <Button
               startContent={<IoTrashBin />}
               onPress={() => onRemoveCourse(courseIndex)}
               color="danger"
               size="sm"
               isIconOnly
+              aria-label={`Eliminar curso ${courseIndex + 1}`}
             />
+
             <Autocomplete
               isRequired
               id={`autocomplete-course-${courseIndex}`}
@@ -63,82 +57,83 @@ export const SelectedCoursesList: React.FC<SelectedCoursesListProps> = ({
               selectedKey={course.code}
               onSelectionChange={(value) => onUpdateCourseCode(courseIndex, value?.toString() || "")}
               isLoading={isLoading}
-              className="flex-grow"
+              className="flex-1"
               listboxProps={{
                 emptyContent: "Primero busca con tu carnet"
               }}
               validate={(value) => {
-                if (!value || value === "") return "Selecciona un curso"
+                if (!value || value === "") return "Selecciona un curso";
               }}
             >
-              {availableCourses.map((course) => (
-                <AutocompleteItem key={course.code}>
-                  {course.name}
+              {availableCourses.map((availableCourse) => (
+                <AutocompleteItem key={availableCourse.code}>
+                  {availableCourse.name}
                 </AutocompleteItem>
               ))}
             </Autocomplete>
           </div>
-          <div className="w-full">
-            {course.campus.map((campus, campusIndex) => (
-              <div key={campusIndex} className="flex flex-row md:flex-row gap-2 mb-4">
-                <Select
-                  id={`select-campus-${courseIndex}-${campusIndex}`}
-                  isRequired
-                  placeholder="Campus"
-                  size="sm"
-                  selectedKeys={[campus.name]}
-                  onChange={(e) => onUpdateCampus(courseIndex, campusIndex, "name", e.target.value)}
-                  className="md:flex-1"
-                >
-                  {campusOptions.map((option) => (
-                    <SelectItem key={option.fullName}>
-                      {option.name}
-                    </SelectItem>
-                  ))}
-                </Select>
-                <Select
-                  id={`select-type-of-group-${courseIndex}-${campusIndex}`}
-                  isRequired
-                  placeholder="Tipo de grupo"
-                  size="sm"
-                  selectedKeys={[campus.typeOfGroup]}
-                  onChange={(e) => onUpdateCampus(courseIndex, campusIndex, "typeOfGroup", e.target.value)}
-                  className="md:flex-1"
-                >
-                  {
-                    courseModalitiesOptions.map(modalitie => (
-                      <SelectItem key={modalitie.value}>
-                        {modalitie.name}
-                      </SelectItem>
-                    ))
-                  }
-                </Select>
-                <Button
-                  startContent={<IoTrashBin />}
-                  size="sm"
-                  color="danger"
-                  isIconOnly
-                  onPress={() => onRemoveCampus(courseIndex, campusIndex)}
-                  className="self-end md:self-center"
+
+          {/* Configuraciones de campus */}
+          {course.code && (
+            <div className="space-y-3">
+              <h4 className="text-sm font-medium mb-2">
+                Configuraciones de Campus y Modalidad:
+              </h4>
+
+              {course.campusGroups.map((group) => (
+                <CampusGroupSelector
+                  key={group.id}
+                  courseIndex={courseIndex}
+                  group={group}
+                  campusOptions={campusOptions}
+                  modalityOptions={modalityOptions}
+                  onUpdateGroup={onUpdateCampusGroup}
+                  onRemoveGroup={onRemoveCampusGroup}
                 />
+              ))}
+
+              <Button
+                startContent={<IoAdd />}
+                onPress={() => onAddCampusGroup(courseIndex)}
+                size="sm"
+                variant="bordered"
+                className="w-full"
+                isDisabled={!course.code}
+              >
+                Agregar Configuración de Campus
+              </Button>
+            </div>
+          )}
+
+          {/* Preview de combinaciones */}
+          {/* {course.campusGroups.length > 0 && (
+            <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+              <p className="text-sm font-medium text-blue-800 mb-2">
+                Vista previa de combinaciones:
+              </p>
+              <div className="text-xs text-blue-600 space-y-1">
+                {course.campusGroups.map((group, groupIndex) => (
+                  <div key={group.id}>
+                    <strong>Grupo {groupIndex + 1}:</strong> {' '}
+                    {group.campuses.join(', ')} / {group.typeOfGroups.join(', ')}
+                  </div>
+                ))}
               </div>
-            ))}
-            <Button
-              id={`button-add-campus-${courseIndex}`}
-              fullWidth
-              isDisabled={!course.code || course.code === "" || course.campus.some(c => c.name === "" || c.typeOfGroup === "")}
-              onPress={() => onAddCampus(courseIndex)}
-              size="sm"
-              variant="bordered"
-            >
-              Añadir Sede
-            </Button>
-          </div>
+            </div>
+          )} */}
         </div>
       ))}
-      <Button id="btn-add-course" onPress={onAddCourse} size="sm" variant="bordered">
-        Añadir Curso
+
+      <Button
+        id="btn-add-course"
+        onPress={onAddCourse}
+        size="sm"
+        variant="bordered"
+        startContent={<IoAdd />}
+        className="w-full"
+      >
+        Agregar Curso
       </Button>
     </div>
-  )
-}
+  );
+};
