@@ -2,8 +2,8 @@ import { forwardRef, useMemo } from "react"
 import { ScheduleEvent } from "@/interfaces/courses-schedule"
 import { getEventsForTimeSlot } from "@/utils/get-events-for-time-slot"
 import { HOURS_COUNT, HOURS_START, CELL_HEIGHT } from "@/utils/get-event-position"
-import { CoursesScheduleEvent } from "../CoursesScheduleEvent"
-import { ScheduleHeader } from "../ScheduleHeader"
+import { CoursesScheduleEvent } from "./CoursesScheduleEvent"
+import { ScheduleHeader } from "./ScheduleHeader"
 
 interface Props {
   theme?: "light" | "dark"
@@ -41,6 +41,7 @@ export const ScheduleView = forwardRef(({ events, eventsDeleteable = true, event
               if (!course) return null
 
               return <CoursesScheduleEvent
+                showTeachers={false}
                 isEditable={eventsEditable}
                 isDeleteable={eventsDeleteable}
                 key={`${course.event.title}-${idx}`}

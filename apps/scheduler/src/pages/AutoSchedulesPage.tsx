@@ -1,176 +1,210 @@
-import { useEffect, useState } from "react"
-import { Button, Card, CardBody, Form } from "@easy-tec/ui"
-import { axiosClient } from "@/api/axios.config.ts"
-import { CourseNameAndCode, SimpleCourseRow, SelectedCourse } from "@/interfaces/courses-schedule.ts"
-import { StudentCoursesForm } from "@/components/StudentCoursesForm"
-import { SelectedCoursesList } from "@/components/SelectedCoursesList"
-import { AutoScheduleView } from "@/components/schedule-views/AutoScheduleView"
-import { generateCombinations } from "@/utils/get-schdule-combinations"
-import { AxiosError } from "axios"
+import { useEffect } from "react";
+import { useStudentCourses } from "@/features/automatic/hooks/useStudentCourses";
+import { useSelectedCourses } from "@/features/automatic/hooks/useSelectedCourses";
+import { useScheduleGeneration } from "@/features/automatic/hooks/useScheduleGeneration";
+import { StudentCoursesPanel } from "@/features/automatic/components/StudentCoursesPanel";
+import { ScheduleViewPanel } from "@/features/automatic/components/ScheduleViewPanel";
+import { STORAGE_KEYS } from "@/features/automatic/constants/auto-schedule-constants";
+import { TourStyles } from "@/features/automatic/components/TourStyles";
+import { TourHelpButton } from "@/features/automatic/components/TourHelpButton";
+import { useAutoTours } from "@/features/automatic/hooks/useAutoTours";
+import { useEnhancedCourseSelection } from "@/features/automatic/hooks/useEnhancedCourseSelection";
 
 export const AutoSchedulesPage = () => {
-	const [studentId, setStudentId] = useState<string | null>(null)
-	const [availableCourses, setAvailableCourses] = useState<CourseNameAndCode[]>([])
-	const [isLoading, setIsLoading] = useState(false)
-	const [isGenerating, setIsGenerating] = useState(false)
-	const [errors, setErrors] = useState<string[]>([])
-	const [selectedCourses, setSelectedCourses] = useState<SelectedCourse[]>([{ code: "", campus: [] }])
-	const [scheduleCombinations, setScheduleCombinations] = useState<SimpleCourseRow[][]>([])
-	const [currentCombination, setCurrentCombination] = useState(0)
+	// Custom hooks for state management
+	const {
+		studentId,
+		availableCourses,
+		isLoading,
+		fetchStudentCourses,
+		setAvailableCourses,
+	} = useStudentCourses();
+
+	// const {
+	// 	selectedCourses,
+	// 	addCourse,
+	// 	removeCourse,
+	// 	updateCourseCode,
+	// 	addCampus,
+	// 	removeCampus,
+	// 	updateCampus,
+	// 	validateSelectedCourses,
+	// } = useSelectedCourses();
+
+	const {
+		enhancedCourses: selectedCourses,
+		addCourse,
+		removeCourse,
+		updateCourseCode,
+		addCampusGroup: addCampus,
+		removeCampusGroup: removeCampus,
+		updateCampusGroup: updateCampus,
+		validateCourses: validateSelectedCourses,
+		getBackendFormat
+	} = useEnhancedCourseSelection();
+
+	const {
+		scheduleCombinations,
+		currentCombination,
+		isGenerating,
+		errors,
+		generateSchedules,
+		navigateCombination,
+		setErrors,
+	} = useScheduleGeneration();
+
+	// Tour hooks
+	const {
+		startWelcomeTour,
+		startStudentIdTour,
+		startCourseSelectionTour,
+		startCampusConfigTour,
+		// startGenerateSchedulesTour,
+		startSchedulesGeneratedTour,
+		restartTour,
+		shouldShowTour,
+	} = useAutoTours();
+
+	// Initialize tours and stored data
+	useEffect(() => {
+		// Load stored courses
+		const storedCourses = localStorage.getItem(STORAGE_KEYS.AVAILABLE_COURSES);
+		if (storedCourses) {
+			try {
+				const parsedCourses = JSON.parse(storedCourses);
+				setAvailableCourses(parsedCourses);
+			} catch (error) {
+				console.error('Error parsing stored courses:', error);
+				localStorage.removeItem(STORAGE_KEYS.AVAILABLE_COURSES);
+			}
+		}
+
+		// Start welcome tour for new users
+		if (shouldShowTour('welcome')) {
+			setTimeout(() => {
+				startWelcomeTour();
+			}, 1000);
+		}
+	}, [setAvailableCourses, shouldShowTour, startWelcomeTour]);
+
+	// Tour triggers based on user actions
+	useEffect(() => {
+		if (availableCourses.length > 0 && shouldShowTour('coursesLoaded')) {
+			startCourseSelectionTour();
+		}
+	}, [availableCourses.length, shouldShowTour, startCourseSelectionTour]);
 
 	useEffect(() => {
-		const storedAvailableCourses = localStorage.getItem("availableCourses")
-
-		if (storedAvailableCourses) {
-			const parsedCourses = JSON.parse(storedAvailableCourses) as CourseNameAndCode[]
-			setAvailableCourses(parsedCourses)
+		if (scheduleCombinations.length > 0 && shouldShowTour('schedulesGenerated')) {
+			startSchedulesGeneratedTour();
 		}
-	}, [])
+	}, [scheduleCombinations.length, shouldShowTour, startSchedulesGeneratedTour]);
 
-	const getStudentAvailableCourses = async (studentId: string) => {
-		setStudentId(studentId)
-		try {
-			setIsLoading(true)
-			const response = await axiosClient.get(`api/schedules/availables/${studentId}`)
-			const data = response.data as CourseNameAndCode[]
-			localStorage.setItem("studentId", studentId)
-			localStorage.setItem("availableCourses", JSON.stringify(data))
-			setAvailableCourses(data.sort((a, b) => a.name.localeCompare(b.name)))
-		} catch (e) {
-			console.error(e)
-			setAvailableCourses([])
-			localStorage.removeItem("availableCourses")
-			throw e
-		} finally {
-			setIsLoading(false)
-		}
-	}
-
-	const addCourseRow = () => {
-		setSelectedCourses([...selectedCourses, { code: "", campus: [{ name: "", typeOfGroup: "" }] }])
-	}
-
-	const updateCourseCode = (index: number, code: string) => {
-		const updatedCourses = [...selectedCourses]
-		updatedCourses[index].code = code
-		setSelectedCourses(updatedCourses)
-	}
-
-	const updateCourseCampus = (courseIndex: number, campusIndex: number, field: "name" | "typeOfGroup", value: string) => {
-		const updatedCourses = [...selectedCourses]
-		updatedCourses[courseIndex].campus[campusIndex][field] = value
-		setSelectedCourses(updatedCourses)
-	}
-
-	const removeCourseRow = (courseIndex: number) => {
-		setSelectedCourses(selectedCourses.filter((_, index) => index !== courseIndex))
-	}
-
-	const addCampusRow = (courseIndex: number) => {
-		const updatedCourses = [...selectedCourses]
-		updatedCourses[courseIndex].campus.push({ name: "", typeOfGroup: "" })
-		setSelectedCourses(updatedCourses)
-	}
-
-	const removeCampusRow = (courseIndex: number, campusIndex: number) => {
-		const updatedCourses = [...selectedCourses]
-		updatedCourses[courseIndex].campus = updatedCourses[courseIndex].campus.filter((_, idx) => idx !== campusIndex)
-		setSelectedCourses(updatedCourses)
-	}
-
-	const generateSchedules = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault()
-		setErrors([])
-
-		if (selectedCourses.some((course) => course.code === "" || course.campus.some((c) => c.name === "" || c.typeOfGroup === ""))) {
-			setErrors(["Por favor, completa todos los campos de los cursos seleccionados."])
-			return
-		}
-
-		try {
-			setIsGenerating(true)
-			setScheduleCombinations([])
-			const response = await axiosClient.post(`/api/schedules/${studentId}`, selectedCourses)
-			const data = response.data as SimpleCourseRow[]
-
-			console.log("Horarios generados:", data)
-
-			if (data.length === 0) {
-				setErrors(["No se encontraron horarios disponibles para los cursos seleccionados."])
-				return
+	// Initialize from localStorage
+	useEffect(() => {
+		const storedCourses = localStorage.getItem(STORAGE_KEYS.AVAILABLE_COURSES);
+		if (storedCourses) {
+			try {
+				const parsedCourses = JSON.parse(storedCourses);
+				setAvailableCourses(parsedCourses);
+			} catch (error) {
+				console.error('Error parsing stored courses:', error);
+				localStorage.removeItem(STORAGE_KEYS.AVAILABLE_COURSES);
 			}
+		}
+	}, [setAvailableCourses]);
 
-			const coursesGroupedByCode = data.reduce((acc, course) => {
-				if (!acc[course.code]) acc[course.code] = []
-				acc[course.code].push(course)
-				return acc
-			}, {} as Record<string, SimpleCourseRow[]>)
+	// Enhanced handlers with tour integration
+	const handleFetchStudentCourses = async (id: string) => {
+		try {
+			await fetchStudentCourses(id);
 
-			const combinations: SimpleCourseRow[][] = []
-			generateCombinations(coursesGroupedByCode, 0, [], combinations)
-			setScheduleCombinations(combinations)
-			setCurrentCombination(0)
+			// Trigger next tour step
+			if (shouldShowTour('studentIdEntered')) {
+				setTimeout(() => {
+					startStudentIdTour();
+				}, 500);
+			}
 		} catch (error) {
-			console.error(error)
-			if (error instanceof AxiosError) {
-				setErrors([error.response?.data.message || "Error al generar los horarios."])
-			} else {
-				setErrors(["Error al generar los horarios."])
-			}
-		} finally {
-			setIsGenerating(false)
+			console.error('Failed to fetch student courses:', error);
 		}
-	}
+	};
 
-	const handlePrev = () => {
-		if (currentCombination > 0) setCurrentCombination(currentCombination - 1)
-	}
+	// Handle schedule generation
+	const handleGenerateSchedules = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
 
-	const handleNext = () => {
-		if (currentCombination < scheduleCombinations.length - 1) setCurrentCombination(currentCombination + 1)
-	}
+		const validationErrors = validateSelectedCourses();
+		if (validationErrors.length > 0) {
+			setErrors(validationErrors);
+			return;
+		}
+
+		const backendFormat = getBackendFormat();
+		await generateSchedules(studentId, backendFormat);
+	};
+
+	const handleUpdateCourseCode = (index: number, code: string) => {
+		updateCourseCode(index, code);
+
+		// Trigger campus configuration tour for first course
+		if (index === 0 && code && shouldShowTour('firstCourseSelected')) {
+			setTimeout(() => {
+				startCampusConfigTour();
+			}, 500);
+		}
+	};
+
+	const handleUpdateCampus = (
+		courseIndex: number, groupId: string, field: 'campuses' | 'typeOfGroups', values: string[]
+	) => {
+		updateCampus(courseIndex, groupId, field, values);
+
+		// Check if we should show the generate schedules tour
+		// const hasCompleteCourse = selectedCourses.some(course =>
+		// 	course.code &&
+		// 	course.campus.some(campus => campus.name && campus.typeOfGroup)
+		// );
+
+		// if (hasCompleteCourse && shouldShowTour('campusConfigured')) {
+		// 	setTimeout(() => {
+		// 		startGenerateSchedulesTour();
+		// 	}, 800);
+		// }
+	};
+
 
 	return (
-		<div className="flex flex-col xl:grid xl:grid-cols-2 gap-4">
-			<Card className="col-span-1">
-				<CardBody className="flex flex-col flex-wrap gap-2">
-					<StudentCoursesForm onSubmit={getStudentAvailableCourses} isLoading={isLoading} />
-					<Form onSubmit={generateSchedules} validationBehavior="native">
-						<SelectedCoursesList
-							isLoading={isLoading}
-							availableCourses={availableCourses}
-							selectedCourses={selectedCourses}
-							onAddCourse={addCourseRow}
-							onUpdateCourseCode={updateCourseCode}
-							onRemoveCourse={removeCourseRow}
-							onAddCampus={addCampusRow}
-							onUpdateCampus={updateCourseCampus}
-							onRemoveCampus={removeCampusRow}
-						/>
-						<Button isLoading={isGenerating} color="success" variant="flat" type="submit" fullWidth>
-							{isGenerating ? "Generando..." : "Generar horarios"}
-						</Button>
-						{errors.length > 0 && (
-							<div className="text-red-500">
-								{errors.map((error, index) => (
-									<p key={index}>{error}</p>
-								))}
-							</div>
-						)}
-					</Form>
-				</CardBody>
-			</Card>
-			<Card className="col-span-1">
-				<CardBody className="flex flex-col justify-center items-center flex-1 relative">
-					<AutoScheduleView
+		<>
+			<TourStyles />
+			<div className="flex flex-col xl:grid xl:grid-cols-2 gap-4">
+				<StudentCoursesPanel
+					isLoading={isLoading}
+					isGenerating={isGenerating}
+					availableCourses={availableCourses}
+					selectedCourses={selectedCourses}
+					errors={errors}
+					onFetchStudentCourses={handleFetchStudentCourses}
+					onGenerateSchedules={handleGenerateSchedules}
+					onAddCourse={addCourse}
+					onUpdateCourseCode={handleUpdateCourseCode}
+					onRemoveCourse={removeCourse}
+					onAddCampus={addCampus}
+					onUpdateCampus={handleUpdateCampus}
+					onRemoveCampus={removeCampus}
+				/>
+
+				<div className="schedule-view-container">
+					<ScheduleViewPanel
 						isGenerating={isGenerating}
 						scheduleCombinations={scheduleCombinations}
 						currentCombination={currentCombination}
-						onPrev={handlePrev}
-						onNext={handleNext}
+						onNavigate={navigateCombination}
 					/>
-				</CardBody>
-			</Card>
-		</div>
-	)
-}
+				</div>
+			</div>
+
+			<TourHelpButton onStartTour={restartTour} />
+		</>
+	);
+};

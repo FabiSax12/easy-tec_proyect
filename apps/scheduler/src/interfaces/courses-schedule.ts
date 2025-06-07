@@ -58,3 +58,10 @@ export interface SelectedCourse {
   campus: { name: string; typeOfGroup: string }[];
 }
 
+export interface GroupedCourse {
+  code: string;
+  subject: string;
+  credits: number;
+  typeOfSubject: string | null;
+  groups: ScheduleRow[];
+}
