@@ -7,6 +7,84 @@ import { SelectedCoursesList } from "@/components/SelectedCoursesList"
 import { AutoScheduleView } from "@/components/schedule-views/AutoScheduleView"
 import { generateCombinations } from "@/utils/get-schdule-combinations"
 import { AxiosError } from "axios"
+// import { driver, DriveStep } from "driver.js"
+// import "driver.js/dist/driver.css";
+
+// const initialTourSteps: DriveStep[] = [
+// 	{
+// 		element: "#input-student-id",
+// 		popover: {
+// 			title: "Tu Carnet",
+// 			description:
+// 				"Con tu carnet, podrás buscar unicamente entre los cursos que necesitas para tu carrera.",
+// 		},
+// 	},
+// 	{
+// 		element: "#btn-search-student",
+// 		popover: {
+// 			title: "Buscar tus cursos",
+// 			description:
+// 				"Haz clic aquí para buscar los cursos disponibles para tu carrera. Esto cargará los cursos que puedes seleccionar.",
+// 		},
+// 	},
+// 	{
+// 		element: "#container-selected-courses",
+// 		popover: {
+// 			title: "Selecciona tus cursos",
+// 			description:
+// 				"Aquí puedes seleccionar los cursos que deseas incluir en tu horario, sin especificar un grupo. El trabajo de las combinaciones se hará automáticamente.",
+// 		},
+// 	},
+// 	{
+// 		element: "#autocomplete-course-0",
+// 		popover: {
+// 			title: "Selecciona un curso",
+// 			description:
+// 				"Especifica unicamente los cursos que deseas incluir en tu horario. Puedes agregar más cursos haciendo clic en el botón \"Agregar curso\".",
+// 		},
+// 	},
+// ];
+
+// const courseAddedTourSteps: DriveStep[] = [
+// 	{
+// 		element: "#autocomplete-course-0", // Or a more specific element related to the added course
+// 		popover: {
+// 			title: "Curso Seleccionado",
+// 			description:
+// 				"¡Excelente! Has seleccionado un curso. Ahora puedes definir su campus y tipo de grupo.",
+// 		},
+// 	},
+// 	{
+// 		element: '#select-campus-0-0',
+// 		popover: {
+// 			title: "Selecciona el Campus",
+// 			description: "Elige los campus donde estés dispuesto a tomar el curso. Puedes seleccionar más de uno.",
+// 		}
+// 	},
+// 	{
+// 		element: '#select-type-of-group-0-0',
+// 		popover: {
+// 			title: "Selecciona el Tipo de Grupo",
+// 			description: "Para cada conjunto de campus, selecciona las modalidades de grupo que necesites.",
+// 		}
+// 	},
+// 	{
+// 		element: "#btn-add-course",
+// 		popover: {
+// 			title: "Agregar Más Cursos",
+// 			description:
+// 				"Si necesitas seleccionar más cursos, puedes hacerlo usando este botón.",
+// 		},
+// 	},
+// 	{
+// 		element: "#btn-generate-schedules",
+// 		popover: {
+// 			title: "Generar Horarios",
+// 			description:
+// 				"Una vez que hayas agregado todos los cursos deseados, haz clic aquí para generar las combinaciones de horarios.",
+// 		},
+// 	},
+// ];
 
 export const AutoSchedulesPage = () => {
 	const [studentId, setStudentId] = useState<string | null>(null)
@@ -18,6 +96,15 @@ export const AutoSchedulesPage = () => {
 	const [scheduleCombinations, setScheduleCombinations] = useState<SimpleCourseRow[][]>([])
 	const [currentCombination, setCurrentCombination] = useState(0)
 
+	// const pageTourDriver = driver({
+	// 	showProgress: true,
+	// 	steps: initialTourSteps,
+	// 	onDestroyed: () => {
+	// 		const tours = JSON.parse(localStorage.getItem("tours") || "{}")
+	// 		localStorage.setItem("tours", JSON.stringify({ ...tours, initialTourSteps: true }))
+	// 	}
+	// });
+
 	useEffect(() => {
 		const storedAvailableCourses = localStorage.getItem("availableCourses")
 
@@ -25,6 +112,12 @@ export const AutoSchedulesPage = () => {
 			const parsedCourses = JSON.parse(storedAvailableCourses) as CourseNameAndCode[]
 			setAvailableCourses(parsedCourses)
 		}
+
+		// if (localStorage.getItem("tours") === null || !JSON.parse(localStorage.getItem("tours") || "{}").initialTourSteps) {
+		// 	console.log(pageTourDriver.getConfig())
+		// 	pageTourDriver.drive();
+		// 	console.log("Drivigng tour")
+		// }
 	}, [])
 
 	const getStudentAvailableCourses = async (studentId: string) => {
@@ -54,6 +147,24 @@ export const AutoSchedulesPage = () => {
 		const updatedCourses = [...selectedCourses]
 		updatedCourses[index].code = code
 		setSelectedCourses(updatedCourses)
+		if (code && selectedCourses[index].campus.length === 0) {
+			updatedCourses[index].campus.push({ name: "", typeOfGroup: "" })
+		}
+
+		if (index === 0 && code) {
+			// if (pageTourDriver.isActive()) {
+			// 	pageTourDriver.destroy();
+			// }
+			// pageTourDriver.setConfig({
+			// 	showProgress: true,
+			// 	steps: courseAddedTourSteps,
+			// 	onDestroyed: () => {
+			// 		const tours = JSON.parse(localStorage.getItem("tours") || "{}")
+			// 		localStorage.setItem("tours", JSON.stringify({ ...tours, courseAddedTourSteps: true }))
+			// 	}
+			// })
+			// pageTourDriver.drive();
+		}
 	}
 
 	const updateCourseCampus = (courseIndex: number, campusIndex: number, field: "name" | "typeOfGroup", value: string) => {
@@ -147,7 +258,7 @@ export const AutoSchedulesPage = () => {
 							onUpdateCampus={updateCourseCampus}
 							onRemoveCampus={removeCampusRow}
 						/>
-						<Button isLoading={isGenerating} color="success" variant="flat" type="submit" fullWidth>
+						<Button id="btn-generate-schedules" isLoading={isGenerating} color="success" variant="flat" type="submit" fullWidth>
 							{isGenerating ? "Generando..." : "Generar horarios"}
 						</Button>
 						{errors.length > 0 && (

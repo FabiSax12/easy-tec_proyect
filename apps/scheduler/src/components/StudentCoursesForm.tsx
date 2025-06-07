@@ -16,8 +16,10 @@ export const StudentCoursesForm: React.FC<StudentCoursesFormProps> = ({ onSubmit
   }
 
   return (
-    <Form onSubmit={handleSubmit} className="flex flex-row mb-10" validationBehavior="native">
+    <Form onSubmit={handleSubmit} className="flex gap-2 flex-row mb-10" validationBehavior="native">
       <Input
+        id="input-student-id"
+        fullWidth={false}
         name="studentId"
         label="Carnet"
         labelPlacement="outside-left"
@@ -28,6 +30,7 @@ export const StudentCoursesForm: React.FC<StudentCoursesFormProps> = ({ onSubmit
         minLength={10}
       />
       <Button
+        id="btn-search-student"
         isIconOnly
         startContent={!isLoading ? <IoSearchOutline /> : null}
         type="submit"

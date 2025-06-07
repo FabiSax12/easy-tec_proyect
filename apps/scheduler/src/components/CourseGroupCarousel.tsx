@@ -1,14 +1,5 @@
-import { ScheduleRow } from "@/interfaces/courses-schedule";
-import { ScheduleGroupCard } from "./ScheduleGroupCard"; // Importa la tarjeta individual
-
-// Interfaz para los datos agrupados de un curso
-export interface GroupedCourse {
-  code: string;
-  subject: string;
-  credits: number; // Añadimos créditos aquí
-  typeOfSubject: string | null; // Añadimos tipo de materia aquí
-  groups: ScheduleRow[]; // Array de grupos para este curso
-}
+import { GroupedCourse } from "@/interfaces/courses-schedule";
+import { ScheduleGroupCard } from "./ScheduleGroupCard";
 
 interface Props {
   courseData: GroupedCourse;

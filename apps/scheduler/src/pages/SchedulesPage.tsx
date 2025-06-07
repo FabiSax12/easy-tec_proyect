@@ -125,8 +125,7 @@ export const SchedulesPage = () => {
         </Card>
         <Card
           className={`
-            flex-1/3
-            ${isRowLayout ? "" : "h-full sm:px-10 md:px-20 lg:px-32 xl:px-56"}
+            ${!isRowLayout && "h-full sm:px-10 md:px-20 lg:px-32 xl:px-56"}
           `}
         >
           <CardBody>

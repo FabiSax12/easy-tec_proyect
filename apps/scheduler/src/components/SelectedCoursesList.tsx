@@ -44,7 +44,7 @@ export const SelectedCoursesList: React.FC<SelectedCoursesListProps> = ({
   onRemoveCampus,
 }) => {
   return (
-    <div className="flex flex-col gap-12 md:gap4 w-full">
+    <div id="container-selected-courses" className="flex flex-col gap-12 md:gap4 w-full">
       {selectedCourses.map((course, courseIndex) => (
         <div key={courseIndex} className="grid grid-cols-1 md:grid-cols-2 items-start gap-6">
           <div className="flex gap-6">
@@ -57,6 +57,7 @@ export const SelectedCoursesList: React.FC<SelectedCoursesListProps> = ({
             />
             <Autocomplete
               isRequired
+              id={`autocomplete-course-${courseIndex}`}
               placeholder="Seleccionar Curso"
               size="sm"
               selectedKey={course.code}
@@ -81,6 +82,7 @@ export const SelectedCoursesList: React.FC<SelectedCoursesListProps> = ({
             {course.campus.map((campus, campusIndex) => (
               <div key={campusIndex} className="flex flex-row md:flex-row gap-2 mb-4">
                 <Select
+                  id={`select-campus-${courseIndex}-${campusIndex}`}
                   isRequired
                   placeholder="Campus"
                   size="sm"
@@ -95,6 +97,7 @@ export const SelectedCoursesList: React.FC<SelectedCoursesListProps> = ({
                   ))}
                 </Select>
                 <Select
+                  id={`select-type-of-group-${courseIndex}-${campusIndex}`}
                   isRequired
                   placeholder="Tipo de grupo"
                   size="sm"
@@ -121,6 +124,7 @@ export const SelectedCoursesList: React.FC<SelectedCoursesListProps> = ({
               </div>
             ))}
             <Button
+              id={`button-add-campus-${courseIndex}`}
               fullWidth
               isDisabled={!course.code || course.code === "" || course.campus.some(c => c.name === "" || c.typeOfGroup === "")}
               onPress={() => onAddCampus(courseIndex)}
@@ -132,7 +136,7 @@ export const SelectedCoursesList: React.FC<SelectedCoursesListProps> = ({
           </div>
         </div>
       ))}
-      <Button onPress={onAddCourse} size="sm" variant="bordered">
+      <Button id="btn-add-course" onPress={onAddCourse} size="sm" variant="bordered">
         Añadir Curso
       </Button>
     </div>
