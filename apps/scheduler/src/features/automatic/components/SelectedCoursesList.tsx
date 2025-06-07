@@ -2,7 +2,7 @@ import React from "react"
 import { Autocomplete, AutocompleteItem, Button, Select, SelectItem } from "@easy-tec/ui"
 import { IoTrashBin } from "react-icons/io5"
 import { CourseNameAndCode } from "@/interfaces/courses-schedule.ts"
-import { campusOptions } from "@/data/schedule-options"
+import { campusOptions } from "@/features/manual/data/schedule-options"
 
 export interface Campus {
   name: string;

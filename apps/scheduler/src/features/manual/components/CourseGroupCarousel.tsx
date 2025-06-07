@@ -1,5 +1,5 @@
 import { GroupedCourse } from "@/interfaces/courses-schedule";
-import { ScheduleGroupCard } from "./ScheduleGroupCard";
+import { ScheduleGroupCard } from "@/features/manual/components/ScheduleGroupCard";
 
 interface Props {
   courseData: GroupedCourse;

@@ -1,11 +1,11 @@
-import { ScheduleRow } from "@/interfaces/courses-schedule";
-import { CourseGroupCarousel } from "./CourseGroupCarousel";
 import { ScrollShadow } from "@easy-tec/ui";
-import { useGroupedSchedules } from "@/hooks/useGroupedSchedules";
-import { usePagination } from "@/hooks/usePagination";
-import { ScheduleControls } from "@/components/ScheduleControls";
+import { ScheduleRow } from "@/interfaces/courses-schedule";
 import { EmptyState } from "@/components/EmptyState";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { CourseGroupCarousel } from "@/features/manual/components/CourseGroupCarousel";
+import { useGroupedSchedules } from "@/features/manual/hooks/useGroupedSchedules";
+import { usePagination } from "@/features/manual/hooks/usePagination";
+import { ScheduleControls } from "@/features/manual/components/ScheduleControls";
 
 interface Props {
   schedules: ScheduleRow[];
