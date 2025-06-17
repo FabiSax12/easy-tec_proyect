@@ -2,10 +2,10 @@ import { useMemo, useRef, useState } from "react"
 import { toPng } from "html-to-image"
 import { useSchedule } from "@/hooks/useSchedules"
 import { ScheduleEvent } from "@/interfaces/courses-schedule"
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Tooltip } from "@easy-tec/ui"
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Tooltip, Checkbox, CheckboxGroup } from "@easy-tec/ui"
 import { ScheduleView } from "./ScheduleView"
 import { IoIosDownload } from "react-icons/io"
-import { IoMoon, IoPencil, IoSunny } from "react-icons/io5"
+import { IoMoon, IoPencil, IoSunny, IoSettings } from "react-icons/io5"
 import { LuRotateCcw } from "react-icons/lu"
 import { GrSync } from "react-icons/gr"
 
@@ -14,13 +14,40 @@ export const ManualScheduleView = () => {
   const scheduleRef = useRef<HTMLDivElement>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isClearSchedulesModalOpen, setIsClearSchedulesModalOpen] = useState(false)
+  const [isDaysConfigModalOpen, setIsDaysConfigModalOpen] = useState(false)
   const [scheduleTheme, setScheduleTheme] = useState<"light" | "dark" | undefined>(undefined)
 
-  const days = useMemo(() => ["Lun", "Mar", "Mie", "Jue", "Vie"], [])
+  // Estado para los días seleccionados
+  const allDays = useMemo(() => [
+    { key: "Lun", label: "Lunes" },
+    { key: "Mar", label: "Martes" },
+    { key: "Mie", label: "Miércoles" },
+    { key: "Jue", label: "Jueves" },
+    { key: "Vie", label: "Viernes" },
+    { key: "Sab", label: "Sábado" }
+  ], [])
+
+  const [selectedDays, setSelectedDays] = useState<string[]>(
+    !!localStorage.getItem('selectedDays')
+      ? JSON.parse(localStorage.getItem('selectedDays')!)
+      : allDays.map(day => day.key)
+  )
+
+  const handleSelectedDaysChange = (days: string[]) => {
+    if (days.length === 0) return
+
+    setSelectedDays(days)
+    localStorage.setItem("selectedDays", JSON.stringify(days))
+  }
+
+  const days = useMemo(() => {
+    return allDays
+      .filter(day => selectedDays.includes(day.key))
+      .map(day => day.key)
+  }, [selectedDays, allDays])
 
   const events = useMemo(() => {
     const newEvents: ScheduleEvent[] = []
-
 
     selectedSubjects.forEach((subject) => {
       subject.schedules.forEach((schedule) => {
@@ -65,9 +92,44 @@ export const ManualScheduleView = () => {
 
   const showClearSubjectsModal = () => setIsClearSchedulesModalOpen(true)
 
+  const showDaysConfigModal = () => setIsDaysConfigModalOpen(true)
+
+  const handleDayToggle = (dayKey: string) => {
+    setSelectedDays(prev => {
+      if (prev.includes(dayKey)) {
+        // Si el día está seleccionado, lo removemos
+        return prev.filter(day => day !== dayKey)
+      } else {
+        // Si el día no está seleccionado, lo añadimos
+        return [...prev, dayKey]
+      }
+    })
+  }
+
+  const selectAllDays = () => {
+    setSelectedDays(allDays.map(day => day.key))
+  }
+
+  const deselectAllDays = () => {
+    setSelectedDays([])
+  }
+
+  const selectWeekDaysOnly = () => {
+    setSelectedDays(["Lun", "Mar", "Mie", "Jue", "Vie"])
+  }
+
   return (
     <div className="w-full">
       <div className="text-right mb-4 gap-4 flex justify-end">
+
+        <Tooltip content="Días a mostrar" placement="bottom">
+          <Button
+            onPress={showDaysConfigModal}
+            color="default"
+            size="md"
+            startContent={<IoSettings size={20} />}
+          >Dias</Button>
+        </Tooltip>
 
         <Tooltip content="Tema" placement="bottom">
           <Button
@@ -117,19 +179,98 @@ export const ManualScheduleView = () => {
       </div>
 
       <div className="max-w-full overflow-auto">
-        <ScheduleView theme={scheduleTheme} ref={scheduleRef} events={events} eventsDeleteable={false} />
+        <ScheduleView
+          theme={scheduleTheme}
+          ref={scheduleRef}
+          events={events}
+          eventsDeleteable={false}
+          visibleDays={days}
+        />
       </div>
 
+      {/* Modal de edición */}
       <Modal className={scheduleTheme} isOpen={isModalOpen} size="5xl" onClose={() => setIsModalOpen(false)} scrollBehavior="inside" isDismissable={false}>
         <ModalContent>
           <ModalHeader></ModalHeader>
           <ModalBody>
-            <ScheduleView theme={scheduleTheme} events={events} eventsEditable eventsDeleteable={false} />
+            <ScheduleView
+              theme={scheduleTheme}
+              events={events}
+              eventsEditable
+              eventsDeleteable={false}
+              visibleDays={days}
+            />
           </ModalBody>
           <ModalFooter></ModalFooter>
         </ModalContent>
       </Modal>
 
+      {/* Modal de configuración de días */}
+      <Modal isOpen={isDaysConfigModalOpen} size="md" onClose={() => setIsDaysConfigModalOpen(false)}>
+        <ModalContent>
+          <ModalHeader>Configurar días a mostrar</ModalHeader>
+          <ModalBody>
+            <div className="space-y-4">
+              <div className="flex gap-2 mb-4">
+                <Button
+                  onPress={selectAllDays}
+                  color="primary"
+                  size="sm"
+                  variant="flat"
+                >
+                  Todos
+                </Button>
+                <Button
+                  onPress={selectWeekDaysOnly}
+                  color="secondary"
+                  size="sm"
+                  variant="flat"
+                >
+                  Solo semana
+                </Button>
+                {/* <Button
+                  onPress={deselectAllDays}
+                  color="default"
+                  size="sm"
+                  variant="flat"
+                >
+                  Ninguno
+                </Button> */}
+              </div>
+
+              <div className="space-y-3">
+                <CheckboxGroup value={selectedDays} onValueChange={handleSelectedDaysChange}>
+                  {allDays.map((day) => (
+                    <Checkbox
+                      key={day.key}
+                      value={day.key}
+                    // isSelected={selectedDays.includes(day.key)}
+                    // onValueChange={() => handleDayToggle(day.key)}
+                    >
+                      {day.label}
+                    </Checkbox>
+                  ))}
+                </CheckboxGroup>
+              </div>
+
+              <div className="text-small text-default-500 mt-4">
+                Días seleccionados: {selectedDays.length === 0 ? "Ninguno" : selectedDays.length}
+              </div>
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              onPress={() => setIsDaysConfigModalOpen(false)}
+              color="primary"
+              size="md"
+            >
+              Cerrar
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      {/* Modal de confirmación para limpiar */}
       <Modal isOpen={isClearSchedulesModalOpen} size="sm">
         <ModalContent>
           <ModalHeader>Limpiar cursos</ModalHeader>
