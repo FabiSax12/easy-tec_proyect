@@ -94,25 +94,25 @@ export const ManualScheduleView = () => {
 
   const showDaysConfigModal = () => setIsDaysConfigModalOpen(true)
 
-  const handleDayToggle = (dayKey: string) => {
-    setSelectedDays(prev => {
-      if (prev.includes(dayKey)) {
-        // Si el día está seleccionado, lo removemos
-        return prev.filter(day => day !== dayKey)
-      } else {
-        // Si el día no está seleccionado, lo añadimos
-        return [...prev, dayKey]
-      }
-    })
-  }
+  // const handleDayToggle = (dayKey: string) => {
+  //   setSelectedDays(prev => {
+  //     if (prev.includes(dayKey)) {
+  //       // Si el día está seleccionado, lo removemos
+  //       return prev.filter(day => day !== dayKey)
+  //     } else {
+  //       // Si el día no está seleccionado, lo añadimos
+  //       return [...prev, dayKey]
+  //     }
+  //   })
+  // }
 
   const selectAllDays = () => {
     setSelectedDays(allDays.map(day => day.key))
   }
 
-  const deselectAllDays = () => {
-    setSelectedDays([])
-  }
+  // const deselectAllDays = () => {
+  //   setSelectedDays([])
+  // }
 
   const selectWeekDaysOnly = () => {
     setSelectedDays(["Lun", "Mar", "Mie", "Jue", "Vie"])
