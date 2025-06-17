@@ -25,14 +25,26 @@ export const CoursesScheduleEvent = ({
   const { removeSubject, setSubjectColor } = useSchedule();
   const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
   const [color, setColor] = useState<string | undefined>(event.color);
+  const [originalColor, setOriginalColor] = useState<string | undefined>(event.color);
 
   useEffect(() => {
     setColor(event.color);
+    setOriginalColor(event.color);
   }, [event.color]);
+
+  const handleOpenColorPicker = () => {
+    setOriginalColor(event.color); // Guardar el color original
+    setIsColorPickerOpen(true);
+  };
 
   const handleSaveColor = () => {
     setIsColorPickerOpen(false);
     setSubjectColor(event.id, color || "#006fee");
+  };
+
+  const handleCancelColor = () => {
+    setColor(originalColor); // Restaurar el color original
+    setIsColorPickerOpen(false);
   };
 
   return (
@@ -78,8 +90,6 @@ export const CoursesScheduleEvent = ({
             <span>{event.location}</span>
           </p>
         )}
-
-
       </div>
 
       {isDeleteable && (
@@ -97,7 +107,7 @@ export const CoursesScheduleEvent = ({
         <Tooltip content="Editar" placement="bottom">
           <span
             className="hidden group-hover:flex absolute bottom-0 left-0 right-0 rounded-t-full py-1 justify-center items-center cursor-pointer bg-white/80"
-            onClick={() => setIsColorPickerOpen(true)}
+            onClick={handleOpenColorPicker}
           >
             <IoPencil size={15} color={color} />
           </span>
@@ -106,23 +116,37 @@ export const CoursesScheduleEvent = ({
 
       {isColorPickerOpen &&
         createPortal(
-          <div
-            className="fixed inset-0 flex items-center justify-center z-[99999] bg-black/30"
-            onClick={() => setIsColorPickerOpen(false)}
-          >
+          <div className="fixed inset-0 flex items-center justify-center z-[99999] bg-black/30">
             <div
               className="bg-white p-4 rounded-md shadow-lg z-[999999] relative"
               onClick={(e) => e.stopPropagation()}
             >
-              <HexColorPicker color={color} onChange={setColor} />
-              <Button
-                onPress={handleSaveColor}
-                size="sm"
-                color="primary"
-                className="mt-2 w-full"
-              >
-                Guardar
-              </Button>
+              <div className="mb-4">
+                <h3 className="text-sm font-medium text-gray-900 mb-2">
+                  Seleccionar color
+                </h3>
+                <HexColorPicker color={color} onChange={setColor} />
+              </div>
+
+              <div className="flex gap-2">
+                <Button
+                  onPress={handleSaveColor}
+                  size="sm"
+                  color="primary"
+                  className="flex-1"
+                >
+                  Guardar
+                </Button>
+                <Button
+                  onPress={handleCancelColor}
+                  size="sm"
+                  color="default"
+                  variant="flat"
+                  className="flex-1"
+                >
+                  Cancelar
+                </Button>
+              </div>
             </div>
           </div>,
           document.body
