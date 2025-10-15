@@ -246,6 +246,9 @@ const periodsOptions = [
   },
   {
     name: "2025 Semestre II", code: "2025_S_2"
+  },
+  {
+    name: "2025 Verano I", code: "2025_V_1"
   }
 ]
 
